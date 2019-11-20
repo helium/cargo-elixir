@@ -16,7 +16,7 @@ defmodule CargoElixirWeb.Router do
   scope "/", CargoElixirWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    get "/*path", PageController, :index
   end
 
   # Other scopes may use custom stacks.
