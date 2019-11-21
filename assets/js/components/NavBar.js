@@ -30,7 +30,7 @@ class NavBar extends Component {
     return (
       <div style={styles.container}>
         <div>
-          <Logo style={{...styles.paddingBox, paddingTop: 8 }} />
+          <Logo style={{...styles.paddingBox, paddingTop: 16, paddingBottom: 16 }} />
           <p style={{...styles.paddingBox, ...styles.title}}>Devices</p>
         </div>
 

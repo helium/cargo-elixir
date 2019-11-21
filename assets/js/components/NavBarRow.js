@@ -8,6 +8,7 @@ const styles = {
     alignItems: 'center',
     paddingLeft: 16,
     paddingRight: 16,
+    cursor: 'pointer',
   },
   title: {
     fontSize: 14

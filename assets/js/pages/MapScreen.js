@@ -1,6 +1,7 @@
 import React from "react"
 import ReactMapboxGl, { Layer, Marker, Feature } from 'react-mapbox-gl';
 import NavBar from '../components/NavBar'
+import Inspector from '../components/Inspector'
 import geoJSON from "geojson";
 
 const styles = {
@@ -121,6 +122,12 @@ class MapScreen extends React.Component {
           selectDevice={this.selectDevice}
           selectedDevice={selectedDevice}
         />
+
+        {
+          lastPacket && (
+            <Inspector lastPacket={lastPacket} selectedDevice={selectedDevice} />
+          )
+        }
       </div>
     )
   }
