@@ -1,7 +1,7 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
-import Main from "./pages/main"
+import MapScreen from "./pages/MapScreen"
 
 class Login extends React.Component {
   render() {
@@ -14,11 +14,11 @@ class Login extends React.Component {
   }
 }
 
-class HelloReact extends React.Component {
+class App extends React.Component {
   render() {
     return (
       <Router>
-        <Route exact path="/" component={Main}/>
+        <Route exact path="/" component={MapScreen}/>
         <Route path="/login" component={Login}/>
       </Router>
     )
@@ -26,6 +26,6 @@ class HelloReact extends React.Component {
 }
 
 ReactDOM.render(
-  <HelloReact/>,
+  <App/>,
   document.getElementById("react-app")
 )
