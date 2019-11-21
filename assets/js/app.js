@@ -1,5 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom"
+import '../css/app.css'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import MapScreen from "./pages/MapScreen"
 

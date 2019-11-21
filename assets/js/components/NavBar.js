@@ -1,17 +1,24 @@
 import React, { Component } from 'react'
-// import Menu from './Menu'
-// import Circle from './Circle'
-// import TimeAgo from 'javascript-time-ago'
 import Logo from "../../static/images/logocargo.svg";
+import NavBarRow from './NavBarRow'
 
 const styles = {
   container: {
     position: 'absolute',
     top: 0,
     left: 0,
-    padding: 20,
     backgroundColor: '#ffffff',
-    height: '100vh'
+    height: '100vh',
+    minWidth: 200
+  },
+  title: {
+    marginBottom: 0,
+    paddingBottom: 16,
+    borderBottom: '1px solid #D3D3D3',
+  },
+  paddingBox: {
+    paddingLeft: 16,
+    paddingRight: 16,
   }
 }
 
@@ -21,12 +28,14 @@ class NavBar extends Component {
 
     return (
       <div style={styles.container}>
-        <Logo />
-        <h1>Devices</h1>
+        <div>
+          <Logo style={{...styles.paddingBox, paddingTop: 8 }} />
+          <p style={{...styles.paddingBox, ...styles.title}}>Devices</p>
+        </div>
 
         <div>
           {devices.map(d =>
-            <p key={d.device_id}>{d.device_id}</p>
+            <NavBarRow key={d.device_id} device={d} />
           )}
         </div>
       </div>

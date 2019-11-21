@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>CargoElixir</title>
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.css' rel='stylesheet' />
+    <link href="<%= Routes.static_path(@conn, "/css/app.css") %>" rel='stylesheet' />
   </head>
   <body style="margin: 0;">
     <%= render @view_module, @view_template, assigns %>
