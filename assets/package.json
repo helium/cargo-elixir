@@ -6,6 +6,7 @@
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
+    "geojson": "^0.5.0",
     "mapbox-gl": "^1.5.0",
     "phoenix": "file:../deps/phoenix",
     "phoenix_html": "file:../deps/phoenix_html",

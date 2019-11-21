@@ -6,7 +6,6 @@ const styles = {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderBottom: '1px solid #D3D3D3',
     paddingLeft: 16,
     paddingRight: 16,
   },
@@ -15,20 +14,27 @@ const styles = {
   },
   tag: {
     fontSize: 11,
-    color: '#A9A9A9'
   }
 }
 
 class NavBarRow extends Component {
   render() {
-    const { device } = this.props
+    const { device, selectDevice, selectedDevice } = this.props
+    const selected = selectedDevice && selectedDevice.device_id === device.device_id
 
     return (
-      <div style={styles.container}>
-        <p key={device.device_id} style={styles.title}>{device.device_id}</p>
+      <div
+        style={{
+          ...styles.container,
+          backgroundColor: selected && '#1B8DFF',
+          borderBottom: selected ? '1px solid #1B8DFF' : '1px solid #D3D3D3',
+        }}
+        onClick={() => selectDevice(device)}
+      >
+        <p key={device.device_id} style={{ ...styles.title, color: selected ? '#ffffff' : '#000000' }}>{device.device_id}</p>
         <div>
-          <p style={styles.tag}>2h ago</p>
-          <p style={styles.tag}>Location</p>
+          <p style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>2h ago</p>
+          <p style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>Location</p>
         </div>
       </div>
     )
