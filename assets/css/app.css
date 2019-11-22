@@ -5,3 +5,7 @@ body {
 p {
   margin: 8px;
 }
+
+div.podHover:hover {
+  background-color: #E1ECF8;
+}

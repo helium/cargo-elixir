@@ -8,7 +8,8 @@ const styles = {
     top: 0,
     left: 0,
     backgroundColor: '#ffffff',
-    minWidth: 200
+    minWidth: 200,
+    zIndex: 10,
   },
   title: {
     marginBottom: 0,

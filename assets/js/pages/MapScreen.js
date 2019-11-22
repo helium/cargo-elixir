@@ -3,6 +3,12 @@ import ReactMapboxGl, { Layer, Marker, Feature } from 'react-mapbox-gl';
 import NavBar from '../components/NavBar'
 import Inspector from '../components/Inspector'
 import geoJSON from "geojson";
+import hotspotsJSON from '../data/hotspots.json'
+
+const hotspotsData = {}
+hotspotsJSON.data.forEach(d => {
+  hotspotsData[d.name.toLowerCase()] = d
+})
 
 const styles = {
   selectedMarker: {
@@ -16,6 +22,17 @@ const styles = {
     border: "4px solid #fff",
     animation: 'pulse 2s ease infinite'
   },
+  gatewayMarker: {
+    width: 14,
+    height: 14,
+    borderRadius: "50%",
+    backgroundColor: "#A984FF",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    border: "3px solid #8B62EA",
+    boxShadow: "0px 2px 4px 0px rgba(0,0,0,0.5)"
+  }
 }
 
 const Map = ReactMapboxGl({
@@ -33,6 +50,7 @@ class MapScreen extends React.Component {
       packets: {},
       lastPacket: null,
       mapCenter: [-122.419190, 37.771150],
+      hotspots: { data: [] },
     }
 
     this.selectDevice = this.selectDevice.bind(this)
@@ -93,8 +111,17 @@ class MapScreen extends React.Component {
       })
   }
 
+  setHotspots({ properties }) {
+    const hotspots = { data: [], center: geoToMarkerCoords(properties.coordinates) }
+    properties.hotspots.forEach(h => {
+      if (hotspotsData[h]) hotspots.data.push(hotspotsData[h])
+      else console.log("Found undefined hotspot name not shown on map, consider updating hotspots.json")
+    })
+    this.setState({ hotspots })
+  }
+
   render() {
-    const { devices, mapCenter, selectedDevice, packets, lastPacket } = this.state
+    const { devices, mapCenter, selectedDevice, packets, lastPacket, hotspots } = this.state
 
     return (
       <div style={{ flex: 1 }}>
@@ -113,6 +140,7 @@ class MapScreen extends React.Component {
               <Layer key={selectedDevice.device_id} type="circle" paint={{"circle-color": "#4790E5"}}>
                 {packets.geoJson.features.map(p => (
                   <Feature
+                    onMouseEnter={() => this.setHotspots(p)}
                     key={p.properties.key}
                     coordinates={geoToMarkerCoords(p.properties.coordinates)}
                   />
@@ -129,6 +157,35 @@ class MapScreen extends React.Component {
                 coordinates={geoToMarkerCoords(lastPacket.coordinates)}
               />
             )
+          }
+
+          {
+            hotspots.data.map(h => (
+              <Marker
+                key={h.address}
+                style={styles.gatewayMarker}
+                anchor="center"
+                coordinates={[h.lng, h.lat]}
+              />
+            ))
+          }
+
+          {
+            hotspots.data.map(h => (
+              <Layer
+                key={"line-" + h.address}
+                type="line"
+                layout={{ "line-cap": "round", "line-join": "round" }}
+                paint={{ "line-color": "#A984FF", "line-width": 2 }}
+              >
+                <Feature
+                  coordinates={[
+                    [h.lng, h.lat],
+                    hotspots.center
+                  ]}
+                />
+              </Layer>
+            ))
           }
         </Map>
 
