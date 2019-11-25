@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import startCase from 'lodash/startCase'
+import Media from 'react-media';
 
 const styles = {
   container: {
@@ -24,6 +25,7 @@ const styles = {
     width: '50%',
     padding: 8,
     cursor: 'pointer',
+    minWidth: 80,
   },
   header: {
     fontSize: 14,
@@ -58,7 +60,16 @@ const styles = {
     borderRight: '5px solid transparent',
     borderTop: '5px solid white',
     marginRight: 16,
-  }
+  },
+  smallContainer: {
+    position: 'absolute',
+    top: 125,
+    left: 0,
+    backgroundColor: '#EAF3FC',
+    width: '100%',
+    zIndex: 10,
+    overflow: 'scroll'
+  },
 }
 
 class Inspector extends Component {
@@ -80,56 +91,105 @@ class Inspector extends Component {
     const { show } = this.state
 
     return (
-      <div style={styles.container}>
-        <div style={styles.bar} onClick={this.toggle}>
-          <p style={{ color: 'white', fontSize: 14 }}>Last Packet Stats</p>
-          {
-            show ? <div style={styles.arrowUp}></div> : <div style={styles.arrowDown}></div>
-          }
-        </div>
-        {
-          show && (
-            <React.Fragment>
-              <div style={styles.top}>
-                <p style={styles.header}>Device ID:</p>
-                <p style={styles.value}>{selectedDevice.device_id}</p>
-                <p style={{...styles.header, marginTop: 8 }}>Hotspot:</p>
-                <p style={styles.value}>{startCase(lastPacket.hotspots[lastPacket.hotspots.length - 1])}</p>
+      <Media queries={{
+        small: "(max-width: 500px)",
+        large: "(min-width: 501px)"
+      }}>
+        {matches => (
+          <React.Fragment>
+            {matches.small && (
+              <div style={styles.smallContainer}>
+                {
+                  show && (
+                    <React.Fragment>
+                      <div style={styles.row}>
+                        <div style={{...styles.pod, backgroundColor: chartType === 'sequence' && '#CBDEF2' }} className="podHover" onClick={() => setChartType("sequence")}>
+                          <p style={styles.header}>Sequence #:</p>
+                          <p style={styles.value}>{lastPacket.seq_num}</p>
+                        </div>
+                        <div style={{ ...styles.pod, backgroundColor: chartType === 'speed' && '#CBDEF2', borderLeft: '1px solid #1B8DFF' }} className="podHover" onClick={() => setChartType("speed")}>
+                          <p style={styles.header}>Avg Speed:</p>
+                          <p style={styles.value}>{lastPacket.speed}mph</p>
+                        </div>
+
+                        <div style={{...styles.pod, backgroundColor: chartType === 'elevation' && '#CBDEF2', borderLeft: '1px solid #1B8DFF'}} className="podHover" onClick={() => setChartType("elevation")}>
+                          <p style={styles.header}>Elevation:</p>
+                          <p style={styles.value}>{lastPacket.elevation}m</p>
+                        </div>
+                        <div style={{ ...styles.pod, borderLeft: '1px solid #1B8DFF', backgroundColor: chartType === 'battery' && '#CBDEF2', borderLeft: '1px solid #1B8DFF' }} className="podHover" onClick={() => setChartType("battery")}>
+                          <p style={styles.header}>Voltage:</p>
+                          <p style={styles.value}>{lastPacket.battery.toFixed(0)}</p>
+                        </div>
+
+                        <div style={{ ...styles.pod, backgroundColor: chartType === 'rssi' && '#CBDEF2', borderLeft: '1px solid #1B8DFF' }} className="podHover" onClick={() => setChartType("rssi")}>
+                          <p style={styles.header}>RSSI:</p>
+                          <p style={styles.value}>{lastPacket.rssi}</p>
+                        </div>
+                        <div style={{ ...styles.pod, borderLeft: '1px solid #1B8DFF', backgroundColor: chartType === 'snr' && '#CBDEF2', borderLeft: '1px solid #1B8DFF' }} className="podHover" onClick={() => setChartType("snr")}>
+                          <p style={styles.header}>SNR:</p>
+                          <p style={styles.value}>n/a</p>
+                        </div>
+                      </div>
+                    </React.Fragment>
+                  )
+                }
               </div>
-              <div style={styles.row}>
-                <div style={{...styles.pod, backgroundColor: chartType === 'sequence' && '#CBDEF2' }} className="podHover" onClick={() => setChartType("sequence")}>
-                  <p style={styles.header}>Sequence #:</p>
-                  <p style={styles.value}>{lastPacket.seq_num}</p>
+            )}
+            {matches.large && (
+              <div style={styles.container}>
+                <div style={styles.bar} onClick={this.toggle}>
+                  <p style={{ color: 'white', fontSize: 14 }}>Last Packet Stats</p>
+                  {
+                    show ? <div style={styles.arrowUp}></div> : <div style={styles.arrowDown}></div>
+                  }
                 </div>
-                <div style={{ ...styles.pod, backgroundColor: chartType === 'speed' && '#CBDEF2', borderLeft: '1px solid #1B8DFF' }} className="podHover" onClick={() => setChartType("speed")}>
-                  <p style={styles.header}>Avg Speed:</p>
-                  <p style={styles.value}>{lastPacket.speed}mph</p>
-                </div>
+                {
+                  show && (
+                    <React.Fragment>
+                      <div style={styles.top}>
+                        <p style={styles.header}>Device ID:</p>
+                        <p style={styles.value}>{selectedDevice.device_id}</p>
+                        <p style={{...styles.header, marginTop: 8 }}>Hotspot:</p>
+                        <p style={styles.value}>{startCase(lastPacket.hotspots[lastPacket.hotspots.length - 1])}</p>
+                      </div>
+                      <div style={styles.row}>
+                        <div style={{...styles.pod, backgroundColor: chartType === 'sequence' && '#CBDEF2' }} className="podHover" onClick={() => setChartType("sequence")}>
+                          <p style={styles.header}>Sequence #:</p>
+                          <p style={styles.value}>{lastPacket.seq_num}</p>
+                        </div>
+                        <div style={{ ...styles.pod, backgroundColor: chartType === 'speed' && '#CBDEF2', borderLeft: '1px solid #1B8DFF' }} className="podHover" onClick={() => setChartType("speed")}>
+                          <p style={styles.header}>Avg Speed:</p>
+                          <p style={styles.value}>{lastPacket.speed}mph</p>
+                        </div>
+                      </div>
+                      <div style={styles.row}>
+                        <div style={{...styles.pod, backgroundColor: chartType === 'elevation' && '#CBDEF2'}} className="podHover" onClick={() => setChartType("elevation")}>
+                          <p style={styles.header}>Elevation:</p>
+                          <p style={styles.value}>{lastPacket.elevation}m</p>
+                        </div>
+                        <div style={{ ...styles.pod, borderLeft: '1px solid #1B8DFF', backgroundColor: chartType === 'battery' && '#CBDEF2' }} className="podHover" onClick={() => setChartType("battery")}>
+                          <p style={styles.header}>Voltage:</p>
+                          <p style={styles.value}>{lastPacket.battery.toFixed(0)}</p>
+                        </div>
+                      </div>
+                      <div style={styles.row}>
+                        <div style={{ ...styles.pod, backgroundColor: chartType === 'rssi' && '#CBDEF2'}} className="podHover" onClick={() => setChartType("rssi")}>
+                          <p style={styles.header}>RSSI:</p>
+                          <p style={styles.value}>{lastPacket.rssi}</p>
+                        </div>
+                        <div style={{ ...styles.pod, borderLeft: '1px solid #1B8DFF', backgroundColor: chartType === 'snr' && '#CBDEF2' }} className="podHover" onClick={() => setChartType("snr")}>
+                          <p style={styles.header}>SNR:</p>
+                          <p style={styles.value}>n/a</p>
+                        </div>
+                      </div>
+                    </React.Fragment>
+                  )
+                }
               </div>
-              <div style={styles.row}>
-                <div style={{...styles.pod, backgroundColor: chartType === 'elevation' && '#CBDEF2'}} className="podHover" onClick={() => setChartType("elevation")}>
-                  <p style={styles.header}>Elevation:</p>
-                  <p style={styles.value}>{lastPacket.elevation}m</p>
-                </div>
-                <div style={{ ...styles.pod, borderLeft: '1px solid #1B8DFF', backgroundColor: chartType === 'battery' && '#CBDEF2' }} className="podHover" onClick={() => setChartType("battery")}>
-                  <p style={styles.header}>Voltage:</p>
-                  <p style={styles.value}>{lastPacket.battery.toFixed(0)}</p>
-                </div>
-              </div>
-              <div style={styles.row}>
-                <div style={{ ...styles.pod, backgroundColor: chartType === 'rssi' && '#CBDEF2'}} className="podHover" onClick={() => setChartType("rssi")}>
-                  <p style={styles.header}>RSSI:</p>
-                  <p style={styles.value}>{lastPacket.rssi}</p>
-                </div>
-                <div style={{ ...styles.pod, borderLeft: '1px solid #1B8DFF', backgroundColor: chartType === 'snr' && '#CBDEF2' }} className="podHover" onClick={() => setChartType("snr")}>
-                  <p style={styles.header}>SNR:</p>
-                  <p style={styles.value}>n/a</p>
-                </div>
-              </div>
-            </React.Fragment>
-          )
-        }
-      </div>
+            )}
+          </React.Fragment>
+        )}
+      </Media>
     )
   }
 }

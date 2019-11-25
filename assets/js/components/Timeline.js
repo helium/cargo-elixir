@@ -95,7 +95,6 @@ class Timeline extends Component {
             style={{
               position: "absolute",
               bottom: 0,
-              height: "100px",
               width: "100%"
             }}
           >
@@ -107,7 +106,10 @@ class Timeline extends Component {
                 maintainAspectRatio: false,
                 layout: {
                   padding: {
-                    top: 5
+                    top: 45,
+                    bottom: 20,
+                    left: 20,
+                    right: 20,
                   }
                 },
                 legend: {
@@ -125,6 +127,14 @@ class Timeline extends Component {
                       type: "time",
                       gridLines: {
                         display: false
+                      },
+                      time: {
+                        unit: 'minute'
+                      },
+                      ticks: {
+                        autoSkip: false,
+                        maxRotation: 90,
+                        minRotation: 90,
                       }
                     }
                   ],

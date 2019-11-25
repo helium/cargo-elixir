@@ -13,6 +13,7 @@ const styles = {
     paddingLeft: 16,
     paddingRight: 16,
     cursor: 'pointer',
+    minWidth: 150,
   },
   title: {
     fontSize: 14
@@ -38,8 +39,8 @@ class NavBarRow extends Component {
       >
         <p key={device.device_id} style={{ ...styles.title, color: selected ? '#ffffff' : '#000000' }}>{device.device_id}</p>
         <div>
-          <p style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>{timeAgo.format(new Date(device.created_at), {flavour: "small"})}</p>
-          <p style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>Location</p>
+          <p align="right" style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>{timeAgo.format(new Date(device.created_at), {flavour: "small"})}</p>
+          <p align="right" style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>Location</p>
         </div>
       </div>
     )
