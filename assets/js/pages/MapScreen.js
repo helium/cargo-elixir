@@ -150,10 +150,10 @@ class MapScreen extends React.Component {
           {
             selectedDevice && (
               <Layer key={selectedDevice.device_id} type="circle" paint={{"circle-color": "#4790E5"}}>
-                {packets.geoJson.features.map(p => (
+                {packets.geoJson.features.map((p, i) => (
                   <Feature
                     onMouseEnter={() => this.setHotspots(p)}
-                    key={p.properties.key}
+                    key={p.properties.key + i}
                     coordinates={geoToMarkerCoords(p.properties.coordinates)}
                   />
                 ))}
@@ -172,9 +172,9 @@ class MapScreen extends React.Component {
           }
 
           {
-            hotspots.data.map(h => (
+            hotspots.data.map((h, i) => (
               <Marker
-                key={h.address}
+                key={h.address + i}
                 style={styles.gatewayMarker}
                 anchor="center"
                 coordinates={[h.lng, h.lat]}
@@ -183,9 +183,9 @@ class MapScreen extends React.Component {
           }
 
           {
-            hotspots.data.map(h => (
+            hotspots.data.map((h, i) => (
               <Layer
-                key={"line-" + h.address}
+                key={"line-" + h.address + i}
                 type="line"
                 layout={{ "line-cap": "round", "line-join": "round" }}
                 paint={{ "line-color": "#A984FF", "line-width": 2 }}

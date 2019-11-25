@@ -1,4 +1,8 @@
 import React, { Component } from 'react'
+import TimeAgo from 'javascript-time-ago'
+import en from 'javascript-time-ago/locale/en'
+TimeAgo.addLocale(en)
+const timeAgo = new TimeAgo('en-US');
 
 const styles = {
   container: {
@@ -34,7 +38,7 @@ class NavBarRow extends Component {
       >
         <p key={device.device_id} style={{ ...styles.title, color: selected ? '#ffffff' : '#000000' }}>{device.device_id}</p>
         <div>
-          <p style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>2h ago</p>
+          <p style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>{timeAgo.format(new Date(device.created_at), {flavour: "small"})}</p>
           <p style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>Location</p>
         </div>
       </div>
