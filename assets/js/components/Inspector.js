@@ -40,7 +40,7 @@ const styles = {
     height: 40,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     cursor: 'pointer',
   },
   arrowUp: {
@@ -76,12 +76,13 @@ class Inspector extends Component {
   }
 
   render() {
-    const { lastPacket, selectedDevice } = this.props
+    const { lastPacket, selectedDevice, setChartType, chartType } = this.props
     const { show } = this.state
 
     return (
       <div style={styles.container}>
         <div style={styles.bar} onClick={this.toggle}>
+          <p style={{ color: 'white', fontSize: 14 }}>Last Packet Stats</p>
           {
             show ? <div style={styles.arrowUp}></div> : <div style={styles.arrowDown}></div>
           }
@@ -96,31 +97,31 @@ class Inspector extends Component {
                 <p style={styles.value}>{startCase(lastPacket.hotspots[lastPacket.hotspots.length - 1])}</p>
               </div>
               <div style={styles.row}>
-                <div style={styles.pod} className="podHover">
+                <div style={{...styles.pod, backgroundColor: chartType === 'sequence' && '#CBDEF2' }} className="podHover" onClick={() => setChartType("sequence")}>
                   <p style={styles.header}>Sequence #:</p>
                   <p style={styles.value}>{lastPacket.seq_num}</p>
                 </div>
-                <div style={{ ...styles.pod, borderLeft: '1px solid #1B8DFF' }} className="podHover">
+                <div style={{ ...styles.pod, backgroundColor: chartType === 'speed' && '#CBDEF2', borderLeft: '1px solid #1B8DFF' }} className="podHover" onClick={() => setChartType("speed")}>
                   <p style={styles.header}>Avg Speed:</p>
-                  <p style={styles.value}>{lastPacket.speed}mh</p>
+                  <p style={styles.value}>{lastPacket.speed}mph</p>
                 </div>
               </div>
               <div style={styles.row}>
-                <div style={styles.pod} className="podHover">
+                <div style={{...styles.pod, backgroundColor: chartType === 'elevation' && '#CBDEF2'}} className="podHover" onClick={() => setChartType("elevation")}>
                   <p style={styles.header}>Elevation:</p>
                   <p style={styles.value}>{lastPacket.elevation}m</p>
                 </div>
-                <div style={{ ...styles.pod, borderLeft: '1px solid #1B8DFF' }} className="podHover">
+                <div style={{ ...styles.pod, borderLeft: '1px solid #1B8DFF', backgroundColor: chartType === 'battery' && '#CBDEF2' }} className="podHover" onClick={() => setChartType("battery")}>
                   <p style={styles.header}>Voltage:</p>
                   <p style={styles.value}>{lastPacket.battery.toFixed(0)}</p>
                 </div>
               </div>
               <div style={styles.row}>
-                <div style={styles.pod} className="podHover">
+                <div style={{ ...styles.pod, backgroundColor: chartType === 'rssi' && '#CBDEF2'}} className="podHover" onClick={() => setChartType("rssi")}>
                   <p style={styles.header}>RSSI:</p>
                   <p style={styles.value}>{lastPacket.rssi}</p>
                 </div>
-                <div style={{ ...styles.pod, borderLeft: '1px solid #1B8DFF' }} className="podHover">
+                <div style={{ ...styles.pod, borderLeft: '1px solid #1B8DFF', backgroundColor: chartType === 'snr' && '#CBDEF2' }} className="podHover" onClick={() => setChartType("snr")}>
                   <p style={styles.header}>SNR:</p>
                   <p style={styles.value}>n/a</p>
                 </div>

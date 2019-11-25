@@ -2,6 +2,8 @@ import React from "react"
 import ReactMapboxGl, { Layer, Marker, Feature } from 'react-mapbox-gl';
 import NavBar from '../components/NavBar'
 import Inspector from '../components/Inspector'
+import Timeline from '../components/Timeline'
+import { packetsToChartData } from '../data/chart'
 import geoJSON from "geojson";
 import hotspotsJSON from '../data/hotspots.json'
 
@@ -51,9 +53,12 @@ class MapScreen extends React.Component {
       lastPacket: null,
       mapCenter: [-122.419190, 37.771150],
       hotspots: { data: [] },
+      chartType: null,
     }
 
     this.selectDevice = this.selectDevice.bind(this)
+    this.setChartType = this.setChartType.bind(this)
+    this.setHotspots = this.setHotspots.bind(this)
   }
 
   componentDidMount() {
@@ -81,6 +86,8 @@ class MapScreen extends React.Component {
 
         data.forEach(d => {
           if (packets.data[d.seq_num]) {
+            if (packets.data[d.seq_num].rssi < d.rssi) packets.data[d.seq_num].rssi = d.rssi
+            if (packets.data[d.seq_num].battery > d.battery) packets.data[d.seq_num].battery = d.battery
             packets.data[d.seq_num].hotspots.push(d.hotspot_id.replace("rapping", "dandy"))
           } else {
             packets.data[d.seq_num] = {
@@ -107,6 +114,7 @@ class MapScreen extends React.Component {
           packets,
           lastPacket,
           mapCenter: [lastPacket.coordinates.lon, lastPacket.coordinates.lat],
+          hotspots: { data: [] },
         })
       })
   }
@@ -120,8 +128,12 @@ class MapScreen extends React.Component {
     this.setState({ hotspots })
   }
 
+  setChartType(chartType) {
+    this.setState({ chartType })
+  }
+
   render() {
-    const { devices, mapCenter, selectedDevice, packets, lastPacket, hotspots } = this.state
+    const { devices, mapCenter, selectedDevice, packets, lastPacket, hotspots, chartType } = this.state
 
     return (
       <div style={{ flex: 1 }}>
@@ -197,7 +209,19 @@ class MapScreen extends React.Component {
 
         {
           lastPacket && (
-            <Inspector lastPacket={lastPacket} selectedDevice={selectedDevice} />
+            <Inspector lastPacket={lastPacket} selectedDevice={selectedDevice} setChartType={this.setChartType} chartType={chartType} />
+          )
+        }
+
+        {
+          chartType && (
+            <Timeline
+              type={chartType}
+              packets={packets}
+              setChartType={this.setChartType}
+              setHotspots={this.setHotspots}
+              chartData={packetsToChartData(packets.seq.map(s => packets.data[s]), chartType)}
+            />
           )
         }
       </div>
