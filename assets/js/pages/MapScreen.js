@@ -30,7 +30,8 @@ class MapScreen extends React.Component {
     this.state = {
       devices: [],
       selectedDevice: null,
-      packetsGeoJson: [],
+      packets: {},
+      lastPacket: null,
       mapCenter: [-122.419190, 37.771150],
     }
 
@@ -54,32 +55,46 @@ class MapScreen extends React.Component {
     fetch("https://cargo.helium.com/devices/" + d.device_id + "/payloads/" + payloadRange)
       .then(res => res.json())
       .then(data => {
-        const packets = data.map(d => ({
-          id: d.id,
-          key: d.lat + d.lon,
-          coordinates: { lat: d.lat, lon: d.lon },
-          speed: d.speed,
-          rssi: d.rssi,
-          battery: d.battery,
-          elevation: d.elevation,
-          hotspot_id: d.hotspot_id.replace("rapping", "dandy"),
-          seq_num: d.seq_num,
-          reported: d.created_at
-        }))
+        const packets = {
+          data: {},
+          geoJson: null,
+          seq: []
+        }
 
-        const lastPacket = packets[packets.length - 1]
-        const packetsGeoJson = geoJSON.parse(packets, { Point: ["coordinates.lat", "coordinates.lon"]})
+        data.forEach(d => {
+          if (packets.data[d.seq_num]) {
+            packets.data[d.seq_num].hotspots.push(d.hotspot_id.replace("rapping", "dandy"))
+          } else {
+            packets.data[d.seq_num] = {
+              id: d.id,
+              key: d.lat + d.lon,
+              coordinates: { lat: d.lat, lon: d.lon },
+              speed: d.speed,
+              rssi: d.rssi,
+              battery: d.battery,
+              elevation: d.elevation,
+              seq_num: d.seq_num,
+              reported: d.created_at
+            }
+            packets.data[d.seq_num].hotspots = [d.hotspot_id.replace("rapping", "dandy")]
+            packets.seq.push(d.seq_num)
+          }
+        })
+
+        const packetsArray = packets.seq.map(s => packets.data[s])
+        packets.geoJson = geoJSON.parse(packetsArray, { Point: ["coordinates.lat", "coordinates.lon"]})
+        const lastPacket = packetsArray[packetsArray.length - 1]
         this.setState({
           selectedDevice: d,
-          packetsGeoJson,
-          mapCenter: [lastPacket.coordinates.lon, lastPacket.coordinates.lat],
+          packets,
           lastPacket,
+          mapCenter: [lastPacket.coordinates.lon, lastPacket.coordinates.lat],
         })
       })
   }
 
   render() {
-    const { devices, mapCenter, packetsGeoJson, selectedDevice, lastPacket } = this.state
+    const { devices, mapCenter, selectedDevice, packets, lastPacket } = this.state
 
     return (
       <div style={{ flex: 1 }}>
@@ -96,7 +111,7 @@ class MapScreen extends React.Component {
           {
             selectedDevice && (
               <Layer key={selectedDevice.device_id} type="circle" paint={{"circle-color": "#4790E5"}}>
-                {packetsGeoJson.features.map(p => (
+                {packets.geoJson.features.map(p => (
                   <Feature
                     key={p.properties.key}
                     coordinates={geoToMarkerCoords(p.properties.coordinates)}
