@@ -13,14 +13,15 @@ defmodule CargoElixirWeb.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/api", CargoElixirWeb do
+    pipe_through :api
+
+    post "/payloads", PayloadController, :create
+  end
+
   scope "/", CargoElixirWeb do
     pipe_through :browser
 
     get "/*path", PageController, :index
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", CargoElixirWeb do
-  #   pipe_through :api
-  # end
 end
