@@ -14,4 +14,9 @@ defmodule CargoElixirWeb.PayloadController do
     devices = Payloads.get_devices(oui)
     conn |> json(devices)
   end
+
+  def get_payloads(conn, %{"id" => device_id, "last_at" => last_packet_time }) do
+    payloads = Payloads.get_payloads(device_id, last_packet_time)
+    conn |> json(payloads)
+  end
 end

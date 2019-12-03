@@ -37,4 +37,29 @@ defmodule CargoElixir.Payloads do
       select: %{ device_id: p.device_id, created_at: max(p.created_at)}
     Repo.all(query)
   end
+
+  def get_payloads(device_id, last_packet_time) do
+    {:ok, datetime, 0} = DateTime.from_iso8601(last_packet_time)
+    packets_start_time = DateTime.from_unix!(DateTime.to_unix(datetime) - 86400)
+
+    query = from p in Payload,
+      where: (p.device_id == ^device_id and p.created_at > ^packets_start_time),
+      order_by: [asc: p.created_at],
+      select: %{
+        battery: p.battery,
+        created_at: p.created_at,
+        device_id: p.device_id,
+        elevation: p.elevation,
+        hotspot_id: p.hotspot_id,
+        id: p.id,
+        lat: p.lat,
+        lon: p.lon,
+        oui: p.oui,
+        reported: p.reported,
+        rssi: p.rssi,
+        seq_num: p.seq_num,
+        speed: p.speed,
+      }
+    Repo.all(query)
+  end
 end

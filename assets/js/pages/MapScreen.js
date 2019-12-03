@@ -66,7 +66,7 @@ class MapScreen extends React.Component {
   }
 
   loadDevices() {
-    fetch("api/oui/1/devices")
+    fetch("api/oui/1")
       .then(res => res.json())
       .then(devices => {
         this.setState({ devices })
@@ -74,8 +74,7 @@ class MapScreen extends React.Component {
   }
 
   selectDevice(d) {
-    const payloadRange = d.created_at ? Math.floor((Math.abs(new Date() - new Date(d.created_at))/1000)/60) + 120 : 120;
-    fetch("https://cargo.helium.com/devices/" + d.device_id + "/payloads/" + payloadRange)
+    fetch("api/devices/" + d.device_id + "?last_at=" + d.created_at)
       .then(res => res.json())
       .then(data => {
         const packets = {
@@ -85,6 +84,13 @@ class MapScreen extends React.Component {
         }
 
         data.forEach(d => {
+          d.battery = Number(d.battery)
+          d.elevation = Number(d.elevation)
+          d.lat = Number(d.lat)
+          d.lon = Number(d.lon)
+          d.rssi = Number(d.rssi)
+          d.speed = Number(d.speed)
+
           if (packets.data[d.seq_num]) {
             if (packets.data[d.seq_num].rssi < d.rssi) packets.data[d.seq_num].rssi = d.rssi
             if (packets.data[d.seq_num].battery > d.battery) packets.data[d.seq_num].battery = d.battery
