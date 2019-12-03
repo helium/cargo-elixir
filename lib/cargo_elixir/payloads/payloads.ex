@@ -29,4 +29,12 @@ defmodule CargoElixir.Payloads do
     |> Payload.changeset(attrs)
     |> Repo.insert()
   end
+
+  def get_devices(oui) do
+    query = from p in Payload,
+      where: p.oui == ^oui,
+      group_by: [p.device_id, p.oui],
+      select: %{ device_id: p.device_id, created_at: max(p.created_at)}
+    Repo.all(query)
+  end
 end

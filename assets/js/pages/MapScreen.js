@@ -66,7 +66,7 @@ class MapScreen extends React.Component {
   }
 
   loadDevices() {
-    fetch("https://cargo.helium.com/oui/1/devices")
+    fetch("api/oui/1/devices")
       .then(res => res.json())
       .then(devices => {
         this.setState({ devices })

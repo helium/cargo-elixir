@@ -16,6 +16,7 @@ defmodule CargoElixirWeb.Router do
   scope "/api", CargoElixirWeb do
     pipe_through :api
 
+    get "/oui/:oui/devices", PayloadController, :get_devices
     post "/payloads", PayloadController, :create
   end
 

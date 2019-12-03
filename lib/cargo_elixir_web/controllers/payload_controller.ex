@@ -9,4 +9,9 @@ defmodule CargoElixirWeb.PayloadController do
       conn |> send_resp(201, "")
     end
   end
+
+  def get_devices(conn, %{"oui" => oui}) do
+    devices = Payloads.get_devices(oui)
+    conn |> json(devices)
+  end
 end
