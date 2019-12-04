@@ -2,7 +2,7 @@ defmodule CargoElixirWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", CargoElixirWeb.RoomChannel
+  channel "payload:*", CargoElixirWeb.PayloadChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After

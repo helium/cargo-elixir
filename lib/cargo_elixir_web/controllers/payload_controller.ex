@@ -5,7 +5,9 @@ defmodule CargoElixirWeb.PayloadController do
   alias CargoElixir.Payloads.Payload
 
   def create(conn, params) do
-    with {:ok, %Payload{}} <- Payloads.create_payload(params) do
+    with {:ok, %Payload{} = payload} <- Payloads.create_payload(params) do
+      CargoElixirWeb.Endpoint.broadcast!("payload:new", "new_payload", payload)
+      
       conn |> send_resp(201, "")
     end
   end

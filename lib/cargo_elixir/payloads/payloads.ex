@@ -50,21 +50,7 @@ defmodule CargoElixir.Payloads do
     query = from p in Payload,
       where: (p.device_id == ^device_id and p.created_at > ^packets_start_time),
       order_by: [asc: p.created_at],
-      select: %{
-        battery: p.battery,
-        created_at: p.created_at,
-        device_id: p.device_id,
-        elevation: p.elevation,
-        hotspot_id: p.hotspot_id,
-        id: p.id,
-        lat: p.lat,
-        lon: p.lon,
-        oui: p.oui,
-        reported: p.reported,
-        rssi: p.rssi,
-        seq_num: p.seq_num,
-        speed: p.speed,
-      }
+      select: p
     Repo.all(query)
   end
 end

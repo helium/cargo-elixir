@@ -4,6 +4,7 @@ defmodule CargoElixir.Payloads.Payload do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
+  @derive {Jason.Encoder, only: [:battery,:created_at,:device_id,:elevation,:hotspot_id,:id,:lat,:lon,:oui,:reported,:rssi,:seq_num,:speed]}
   schema "payloads" do
     field :device_id, :integer
     field :hotspot_id, :string

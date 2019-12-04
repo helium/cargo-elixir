@@ -6,6 +6,7 @@ import Timeline from '../components/Timeline'
 import { packetsToChartData } from '../data/chart'
 import geoJSON from "geojson";
 import hotspotsJSON from '../data/hotspots.json'
+import socket from "../socket"
 
 const hotspotsData = {}
 hotspotsJSON.data.forEach(d => {
@@ -63,6 +64,15 @@ class MapScreen extends React.Component {
 
   componentDidMount() {
     this.loadDevices()
+
+    let channel = socket.channel("payload:new", {})
+    channel.join()
+      .receive("ok", resp => { console.log("Joined successfully", resp) })
+      .receive("error", resp => { console.log("Unable to join", resp) })
+
+    channel.on('new_payload', payload => {
+      console.log(payload)
+    })
   }
 
   loadDevices() {
@@ -129,7 +139,7 @@ class MapScreen extends React.Component {
     const hotspots = { data: [], center: geoToMarkerCoords(properties.coordinates) }
     properties.hotspots.forEach(h => {
       if (hotspotsData[h]) hotspots.data.push(hotspotsData[h])
-      else console.log("Found undefined hotspot name not shown on map, consider updating hotspots.json")
+      else console.log("Found undefined hotspot name not shown on map, updating hotspots.json might help")
     })
     this.setState({ hotspots })
   }
