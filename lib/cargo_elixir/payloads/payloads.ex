@@ -6,11 +6,16 @@ defmodule CargoElixir.Payloads do
 
   def create_payload(%{ "device_id" => device_id, "gateway" => hotspot_id, "oui" => oui, "payload" => payload, "rssi" => rssi, "sequence" => seq_num, "timestamp" => reported}) do
     binary = payload |> :base64.decode()
+    binary_length = byte_size(binary)
+
     <<lat :: integer-signed-32>> = binary_part(binary, 0, 4)
     <<lon :: integer-signed-32>> = binary_part(binary, 4, 4)
     <<elevation :: integer-signed-16>> = binary_part(binary, 8, 2)
     <<speed :: integer-signed-16>> = binary_part(binary, 10, 2)
-    <<battery :: integer-unsigned-16>> = binary_part(binary, 12, 2)
+    battery = 0
+    if binary_length > 12 do
+      <<battery :: integer-unsigned-16>> = binary_part(binary, 12, 2)
+    end
 
     attrs = %{}
       |> Map.put(:device_id, device_id)
