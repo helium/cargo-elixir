@@ -68,7 +68,7 @@ const styles = {
     backgroundColor: '#EAF3FC',
     width: '100%',
     zIndex: 10,
-    overflow: 'scroll'
+    overflow: 'hidden'
   },
   hotspotText: {
     fontSize: 14,
@@ -106,7 +106,7 @@ class Inspector extends Component {
                 {
                   show && (
                     <React.Fragment>
-                      <div style={styles.row}>
+                      <div style={{...styles.row, overflow: 'scroll'}}>
                         <div style={{...styles.pod, backgroundColor: chartType === 'sequence' && '#CBDEF2' }} className="podHover" onClick={() => setChartType("sequence")}>
                           <p style={styles.header}>Sequence #:</p>
                           <p style={styles.value}>{lastPacket.seq_num}</p>
