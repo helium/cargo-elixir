@@ -1,5 +1,6 @@
 import React from "react"
 import ReactMapboxGl, { Layer, Marker, Feature } from 'react-mapbox-gl';
+import findIndex from 'lodash/findIndex'
 import NavBar from '../components/NavBar'
 import Inspector from '../components/Inspector'
 import Timeline from '../components/Timeline'
@@ -83,6 +84,11 @@ class MapScreen extends React.Component {
           lastPacket,
         })
       }
+
+      const devices = this.state.devices
+      const index = findIndex(this.state.devices, { device_id: d.device_id })
+      devices[index].created_at = d.created_at
+      this.setState({ devices })
     })
   }
 

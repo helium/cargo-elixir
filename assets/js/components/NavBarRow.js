@@ -27,6 +27,8 @@ class NavBarRow extends Component {
   render() {
     const { device, name, selectDevice, selectedDevice } = this.props
     const selected = selectedDevice && selectedDevice.device_id === device.device_id
+    const latest = new Date(device.created_at)
+    const withinLast2Min = ((Date.now() - latest) / 1000) < 120
 
     return (
       <div
@@ -39,7 +41,13 @@ class NavBarRow extends Component {
       >
         <p key={device.device_id} style={{ ...styles.title, color: selected ? '#ffffff' : '#000000' }}>{device.device_id}</p>
         <div>
-          <p align="right" style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>Lastest: {timeAgo.format(new Date(device.created_at), {flavour: "small"})}</p>
+          {
+            withinLast2Min ? (
+              <p style={{ ...styles.tag, backgroundColor: 'red', fontWeight: 'bold', color: '#ffffff', paddingLeft: 10, paddingRight: 10, paddingTop: 5, paddingBottom: 3, borderRadius: 15 }}>New Packets</p>
+            ) : (
+              <p align="right" style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>Lastest: {timeAgo.format(latest, {flavour: "small"})}</p>
+            )
+          }
           <p align="right" style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>{name}</p>
         </div>
       </div>
