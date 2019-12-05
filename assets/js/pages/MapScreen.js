@@ -210,32 +210,40 @@ class MapScreen extends React.Component {
           }
 
           {
-            hotspots.data.map((h, i) => (
-              <Marker
-                key={h.address + i}
-                style={styles.gatewayMarker}
-                anchor="center"
-                coordinates={[h.lng, h.lat]}
-              />
-            ))
+            hotspots.data.map((h, i) => {
+              if (h.lng) {
+                return (
+                  <Marker
+                    key={h.address + i}
+                    style={styles.gatewayMarker}
+                    anchor="center"
+                    coordinates={[h.lng, h.lat]}
+                  />
+                )
+              }
+            })
           }
 
           {
-            hotspots.data.map((h, i) => (
-              <Layer
-                key={"line-" + h.address + i}
-                type="line"
-                layout={{ "line-cap": "round", "line-join": "round" }}
-                paint={{ "line-color": "#A984FF", "line-width": 2 }}
-              >
-                <Feature
-                  coordinates={[
-                    [h.lng, h.lat],
-                    hotspots.center
-                  ]}
-                />
-              </Layer>
-            ))
+            hotspots.data.map((h, i) => {
+              if (h.lng) {
+                return (
+                  <Layer
+                    key={"line-" + h.address + i}
+                    type="line"
+                    layout={{ "line-cap": "round", "line-join": "round" }}
+                    paint={{ "line-color": "#A984FF", "line-width": 2 }}
+                  >
+                    <Feature
+                      coordinates={[
+                        [h.lng, h.lat],
+                        hotspots.center
+                      ]}
+                    />
+                  </Layer>
+                )
+              }
+            })
           }
         </Map>
 
