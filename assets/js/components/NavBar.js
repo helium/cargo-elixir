@@ -37,7 +37,7 @@ const styles = {
 
 class NavBar extends Component {
   render() {
-    const { devices, selectDevice, selectedDevice } = this.props
+    const { devices, names, selectDevice, selectedDevice } = this.props
 
     return (
       <Media queries={{
@@ -72,8 +72,8 @@ class NavBar extends Component {
                 </div>
 
                 <div>
-                  {devices.map(d =>
-                    <NavBarRow key={d.device_id} device={d} selectDevice={selectDevice} selectedDevice={selectedDevice} />
+                  {devices.map((d, i) =>
+                    <NavBarRow key={d.device_id} device={d} name={names[i]} selectDevice={selectDevice} selectedDevice={selectedDevice} />
                   )}
                 </div>
               </div>

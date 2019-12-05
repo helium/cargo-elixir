@@ -25,7 +25,7 @@ const styles = {
 
 class NavBarRow extends Component {
   render() {
-    const { device, selectDevice, selectedDevice } = this.props
+    const { device, name, selectDevice, selectedDevice } = this.props
     const selected = selectedDevice && selectedDevice.device_id === device.device_id
 
     return (
@@ -40,7 +40,7 @@ class NavBarRow extends Component {
         <p key={device.device_id} style={{ ...styles.title, color: selected ? '#ffffff' : '#000000' }}>{device.device_id}</p>
         <div>
           <p align="right" style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>Lastest: {timeAgo.format(new Date(device.created_at), {flavour: "small"})}</p>
-          <p align="right" style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>Location</p>
+          <p align="right" style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>{name}</p>
         </div>
       </div>
     )

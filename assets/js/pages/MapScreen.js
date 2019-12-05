@@ -60,6 +60,7 @@ class MapScreen extends React.Component {
     this.selectDevice = this.selectDevice.bind(this)
     this.setChartType = this.setChartType.bind(this)
     this.setHotspots = this.setHotspots.bind(this)
+    this.parsePackets = this.parsePackets.bind(this)
   }
 
   componentDidMount() {
@@ -70,8 +71,18 @@ class MapScreen extends React.Component {
       .receive("ok", resp => { console.log("Joined successfully", resp) })
       .receive("error", resp => { console.log("Unable to join", resp) })
 
-    channel.on('new_payload', payload => {
-      console.log(payload)
+    channel.on('new_payload', d => {
+      if (this.state.selectedDevice && this.state.selectedDevice.device_id === d.device_id) {
+        const packets = this.parsePackets(this.state.packets, d)
+        const packetsArray = packets.seq.map(s => packets.data[s])
+        packets.geoJson = geoJSON.parse(packetsArray, { Point: ["coordinates.lat", "coordinates.lon"]})
+        const lastPacket = packetsArray[packetsArray.length - 1]
+
+        this.setState({
+          packets,
+          lastPacket,
+        })
+      }
     })
   }
 
@@ -87,44 +98,19 @@ class MapScreen extends React.Component {
     fetch("api/devices/" + d.device_id + "?last_at=" + d.created_at)
       .then(res => res.json())
       .then(data => {
-        const packets = {
+        let packets = {
           data: {},
           geoJson: null,
           seq: []
         }
 
         data.forEach(d => {
-          d.battery = Number(d.battery)
-          d.elevation = Number(d.elevation)
-          d.lat = Number(d.lat)
-          d.lon = Number(d.lon)
-          d.rssi = Number(d.rssi)
-          d.speed = Number(d.speed)
-
-          if (packets.data[d.seq_num]) {
-            if (packets.data[d.seq_num].rssi < d.rssi) packets.data[d.seq_num].rssi = d.rssi
-            if (packets.data[d.seq_num].battery > d.battery) packets.data[d.seq_num].battery = d.battery
-            packets.data[d.seq_num].hotspots.push(d.hotspot_id.replace("rapping", "dandy"))
-          } else {
-            packets.data[d.seq_num] = {
-              id: d.id,
-              key: d.lat + d.lon,
-              coordinates: { lat: d.lat, lon: d.lon },
-              speed: d.speed,
-              rssi: d.rssi,
-              battery: d.battery,
-              elevation: d.elevation,
-              seq_num: d.seq_num,
-              reported: d.created_at
-            }
-            packets.data[d.seq_num].hotspots = [d.hotspot_id.replace("rapping", "dandy")]
-            packets.seq.push(d.seq_num)
-          }
+          packets = this.parsePackets(packets, d)
         })
-
         const packetsArray = packets.seq.map(s => packets.data[s])
         packets.geoJson = geoJSON.parse(packetsArray, { Point: ["coordinates.lat", "coordinates.lon"]})
         const lastPacket = packetsArray[packetsArray.length - 1]
+
         this.setState({
           selectedDevice: d,
           packets,
@@ -146,6 +132,36 @@ class MapScreen extends React.Component {
 
   setChartType(chartType) {
     this.setState({ chartType })
+  }
+
+  parsePackets(packets, packet) {
+    packet.battery = Number(packet.battery)
+    packet.elevation = Number(packet.elevation)
+    packet.lat = Number(packet.lat)
+    packet.lon = Number(packet.lon)
+    packet.rssi = Number(packet.rssi)
+    packet.speed = Number(packet.speed)
+
+    if (packets.data[packet.seq_num]) {
+      if (packets.data[packet.seq_num].rssi < packet.rssi) packets.data[packet.seq_num].rssi = packet.rssi
+      if (packets.data[packet.seq_num].battery > packet.battery) packets.data[packet.seq_num].battery = packet.battery
+      packets.data[packet.seq_num].hotspots.push(packet.hotspot_id.replace("rapping", "dandy"))
+    } else {
+      packets.data[packet.seq_num] = {
+        id: packet.id,
+        key: packet.lat + packet.lon,
+        coordinates: { lat: packet.lat, lon: packet.lon },
+        speed: packet.speed,
+        rssi: packet.rssi,
+        battery: packet.battery,
+        elevation: packet.elevation,
+        seq_num: packet.seq_num,
+        reported: packet.created_at
+      }
+      packets.data[packet.seq_num].hotspots = [packet.hotspot_id.replace("rapping", "dandy")]
+      packets.seq.push(packet.seq_num)
+    }
+    return packets
   }
 
   render() {
@@ -219,6 +235,11 @@ class MapScreen extends React.Component {
 
         <NavBar
           devices={devices}
+          names={devices.map(d => {
+            const hotspot = hotspotsData[d.hotspot]
+            if (hotspot) return hotspot.short_city + ", " + hotspot.short_state
+            return "Unknown"
+          })}
           selectDevice={this.selectDevice}
           selectedDevice={selectedDevice}
         />
