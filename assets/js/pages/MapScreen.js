@@ -252,7 +252,7 @@ class MapScreen extends React.Component {
 
         {
           lastPacket && (
-            <Inspector lastPacket={lastPacket} selectedDevice={selectedDevice} setChartType={this.setChartType} chartType={chartType} />
+            <Inspector lastPacket={lastPacket} selectedDevice={selectedDevice} setChartType={this.setChartType} chartType={chartType} hotspots={hotspots} />
           )
         }
 

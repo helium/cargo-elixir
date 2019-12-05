@@ -70,6 +70,10 @@ const styles = {
     zIndex: 10,
     overflow: 'scroll'
   },
+  hotspotText: {
+    fontSize: 18,
+    color: '#8396a9',
+  }
 }
 
 class Inspector extends Component {
@@ -87,7 +91,7 @@ class Inspector extends Component {
   }
 
   render() {
-    const { lastPacket, selectedDevice, setChartType, chartType } = this.props
+    const { lastPacket, selectedDevice, setChartType, chartType, hotspots } = this.props
     const { show } = this.state
 
     return (
@@ -130,6 +134,18 @@ class Inspector extends Component {
                           <p style={styles.value}>n/a</p>
                         </div>
                       </div>
+                      {
+                        hotspots.data.length > 0 && (
+                          <div style={{ padding: 8 }}>
+                            <p style={styles.header}>Hotspots Seen:</p>
+                            {
+                              hotspots.data.map(h => (
+                                <p key={h.address} style={styles.hotspotText}>{h.name}</p>
+                              ))
+                            }
+                          </div>
+                        )
+                      }
                     </React.Fragment>
                   )
                 }
@@ -182,6 +198,18 @@ class Inspector extends Component {
                           <p style={styles.value}>n/a</p>
                         </div>
                       </div>
+                      {
+                        hotspots.data.length > 0 && (
+                          <div style={{ padding: 8 }}>
+                            <p style={styles.header}>Hotspots Seen:</p>
+                            {
+                              hotspots.data.map(h => (
+                                <p key={h.address} style={styles.hotspotText}>{h.name}</p>
+                              ))
+                            }
+                          </div>
+                        )
+                      }
                     </React.Fragment>
                   )
                 }

@@ -56,9 +56,9 @@ class NavBar extends Component {
                   <div style={{ borderBottom: '1px solid #D3D3D3' }}>
                     <p style={{ marginTop: 16, marginRight: 48 }}>Devices</p>
                   </div>
-                  {devices.map(d =>
+                  {devices.map((d, i) =>
                     <div style={{ borderLeft: '1px solid #D3D3D3' }}>
-                      <NavBarRow key={d.device_id} device={d} selectDevice={selectDevice} selectedDevice={selectedDevice} />
+                      <NavBarRow key={d.device_id} device={d} name={names[i]} selectDevice={selectDevice} selectedDevice={selectedDevice} />
                     </div>
                   )}
                 </div>

@@ -13,13 +13,26 @@ const styles = {
     paddingLeft: 16,
     paddingRight: 16,
     cursor: 'pointer',
-    minWidth: 150,
+    minWidth: 180,
   },
   title: {
     fontSize: 14
   },
   tag: {
     fontSize: 11,
+    paddingTop: 5,
+    paddingBottom: 3,
+  },
+  pill: {
+    fontSize: 10,
+    backgroundColor: 'red',
+    fontWeight: 'bold',
+    color: '#ffffff',
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 5,
+    paddingBottom: 3,
+    borderRadius: 15
   }
 }
 
@@ -43,12 +56,12 @@ class NavBarRow extends Component {
         <div>
           {
             withinLast2Min ? (
-              <p style={{ ...styles.tag, backgroundColor: 'red', fontWeight: 'bold', color: '#ffffff', paddingLeft: 10, paddingRight: 10, paddingTop: 5, paddingBottom: 3, borderRadius: 15 }}>New Packets</p>
+              <p style={styles.pill}>{timeAgo.format(latest, {flavour: "small"})}</p>
             ) : (
               <p align="right" style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>Lastest: {timeAgo.format(latest, {flavour: "small"})}</p>
             )
           }
-          <p align="right" style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>{name}</p>
+          <p align="right" style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9', marginTop: -8 }}>{name}</p>
         </div>
       </div>
     )
