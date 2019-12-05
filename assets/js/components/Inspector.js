@@ -71,7 +71,7 @@ const styles = {
     overflow: 'scroll'
   },
   hotspotText: {
-    fontSize: 18,
+    fontSize: 14,
     color: '#8396a9',
   }
 }
