@@ -8,8 +8,9 @@ const styles = {
     top: 0,
     right: 0,
     backgroundColor: '#EAF3FC',
-    minWidth: 240,
+    width: 350,
     zIndex: 10,
+    overflow: 'hidden',
   },
   top: {
     padding: 8,

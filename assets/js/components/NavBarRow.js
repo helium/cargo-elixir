@@ -24,14 +24,15 @@ const styles = {
     paddingBottom: 3,
   },
   pill: {
+    display: 'inline-block',
     fontSize: 10,
     backgroundColor: 'red',
     fontWeight: 'bold',
     color: '#ffffff',
     paddingLeft: 10,
     paddingRight: 10,
-    paddingTop: 5,
-    paddingBottom: 3,
+    paddingTop: 4,
+    paddingBottom: 4,
     borderRadius: 15
   }
 }
@@ -53,7 +54,7 @@ class NavBarRow extends Component {
         onClick={() => selectDevice(device)}
       >
         <p key={device.device_id} style={{ ...styles.title, color: selected ? '#ffffff' : '#000000' }}>{device.device_id}</p>
-        <div>
+        <div style={{ textAlign: 'right' }}>
           {
             withinLast2Min ? (
               <p style={styles.pill}>{timeAgo.format(latest, {flavour: "small"})}</p>

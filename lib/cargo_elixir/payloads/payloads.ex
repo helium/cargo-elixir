@@ -39,7 +39,8 @@ defmodule CargoElixir.Payloads do
     query = from p in Payload,
       where: p.oui == ^oui,
       group_by: [p.device_id, p.oui],
-      select: %{ device_id: p.device_id, created_at: max(p.created_at), hotspot: min(p.hotspot_id) }
+      select: %{ device_id: p.device_id, created_at: max(p.created_at), hotspot: min(p.hotspot_id) },
+      order_by: [desc: max(p.created_at)]
     Repo.all(query)
   end
 
