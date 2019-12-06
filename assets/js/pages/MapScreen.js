@@ -104,6 +104,7 @@ class MapScreen extends React.Component {
     fetch("api/devices/" + d.device_id + "?last_at=" + d.created_at)
       .then(res => res.json())
       .then(data => {
+        console.log("Received " + data.length + " Packets")
         let packets = {
           data: {},
           geoJson: null,

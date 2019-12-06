@@ -46,7 +46,7 @@ defmodule CargoElixir.Payloads do
 
   def get_payloads(device_id, last_packet_time) do
     {:ok, datetime, 0} = DateTime.from_iso8601(last_packet_time)
-    packets_start_time = DateTime.from_unix!(DateTime.to_unix(datetime) - 86400)
+    packets_start_time = DateTime.from_unix!(DateTime.to_unix(datetime) - 10800)
 
     query = from p in Payload,
       where: (p.device_id == ^device_id and p.created_at > ^packets_start_time),
