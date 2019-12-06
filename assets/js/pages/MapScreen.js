@@ -61,6 +61,7 @@ class MapScreen extends React.Component {
     this.selectDevice = this.selectDevice.bind(this)
     this.setChartType = this.setChartType.bind(this)
     this.setHotspots = this.setHotspots.bind(this)
+    this.clearHotspots = this.clearHotspots.bind(this)
     this.parsePackets = this.parsePackets.bind(this)
   }
 
@@ -135,6 +136,10 @@ class MapScreen extends React.Component {
       else console.log("Found undefined hotspot name not shown on map, updating hotspots.json might help")
     })
     this.setState({ hotspots })
+  }
+
+  clearHotspots() {
+    this.setState({ hotspots: { data: [] } })
   }
 
   setChartType(chartType) {
@@ -261,7 +266,14 @@ class MapScreen extends React.Component {
 
         {
           lastPacket && (
-            <Inspector lastPacket={lastPacket} selectedDevice={selectedDevice} setChartType={this.setChartType} chartType={chartType} hotspots={hotspots} />
+            <Inspector
+              lastPacket={lastPacket}
+              selectedDevice={selectedDevice}
+              setChartType={this.setChartType}
+              clearHotspots={this.clearHotspots}
+              chartType={chartType}
+              hotspots={hotspots}
+            />
           )
         }
 

@@ -29,7 +29,7 @@ const styles = {
   },
   chart: {
     position: "relative",
-    width: "100%"
+    width: "100%",
   },
   close: {
     position: "absolute",
@@ -39,6 +39,7 @@ const styles = {
     fontWeight: 300,
     color: "#D5DCE2",
     cursor: "pointer",
+    zIndex: 10,
   },
   title: {
     position: "absolute",

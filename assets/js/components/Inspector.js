@@ -64,7 +64,7 @@ const styles = {
   },
   smallContainer: {
     position: 'absolute',
-    top: 125,
+    top: 132,
     left: 0,
     backgroundColor: '#EAF3FC',
     width: '100%',
@@ -74,6 +74,20 @@ const styles = {
   hotspotText: {
     fontSize: 14,
     color: '#8396a9',
+  },
+  pill: {
+    display: 'inline-block',
+    fontSize: 12,
+    backgroundColor: '#1B8DFF',
+    fontWeight: 'bold',
+    color: '#ffffff',
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 6,
+    paddingBottom: 3,
+    borderRadius: 15,
+    marginTop: 2,
+    cursor: 'pointer'
   }
 }
 
@@ -89,6 +103,26 @@ class Inspector extends Component {
 
   toggle() {
     this.setState({ show: !this.state.show})
+  }
+
+  renderHotspotsList() {
+    const { hotspots, clearHotspots } = this.props
+    if (hotspots.data.length > 0) return (
+      <div style={{ padding: 8 }}>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <p style={styles.header}>Hotspots Witnessed: {hotspots.data.length}</p>
+          <p style={styles.pill} onClick={clearHotspots}>CLOSE</p>
+        </div>
+
+        <div style={{ maxHeight: 150, overflow: 'scroll' }}>
+          {
+            hotspots.data.map(h => (
+              <p key={h.address} style={styles.hotspotText}>{h.name}</p>
+            ))
+          }
+        </div>
+      </div>
+    )
   }
 
   render() {
@@ -135,18 +169,7 @@ class Inspector extends Component {
                           <p style={styles.value}>n/a</p>
                         </div>
                       </div>
-                      {
-                        hotspots.data.length > 0 && (
-                          <div style={{ padding: 8 }}>
-                            <p style={styles.header}>Hotspots Seen:</p>
-                            {
-                              hotspots.data.map(h => (
-                                <p key={h.address} style={styles.hotspotText}>{h.name}</p>
-                              ))
-                            }
-                          </div>
-                        )
-                      }
+                      {this.renderHotspotsList()}
                     </React.Fragment>
                   )
                 }
@@ -199,18 +222,7 @@ class Inspector extends Component {
                           <p style={styles.value}>n/a</p>
                         </div>
                       </div>
-                      {
-                        hotspots.data.length > 0 && (
-                          <div style={{ padding: 8 }}>
-                            <p style={styles.header}>Hotspots Seen:</p>
-                            {
-                              hotspots.data.map(h => (
-                                <p key={h.address} style={styles.hotspotText}>{h.name}</p>
-                              ))
-                            }
-                          </div>
-                        )
-                      }
+                      {this.renderHotspotsList()}
                     </React.Fragment>
                   )
                 }

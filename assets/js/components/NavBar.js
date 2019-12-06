@@ -30,7 +30,7 @@ const styles = {
     backgroundColor: '#ffffff',
     width: '100%',
     zIndex: 10,
-    height: 124,
+    height: 132,
     overflow: 'hidden',
   },
 }
@@ -53,8 +53,8 @@ class NavBar extends Component {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'row', overflow: 'auto' }}>
-                  <div style={{ borderBottom: '1px solid #D3D3D3' }}>
-                    <p style={{ marginTop: 16, marginRight: 48 }}>Devices</p>
+                  <div style={{ borderBottom: '1px solid #D3D3D3', alignItems: 'center', display: 'flex' }}>
+                    <p style={{ marginRight: 48, whiteSpace: 'nowrap' }}>Devices: {devices.length}</p>
                   </div>
                   {devices.map((d, i) =>
                     <div style={{ borderLeft: '1px solid #D3D3D3' }}>
@@ -68,10 +68,10 @@ class NavBar extends Component {
               <div style={styles.container}>
                 <div>
                   <Logo style={{...styles.paddingBox, paddingTop: 16, paddingBottom: 16 }} />
-                  <p style={{...styles.paddingBox, ...styles.title}}>Devices</p>
+                  <p style={{...styles.paddingBox, ...styles.title}}>Devices: {devices.length}</p>
                 </div>
 
-                <div>
+                <div style={{ overflow: 'scroll', maxHeight: 310 }}>
                   {devices.map((d, i) =>
                     <NavBarRow key={d.device_id} device={d} name={names[i]} selectDevice={selectDevice} selectedDevice={selectedDevice} />
                   )}
