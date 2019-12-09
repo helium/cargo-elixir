@@ -57,7 +57,7 @@ class Timeline extends Component {
     super(props)
 
     this.state = {
-      timelineValue: 0
+      timelineValue: "0"
     }
 
     this.onHover = this.onHover.bind(this)
@@ -73,7 +73,7 @@ class Timeline extends Component {
       }
       setHotspots(packets.geoJson.features[a[0]._index])
     } else {
-      this.setState({ timelineValue: 0 })
+      this.setState({ timelineValue: "0" })
     }
   }
 
@@ -163,8 +163,8 @@ const TimelineValue = props => {
   if (type === "sequence") {
     return (
       <div style={styles.valueBox}>
-        <p style={{...styles.value, fontSize: 24 }}>
-          {value}
+        <p style={styles.value}>
+          {value.split("-")[0]}
         </p>
         <p>seq #</p>
       </div>
