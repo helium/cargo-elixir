@@ -24,7 +24,16 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     border: "4px solid #fff",
-    animation: 'pulse 2s ease infinite'
+  },
+  transmittingMarker: {
+    width: 14,
+    height: 14,
+    borderRadius: "50%",
+    backgroundColor: "black",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    border: "4px solid #fff",
   },
   gatewayMarker: {
     width: 14,
@@ -59,6 +68,7 @@ class MapScreen extends React.Component {
       showHotspots: true,
       highlightHotspoted: null,
       receivedNewDevice: false,
+      transmittingDevices: {}
     }
 
     this.selectDevice = this.selectDevice.bind(this)
@@ -96,6 +106,10 @@ class MapScreen extends React.Component {
       if (devices[index]) {
         devices[index].created_at = d.created_at
         this.setState({ devices })
+
+        const { transmittingDevices } = this.state
+        transmittingDevices[d.device_id] = [Number(d.lon), Number(d.lat)]
+        this.setState({ transmittingDevices })
       } else {
         if (!this.state.receivedNewDevice) this.setState({ receivedNewDevice: true })
       }
@@ -205,7 +219,7 @@ class MapScreen extends React.Component {
   }
 
   render() {
-    const { devices, mapCenter, selectedDevice, packets, lastPacket, hotspots, chartType, showHotspots, highlightedHotspot, receivedNewDevice } = this.state
+    const { devices, mapCenter, selectedDevice, packets, lastPacket, hotspots, chartType, showHotspots, highlightedHotspot, receivedNewDevice, transmittingDevices } = this.state
 
     return (
       <div style={{ flex: 1 }}>
@@ -231,6 +245,20 @@ class MapScreen extends React.Component {
                 ))}
               </Layer>
             )
+          }
+
+          {
+            Object.keys(transmittingDevices).length > 0 && Object.keys(transmittingDevices).map(id => {
+              return (
+                <Marker
+                  style={styles.transmittingMarker}
+                  anchor="center"
+                  coordinates={transmittingDevices[id]}
+                >
+                  <p style={{ color: 'white', fontSize: 10 }}>{id}</p>
+                </Marker>
+              )
+            })
           }
 
           {
