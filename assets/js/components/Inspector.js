@@ -74,6 +74,7 @@ const styles = {
   hotspotText: {
     fontSize: 14,
     color: '#8396a9',
+    cursor: 'pointer',
   },
   pill: {
     display: 'inline-block',
@@ -106,13 +107,13 @@ class Inspector extends Component {
   }
 
   renderHotspotsList() {
-    const { hotspots } = this.props
+    const { hotspots, highlightHotspot } = this.props
     if (hotspots.data.length > 0) return (
       <div style={{ maxHeight: 150, overflow: 'scroll', marginTop: 8 }}>
         <p style={styles.header}>Hotspots Witnessed: {hotspots.data.length}</p>
         {
           hotspots.data.map(h => (
-            <p key={h.address} style={styles.hotspotText}>{h.name}</p>
+            <p key={h.address} style={styles.hotspotText} onClick={() => highlightHotspot(h)}>{h.name}</p>
           ))
         }
       </div>

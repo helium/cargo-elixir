@@ -57,6 +57,7 @@ class MapScreen extends React.Component {
       hotspots: { data: [] },
       chartType: null,
       showHotspots: true,
+      highlightHotspoted: null,
     }
 
     this.selectDevice = this.selectDevice.bind(this)
@@ -64,6 +65,7 @@ class MapScreen extends React.Component {
     this.setHotspots = this.setHotspots.bind(this)
     this.clearHotspots = this.clearHotspots.bind(this)
     this.toggleHotspots = this.toggleHotspots.bind(this)
+    this.highlightHotspot = this.highlightHotspot.bind(this)
     this.parsePackets = this.parsePackets.bind(this)
   }
 
@@ -148,6 +150,14 @@ class MapScreen extends React.Component {
     this.setState({ showHotspots: !this.state.showHotspots })
   }
 
+  highlightHotspot(h) {
+    this.setState({ highlightedHotspot: h }, () => {
+      setTimeout(() => {
+        this.setState({ highlightedHotspot: null })
+      }, 100)
+    })
+  }
+
   setChartType(chartType) {
     this.setState({ chartType })
   }
@@ -183,7 +193,7 @@ class MapScreen extends React.Component {
   }
 
   render() {
-    const { devices, mapCenter, selectedDevice, packets, lastPacket, hotspots, chartType, showHotspots } = this.state
+    const { devices, mapCenter, selectedDevice, packets, lastPacket, hotspots, chartType, showHotspots, highlightedHotspot } = this.state
 
     return (
       <div style={{ flex: 1 }}>
@@ -257,6 +267,35 @@ class MapScreen extends React.Component {
               }
             })
           }
+
+          {
+            highlightedHotspot && showHotspots && (
+              <Layer
+                key="highlight-line"
+                type="line"
+                layout={{ "line-cap": "round", "line-join": "round" }}
+                paint={{ "line-color": "white", "line-width": 2 }}
+              >
+                <Feature
+                  coordinates={[
+                    [highlightedHotspot.lng, highlightedHotspot.lat],
+                    hotspots.center
+                  ]}
+                />
+              </Layer>
+            )
+          }
+
+          {
+            showHotspots && highlightedHotspot && (
+              <Marker
+                key="highlight-hs"
+                style={{...styles.gatewayMarker, border: "3px solid white" }}
+                anchor="center"
+                coordinates={[highlightedHotspot.lng, highlightedHotspot.lat]}
+              />
+            )
+          }
         </Map>
 
         <NavBar
@@ -281,6 +320,7 @@ class MapScreen extends React.Component {
               chartType={chartType}
               hotspots={hotspots}
               showHotspots={showHotspots}
+              highlightHotspot={this.highlightHotspot}
             />
           )
         }
