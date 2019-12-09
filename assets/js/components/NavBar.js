@@ -9,7 +9,7 @@ const styles = {
     top: 0,
     left: 0,
     backgroundColor: '#ffffff',
-    minWidth: 200,
+    width: 230,
     zIndex: 10,
   },
   title: {
@@ -33,11 +33,47 @@ const styles = {
     height: 132,
     overflow: 'hidden',
   },
+  arrowUp: {
+    width: 0,
+    height: 0,
+    borderLeft: '5px solid transparent',
+    borderRight: '5px solid transparent',
+    borderBottom: '5px solid #1B8DFF',
+    marginRight: 16,
+    position: "absolute",
+    top: 4,
+    right: 12,
+  },
+  arrowDown: {
+    width: 0,
+    height: 0,
+    borderLeft: '5px solid transparent',
+    borderRight: '5px solid transparent',
+    borderTop: '5px solid #1B8DFF',
+    marginRight: 16,
+    position: "absolute",
+    top: 4,
+    right: 12,
+  },
 }
 
 class NavBar extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      show: true
+    }
+    this.toggle = this.toggle.bind(this)
+  }
+
+  toggle() {
+    this.setState({ show: !this.state.show})
+  }
+
   render() {
     const { devices, names, selectDevice, selectedDevice } = this.props
+    const { show } = this.state
 
     return (
       <Media queries={{
@@ -68,11 +104,16 @@ class NavBar extends Component {
               <div style={styles.container}>
                 <div>
                   <Logo style={{...styles.paddingBox, paddingTop: 16, paddingBottom: 16 }} />
-                  <p style={{...styles.paddingBox, ...styles.title}}>Devices: {devices.length}</p>
+                  <div style={{ position: 'relative' }}>
+                    <p style={{...styles.paddingBox, ...styles.title, cursor: 'pointer'}} onClick={this.toggle}>Devices: {devices.length}</p>
+                    {
+                      show ? <div style={styles.arrowUp}></div> : <div style={styles.arrowDown}></div>
+                    }
+                  </div>
                 </div>
 
                 <div style={{ overflow: 'scroll', maxHeight: 310 }}>
-                  {devices.map((d, i) =>
+                  { show && devices.map((d, i) =>
                     <NavBarRow key={d.device_id} device={d} name={names[i]} selectDevice={selectDevice} selectedDevice={selectedDevice} />
                   )}
                 </div>

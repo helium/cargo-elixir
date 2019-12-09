@@ -223,7 +223,7 @@ class Inspector extends Component {
                         </div>
                       </div>
                       <div style={{ padding: 8 }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
                           <p style={styles.pill} onClick={toggleHotspots}>{showHotspots ? "Hide" : "Show"} Hotspot Paths</p>
                           <p style={styles.pill} onClick={clearHotspots}>Clear Hotspots List</p>
                         </div>

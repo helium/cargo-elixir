@@ -56,7 +56,7 @@ class MapScreen extends React.Component {
       mapCenter: [-122.419190, 37.771150],
       hotspots: { data: [] },
       chartType: null,
-      showHotspots: false,
+      showHotspots: true,
     }
 
     this.selectDevice = this.selectDevice.bind(this)
