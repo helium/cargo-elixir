@@ -58,6 +58,7 @@ class MapScreen extends React.Component {
       chartType: null,
       showHotspots: true,
       highlightHotspoted: null,
+      receivedNewDevice: false,
     }
 
     this.selectDevice = this.selectDevice.bind(this)
@@ -92,8 +93,12 @@ class MapScreen extends React.Component {
 
       const devices = this.state.devices
       const index = findIndex(this.state.devices, { device_id: d.device_id })
-      devices[index].created_at = d.created_at
-      this.setState({ devices })
+      if (devices[index]) {
+        devices[index].created_at = d.created_at
+        this.setState({ devices })
+      } else {
+        if (!this.state.receivedNewDevice) this.setState({ receivedNewDevice: true })
+      }
     })
   }
 
@@ -200,7 +205,7 @@ class MapScreen extends React.Component {
   }
 
   render() {
-    const { devices, mapCenter, selectedDevice, packets, lastPacket, hotspots, chartType, showHotspots, highlightedHotspot } = this.state
+    const { devices, mapCenter, selectedDevice, packets, lastPacket, hotspots, chartType, showHotspots, highlightedHotspot, receivedNewDevice } = this.state
 
     return (
       <div style={{ flex: 1 }}>
@@ -314,6 +319,7 @@ class MapScreen extends React.Component {
           })}
           selectDevice={this.selectDevice}
           selectedDevice={selectedDevice}
+          receivedNewDevice={receivedNewDevice}
         />
 
         {

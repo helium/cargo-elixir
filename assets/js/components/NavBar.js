@@ -19,6 +19,21 @@ const styles = {
     marginRight: 0,
     borderBottom: '1px solid #D3D3D3',
   },
+  tip: {
+    marginBottom: 0,
+    marginLeft: 0,
+    marginRight: 0,
+    borderBottom: '1px solid #D3D3D3',
+    paddingBottom: 8,
+    fontSize: 12,
+    color: 'red'
+  },
+  tipSmallContainer: {
+    fontSize: 12,
+    color: 'red',
+    width: 150,
+    marginTop: 16,
+  },
   paddingBox: {
     paddingLeft: 16,
     paddingRight: 16,
@@ -72,7 +87,7 @@ class NavBar extends Component {
   }
 
   render() {
-    const { devices, names, selectDevice, selectedDevice } = this.props
+    const { devices, names, selectDevice, selectedDevice, receivedNewDevice } = this.props
     const { show } = this.state
 
     return (
@@ -84,8 +99,13 @@ class NavBar extends Component {
           <React.Fragment>
             {matches.small && (
               <div style={styles.smallContainer}>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', borderBottom: '1px solid #D3D3D3', }}>
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', borderBottom: '1px solid #D3D3D3', position: 'relative'}}>
                   <Logo style={{...styles.paddingBox, paddingTop: 16, paddingBottom: 16 }} />
+                  {
+                    receivedNewDevice && (
+                      <p style={styles.tipSmallContainer}>New devices found, please reload the page to refresh device list</p>
+                    )
+                  }
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'row', overflow: 'auto' }}>
@@ -111,6 +131,10 @@ class NavBar extends Component {
                     }
                   </div>
                 </div>
+
+                {
+                  receivedNewDevice && <p style={{...styles.paddingBox, ...styles.tip }}>New devices found, please reload the page to refresh device list</p>
+                }
 
                 <div style={{ overflow: 'scroll', maxHeight: 310 }}>
                   { show && devices.map((d, i) =>
