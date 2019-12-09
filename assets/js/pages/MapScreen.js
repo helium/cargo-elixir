@@ -134,12 +134,14 @@ class MapScreen extends React.Component {
   }
 
   setHotspots({ properties }) {
-    const hotspots = { data: [], center: geoToMarkerCoords(properties.coordinates) }
-    properties.hotspots.forEach(h => {
-      if (hotspotsData[h]) hotspots.data.push(hotspotsData[h])
-      else console.log("Found undefined hotspot name not shown on map, updating hotspots.json might help")
+    this.setState({ hotspots: { data: [] } }, () => {
+      const hotspots = { data: [], center: geoToMarkerCoords(properties.coordinates) }
+      properties.hotspots.forEach(h => {
+        if (hotspotsData[h]) hotspots.data.push(hotspotsData[h])
+        else console.log("Found undefined hotspot name not shown on map, updating hotspots.json might help")
+      })
+      this.setState({ hotspots })
     })
-    this.setState({ hotspots })
   }
 
   clearHotspots() {
@@ -169,6 +171,7 @@ class MapScreen extends React.Component {
     packet.lon = Number(packet.lon)
     packet.rssi = Number(packet.rssi)
     packet.speed = Number(packet.speed)
+    if (packet.lat == 0 || packet.lon == 0) return packets
 
     if (packets.data[packet.seq_num]) {
       if (packets.data[packet.seq_num].rssi < packet.rssi) packets.data[packet.seq_num].rssi = packet.rssi
