@@ -191,7 +191,7 @@ class MapScreen extends React.Component {
     packet.rssi = Number(packet.rssi)
     packet.speed = Number(packet.speed)
     packet.snr = Number(packet.snr)
-    if (packet.lat == 0 || packet.lon == 0) return packets
+    if (packet.lat == 0 || packet.lon == 0) return packets //filter out africa packets
     const seq_id = packet.seq_num + "-" + packet.fingerprint
 
     if (packets.data[seq_id]) {
@@ -273,7 +273,7 @@ class MapScreen extends React.Component {
 
           {
             showHotspots && hotspots.data.map((h, i) => {
-              if (h.lng) {
+              if (h.lng && calculateDistance(h.lat, hotspots.center[1], h.lng, hotspots.center[0]) < 0.4) { //filter out africa packets
                 return (
                   <Marker
                     key={h.address + i}
@@ -288,7 +288,7 @@ class MapScreen extends React.Component {
 
           {
             showHotspots && hotspots.data.map((h, i) => {
-              if (h.lng) {
+              if (h.lng && calculateDistance(h.lat, hotspots.center[1], h.lng, hotspots.center[0]) < 0.4) { //filter out africa packets
                 return (
                   <Layer
                     key={"line-" + h.address + i}
@@ -383,5 +383,7 @@ class MapScreen extends React.Component {
 }
 
 const geoToMarkerCoords = geo => [geo.lon, geo.lat]
+
+const calculateDistance = (lat1, lat2, lng1, lng2) => Math.sqrt(Math.pow(lat1 - lat2, 2) + Math.pow(lng1 - lng2, 2))
 
 export default MapScreen
