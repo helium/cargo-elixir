@@ -56,12 +56,14 @@ class MapScreen extends React.Component {
       mapCenter: [-122.419190, 37.771150],
       hotspots: { data: [] },
       chartType: null,
+      showHotspots: false,
     }
 
     this.selectDevice = this.selectDevice.bind(this)
     this.setChartType = this.setChartType.bind(this)
     this.setHotspots = this.setHotspots.bind(this)
     this.clearHotspots = this.clearHotspots.bind(this)
+    this.toggleHotspots = this.toggleHotspots.bind(this)
     this.parsePackets = this.parsePackets.bind(this)
   }
 
@@ -142,6 +144,10 @@ class MapScreen extends React.Component {
     this.setState({ hotspots: { data: [] } })
   }
 
+  toggleHotspots() {
+    this.setState({ showHotspots: !this.state.showHotspots })
+  }
+
   setChartType(chartType) {
     this.setState({ chartType })
   }
@@ -177,7 +183,7 @@ class MapScreen extends React.Component {
   }
 
   render() {
-    const { devices, mapCenter, selectedDevice, packets, lastPacket, hotspots, chartType } = this.state
+    const { devices, mapCenter, selectedDevice, packets, lastPacket, hotspots, chartType, showHotspots } = this.state
 
     return (
       <div style={{ flex: 1 }}>
@@ -216,7 +222,7 @@ class MapScreen extends React.Component {
           }
 
           {
-            hotspots.data.map((h, i) => {
+            showHotspots && hotspots.data.map((h, i) => {
               if (h.lng) {
                 return (
                   <Marker
@@ -231,7 +237,7 @@ class MapScreen extends React.Component {
           }
 
           {
-            hotspots.data.map((h, i) => {
+            showHotspots && hotspots.data.map((h, i) => {
               if (h.lng) {
                 return (
                   <Layer
@@ -271,8 +277,10 @@ class MapScreen extends React.Component {
               selectedDevice={selectedDevice}
               setChartType={this.setChartType}
               clearHotspots={this.clearHotspots}
+              toggleHotspots={this.toggleHotspots}
               chartType={chartType}
               hotspots={hotspots}
+              showHotspots={showHotspots}
             />
           )
         }

@@ -106,27 +106,21 @@ class Inspector extends Component {
   }
 
   renderHotspotsList() {
-    const { hotspots, clearHotspots } = this.props
+    const { hotspots } = this.props
     if (hotspots.data.length > 0) return (
-      <div style={{ padding: 8 }}>
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <p style={styles.header}>Hotspots Witnessed: {hotspots.data.length}</p>
-          <p style={styles.pill} onClick={clearHotspots}>CLOSE</p>
-        </div>
-
-        <div style={{ maxHeight: 150, overflow: 'scroll' }}>
-          {
-            hotspots.data.map(h => (
-              <p key={h.address} style={styles.hotspotText}>{h.name}</p>
-            ))
-          }
-        </div>
+      <div style={{ maxHeight: 150, overflow: 'scroll', marginTop: 8 }}>
+        <p style={styles.header}>Hotspots Witnessed: {hotspots.data.length}</p>
+        {
+          hotspots.data.map(h => (
+            <p key={h.address} style={styles.hotspotText}>{h.name}</p>
+          ))
+        }
       </div>
     )
   }
 
   render() {
-    const { lastPacket, selectedDevice, setChartType, chartType, hotspots } = this.props
+    const { lastPacket, selectedDevice, setChartType, chartType, hotspots, clearHotspots, toggleHotspots, showHotspots } = this.props
     const { show } = this.state
 
     return (
@@ -169,7 +163,13 @@ class Inspector extends Component {
                           <p style={styles.value}>n/a</p>
                         </div>
                       </div>
-                      {this.renderHotspotsList()}
+                      <div style={{ padding: 8 }}>
+                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                          <p style={styles.pill} onClick={toggleHotspots}>{showHotspots ? "Hide" : "Show"} Hotspot Paths</p>
+                          <p style={styles.pill} onClick={clearHotspots}>Clear Hotspots List</p>
+                        </div>
+                        {this.renderHotspotsList()}
+                      </div>
                     </React.Fragment>
                   )
                 }
@@ -222,7 +222,13 @@ class Inspector extends Component {
                           <p style={styles.value}>n/a</p>
                         </div>
                       </div>
-                      {this.renderHotspotsList()}
+                      <div style={{ padding: 8 }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                          <p style={styles.pill} onClick={toggleHotspots}>{showHotspots ? "Hide" : "Show"} Hotspot Paths</p>
+                          <p style={styles.pill} onClick={clearHotspots}>Clear Hotspots List</p>
+                        </div>
+                        {this.renderHotspotsList()}
+                      </div>
                     </React.Fragment>
                   )
                 }

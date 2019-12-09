@@ -13,6 +13,7 @@ config :cargo_elixir, CargoElixirWeb.Endpoint,
   url: [scheme: "https", host: "cargo-elixir", port: 443],
   check_origin: [
     "https://cargo-elixir.herokuapp.com",
+    "https://cargo.helium.com",
   ],
   force_ssl: [rewrite_on: [:x_forwarded_proto]],
   cache_static_manifest: "priv/static/cache_manifest.json"
