@@ -163,7 +163,7 @@ const TimelineValue = props => {
   if (type === "sequence") {
     return (
       <div style={styles.valueBox}>
-        <p style={styles.value}>
+        <p style={{...styles.value, fontSize: 24 }}>
           {value}
         </p>
         <p>seq #</p>

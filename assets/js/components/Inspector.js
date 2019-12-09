@@ -139,7 +139,7 @@ class Inspector extends Component {
                       <div style={{...styles.row, overflow: 'scroll'}}>
                         <div style={{...styles.pod, backgroundColor: chartType === 'sequence' && '#CBDEF2' }} className="podHover" onClick={() => setChartType("sequence")}>
                           <p style={styles.header}>Sequence #:</p>
-                          <p style={styles.value}>{lastPacket.seq_num}</p>
+                          <p style={styles.value}>{lastPacket.seq_id}</p>
                         </div>
                         <div style={{ ...styles.pod, backgroundColor: chartType === 'speed' && '#CBDEF2', borderLeft: '1px solid #1B8DFF' }} className="podHover" onClick={() => setChartType("speed")}>
                           <p style={styles.header}>Avg Speed:</p>
@@ -196,7 +196,7 @@ class Inspector extends Component {
                       <div style={styles.row}>
                         <div style={{...styles.pod, backgroundColor: chartType === 'sequence' && '#CBDEF2' }} className="podHover" onClick={() => setChartType("sequence")}>
                           <p style={styles.header}>Sequence #:</p>
-                          <p style={styles.value}>{lastPacket.seq_num}</p>
+                          <p style={styles.value}>{lastPacket.seq_id}</p>
                         </div>
                         <div style={{ ...styles.pod, backgroundColor: chartType === 'speed' && '#CBDEF2', borderLeft: '1px solid #1B8DFF' }} className="podHover" onClick={() => setChartType("speed")}>
                           <p style={styles.header}>Avg Speed:</p>
@@ -220,7 +220,7 @@ class Inspector extends Component {
                         </div>
                         <div style={{ ...styles.pod, borderLeft: '1px solid #1B8DFF', backgroundColor: chartType === 'snr' && '#CBDEF2' }} className="podHover" onClick={() => setChartType("snr")}>
                           <p style={styles.header}>SNR:</p>
-                          <p style={styles.value}>n/a</p>
+                          <p style={styles.value}>{lastPacket.snr}</p>
                         </div>
                       </div>
                       <div style={{ padding: 8 }}>

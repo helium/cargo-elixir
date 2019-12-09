@@ -4,7 +4,7 @@ defmodule CargoElixir.Payloads do
 
   alias CargoElixir.Payloads.Payload
 
-  def create_payload(%{ "device_id" => device_id, "gateway" => hotspot_id, "oui" => oui, "payload" => payload, "rssi" => rssi, "sequence" => seq_num, "timestamp" => reported}) do
+  def create_payload(packet = %{ "device_id" => device_id, "gateway" => hotspot_id, "oui" => oui, "payload" => payload, "rssi" => rssi, "sequence" => seq_num, "timestamp" => reported, "fingerprint" => fingerprint}) do
     binary = payload |> :base64.decode()
     binary_length = byte_size(binary)
 
@@ -29,7 +29,8 @@ defmodule CargoElixir.Payloads do
       |> Map.put(:battery, battery)
       |> Map.put(:seq_num, seq_num)
       |> Map.put(:reported, reported |> DateTime.from_unix!())
-
+      |> Map.put(:fingerprint, Integer.to_string(fingerprint))
+      |> Map.put(:snr, Map.get(packet, "snr", 0))
     %Payload{}
     |> Payload.changeset(attrs)
     |> Repo.insert()
@@ -46,7 +47,7 @@ defmodule CargoElixir.Payloads do
 
   def get_payloads(device_id, last_packet_time) do
     {:ok, datetime, 0} = DateTime.from_iso8601(last_packet_time)
-    packets_start_time = DateTime.from_unix!(DateTime.to_unix(datetime) - 1200)
+    packets_start_time = DateTime.from_unix!(DateTime.to_unix(datetime) - 10800)
 
     query = from p in Payload,
       where: (p.device_id == ^device_id and p.created_at > ^packets_start_time),

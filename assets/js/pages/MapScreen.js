@@ -171,14 +171,16 @@ class MapScreen extends React.Component {
     packet.lon = Number(packet.lon)
     packet.rssi = Number(packet.rssi)
     packet.speed = Number(packet.speed)
+    packet.snr = Number(packet.snr)
     if (packet.lat == 0 || packet.lon == 0) return packets
+    const seq_id = packet.seq_num + "-" + packet.fingerprint
 
-    if (packets.data[packet.seq_num]) {
-      if (packets.data[packet.seq_num].rssi < packet.rssi) packets.data[packet.seq_num].rssi = packet.rssi
-      if (packets.data[packet.seq_num].battery > packet.battery) packets.data[packet.seq_num].battery = packet.battery
-      packets.data[packet.seq_num].hotspots.push(packet.hotspot_id.replace("rapping", "dandy"))
+    if (packets.data[seq_id]) {
+      if (packets.data[seq_id].rssi < packet.rssi) packets.data[seq_id].rssi = packet.rssi
+      if (packets.data[seq_id].battery > packet.battery) packets.data[seq_id].battery = packet.battery
+      packets.data[seq_id].hotspots.push(packet.hotspot_id.replace("rapping", "dandy"))
     } else {
-      packets.data[packet.seq_num] = {
+      packets.data[seq_id] = {
         id: packet.id,
         key: packet.lat + packet.lon,
         coordinates: { lat: packet.lat, lon: packet.lon },
@@ -187,10 +189,12 @@ class MapScreen extends React.Component {
         battery: packet.battery,
         elevation: packet.elevation,
         seq_num: packet.seq_num,
-        reported: packet.created_at
+        reported: packet.created_at,
+        snr: packet.snr,
+        seq_id,
       }
-      packets.data[packet.seq_num].hotspots = [packet.hotspot_id.replace("rapping", "dandy")]
-      packets.seq.push(packet.seq_num)
+      packets.data[seq_id].hotspots = [packet.hotspot_id.replace("rapping", "dandy")]
+      packets.seq.push(seq_id)
     }
     return packets
   }
