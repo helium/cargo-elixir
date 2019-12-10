@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Logo from "../../static/images/logocargo.svg";
 import NavBarRow from './NavBarRow'
+import SearchBar from './SearchBar'
 import Media from 'react-media';
 
 const styles = {
@@ -87,7 +88,7 @@ class NavBar extends Component {
   }
 
   render() {
-    const { devices, names, selectDevice, selectedDevice, receivedNewDevice } = this.props
+    const { devices, names, selectDevice, selectedDevice, receivedNewDevice, findDevice } = this.props
     const { show } = this.state
 
     return (
@@ -110,8 +111,11 @@ class NavBar extends Component {
 
                 <div style={{ display: 'flex', flexDirection: 'row', overflow: 'auto' }}>
                   <div style={{ borderBottom: '1px solid #D3D3D3', alignItems: 'center', display: 'flex' }}>
-                    <p style={{ marginRight: 48, whiteSpace: 'nowrap' }}>Devices: {devices.length}</p>
+                    <div style={{ width: 200, paddingLeft: 8, paddingRight: 8 }}>
+                      <SearchBar findDevice={findDevice}/>
+                    </div>
                   </div>
+
                   {devices.map((d, i) =>
                     <div style={{ borderLeft: '1px solid #D3D3D3' }}>
                       <NavBarRow key={d.device_id} device={d} name={names[i]} selectDevice={selectDevice} selectedDevice={selectedDevice} />
@@ -125,10 +129,14 @@ class NavBar extends Component {
                 <div>
                   <Logo style={{...styles.paddingBox, paddingTop: 16, paddingBottom: 16 }} />
                   <div style={{ position: 'relative' }}>
-                    <p style={{...styles.paddingBox, ...styles.title, cursor: 'pointer'}} onClick={this.toggle}>Devices: {devices.length}</p>
+                    <p style={{...styles.paddingBox, ...styles.title, cursor: 'pointer'}} onClick={this.toggle}>Devices</p>
                     {
                       show ? <div style={styles.arrowUp}></div> : <div style={styles.arrowDown}></div>
                     }
+                  </div>
+
+                  <div style={{ padding: 16, borderBottom: '1px solid #D3D3D3' }}>
+                    <SearchBar findDevice={findDevice}/>
                   </div>
                 </div>
 

@@ -72,6 +72,7 @@ class MapScreen extends React.Component {
     }
 
     this.selectDevice = this.selectDevice.bind(this)
+    this.findDevice = this.findDevice.bind(this)
     this.setChartType = this.setChartType.bind(this)
     this.setHotspots = this.setHotspots.bind(this)
     this.clearHotspots = this.clearHotspots.bind(this)
@@ -149,6 +150,21 @@ class MapScreen extends React.Component {
           mapCenter: [lastPacket.coordinates.lon, lastPacket.coordinates.lat],
           hotspots: { data: [] },
         })
+      })
+  }
+
+  findDevice(deviceId) {
+    fetch("api/oui/1" + "?device_id=" + deviceId)
+      .then(res => res.json())
+      .then(device => {
+        if (device.length == 0) {
+          alert("Device " + deviceId + " does not exist" )
+          return
+        }
+        this.selectDevice(device[0])
+      })
+      .catch(err => {
+        alert("Server error: Please try again")
       })
   }
 
@@ -346,6 +362,7 @@ class MapScreen extends React.Component {
             return "Unknown"
           })}
           selectDevice={this.selectDevice}
+          findDevice={this.findDevice}
           selectedDevice={selectedDevice}
           receivedNewDevice={receivedNewDevice}
         />

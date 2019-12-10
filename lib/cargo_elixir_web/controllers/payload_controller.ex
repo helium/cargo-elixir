@@ -7,9 +7,14 @@ defmodule CargoElixirWeb.PayloadController do
   def create(conn, params) do
     with {:ok, %Payload{} = payload} <- Payloads.create_payload(params) do
       CargoElixirWeb.Endpoint.broadcast!("payload:new", "new_payload", payload)
-      
+
       conn |> send_resp(201, "")
     end
+  end
+
+  def get_devices(conn, %{"oui" => oui, "device_id" => device_id}) do
+    device = Payloads.get_device(oui, device_id)
+    conn |> json(device)
   end
 
   def get_devices(conn, %{"oui" => oui}) do
