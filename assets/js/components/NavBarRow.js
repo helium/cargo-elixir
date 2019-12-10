@@ -59,7 +59,7 @@ class NavBarRow extends Component {
             withinLast2Min ? (
               <p style={styles.pill}>{timeAgo.format(latest, {flavour: "small"})}</p>
             ) : (
-              <p align="right" style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>Lastest: {timeAgo.format(latest, {flavour: "small"})}</p>
+              <p align="right" style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>Latest: {timeAgo.format(latest, {flavour: "small"})}</p>
             )
           }
           <p align="right" style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9', marginTop: -8 }}>{name}</p>
