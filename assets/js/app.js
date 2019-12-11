@@ -20,7 +20,7 @@ class App extends React.Component {
     return (
       <Router>
         <Route exact path="/" component={MapScreen}/>
-        <Route path="/login" component={Login}/>
+        {false && <Route path="/login" component={Login}/>}
       </Router>
     )
   }

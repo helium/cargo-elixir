@@ -62,7 +62,7 @@ class MapScreen extends React.Component {
       selectedDevice: null,
       packets: {},
       lastPacket: null,
-      mapCenter: [-122.419190, 37.771150],
+      mapCenter: [-122.41919, 37.77115],
       hotspots: { data: [] },
       chartType: null,
       showHotspots: true,
@@ -82,6 +82,16 @@ class MapScreen extends React.Component {
   }
 
   componentDidMount() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(({ coords }) => {
+        const { mapCenter } = this.state
+        if (mapCenter[0] == -122.41919 && mapCenter[1] == 37.77115) {
+          console.log("Using browser location")
+          this.setState({ mapCenter: [coords.longitude, coords.latitude] })
+        }
+      })
+    }
+
     this.loadDevices()
 
     let channel = socket.channel("payload:new", {})
