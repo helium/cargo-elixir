@@ -125,7 +125,7 @@ class MapScreen extends React.Component {
         transmittingDevices[d.device_id] = [Number(d.lon), Number(d.lat)]
         this.setState({ transmittingDevices })
       } else {
-        if (!this.state.receivedNewDevice) this.setState({ receivedNewDevice: true })
+        if (this.state.devices.length > 0 && !this.state.receivedNewDevice) this.setState({ receivedNewDevice: true })
       }
     })
   }
