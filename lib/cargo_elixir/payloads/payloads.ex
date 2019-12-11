@@ -37,8 +37,11 @@ defmodule CargoElixir.Payloads do
   end
 
   def get_devices(oui) do
+    current_unix = DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_unix()
+    date_threshold = DateTime.from_unix!(current_unix - 259200)
+
     query = from p in Payload,
-      where: p.oui == ^oui,
+      where: p.oui == ^oui and p.created_at > ^date_threshold,
       group_by: [p.device_id, p.oui],
       select: %{ device_id: p.device_id, created_at: max(p.created_at), hotspot: min(p.hotspot_id) },
       order_by: [desc: max(p.created_at)]
