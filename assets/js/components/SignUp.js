@@ -58,7 +58,13 @@ class SignUp extends React.Component {
     fetch("api/signup", {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(this.state)
+      body: JSON.stringify({
+        first_name: this.state.firstName,
+        last_name: this.state.lastName,
+        company_name: this.state.companyName,
+        email: this.state.email,
+        developer: this.state.developer,
+      })
     })
     .then(() => {
       console.log("Email submitted")
