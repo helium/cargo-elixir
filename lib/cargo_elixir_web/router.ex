@@ -19,6 +19,7 @@ defmodule CargoElixirWeb.Router do
     get "/oui/:oui", PayloadController, :get_devices
     get "/devices/:id", PayloadController, :get_payloads
     post "/payloads", PayloadController, :create
+    post "/signup", UserController, :create
   end
 
   scope "/", CargoElixirWeb do

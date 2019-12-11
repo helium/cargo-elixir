@@ -4,6 +4,7 @@ import findIndex from 'lodash/findIndex'
 import NavBar from '../components/NavBar'
 import Inspector from '../components/Inspector'
 import Timeline from '../components/Timeline'
+import SignUp from '../components/SignUp'
 import { packetsToChartData } from '../data/chart'
 import geoJSON from "geojson";
 import hotspotsJSON from '../data/hotspots.json'
@@ -58,6 +59,7 @@ class MapScreen extends React.Component {
     super(props)
 
     this.state = {
+      showSignUp: window.localStorage ? !window.localStorage.getItem('seenSignUp') : true,
       devices: [],
       selectedDevice: null,
       packets: {},
@@ -79,6 +81,7 @@ class MapScreen extends React.Component {
     this.toggleHotspots = this.toggleHotspots.bind(this)
     this.highlightHotspot = this.highlightHotspot.bind(this)
     this.parsePackets = this.parsePackets.bind(this)
+    this.hideSignUp = this.hideSignUp.bind(this)
   }
 
   componentDidMount() {
@@ -133,6 +136,10 @@ class MapScreen extends React.Component {
       .then(devices => {
         this.setState({ devices })
       })
+  }
+
+  hideSignUp() {
+    this.setState({ showSignUp: false })
   }
 
   selectDevice(d) {
@@ -245,7 +252,7 @@ class MapScreen extends React.Component {
   }
 
   render() {
-    const { devices, mapCenter, selectedDevice, packets, lastPacket, hotspots, chartType, showHotspots, highlightedHotspot, receivedNewDevice, transmittingDevices } = this.state
+    const { devices, mapCenter, selectedDevice, packets, lastPacket, hotspots, chartType, showHotspots, highlightedHotspot, receivedNewDevice, transmittingDevices, showSignUp } = this.state
 
     return (
       <div style={{ flex: 1 }}>
@@ -403,6 +410,10 @@ class MapScreen extends React.Component {
               chartData={packetsToChartData(packets.seq.map(s => packets.data[s]), chartType)}
             />
           )
+        }
+
+        {
+          showSignUp && <SignUp hideSignUp={this.hideSignUp}/>
         }
       </div>
     )
