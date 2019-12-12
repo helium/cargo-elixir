@@ -208,7 +208,7 @@ const TimelineValue = props => {
     return (
       <div style={styles.valueBox}>
         <p style={styles.value}>
-          {value.toFixed(2)}
+          {value}
         </p>
         <p>volts</p>
       </div>
