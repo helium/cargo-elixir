@@ -19,7 +19,8 @@
     "react-mapbox-gl": "^4.7.3",
     "react-media": "^1.10.0",
     "react-router-dom": "^5.1.2",
-    "react-svg-loader": "^3.0.3"
+    "react-svg-loader": "^3.0.3",
+    "react-typekit": "^1.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

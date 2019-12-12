@@ -14,14 +14,25 @@ const styles = {
     paddingRight: 16,
     cursor: 'pointer',
     minWidth: 180,
+     '&:hover': {
+        backgroundColor: '#0D47A1 !important',
+    }
   },
+
   title: {
-    fontSize: 14
+    fontSize: 16,
+    fontWeight: 500,
+    color: '#1B8DFF',
+    background: 'white',
+    padding: '3px 10px 4px',
+    borderRadius: 6,
+    marginLeft: 0,
   },
   tag: {
     fontSize: 11,
     paddingTop: 5,
     paddingBottom: 3,
+    lineHeight: 1
   },
   pill: {
     display: 'inline-block',
@@ -52,17 +63,19 @@ class NavBarRow extends Component {
           borderBottom: selected ? '1px solid #1B8DFF' : '1px solid #D3D3D3',
         }}
         onClick={() => selectDevice(device)}
+
+        className="podHover"
       >
-        <p key={device.device_id} style={{ ...styles.title, color: selected ? '#ffffff' : '#000000' }}>{device.device_id}</p>
+        <p key={device.device_id} style={{ ...styles.title, color: selected ? '#1B8DFF' : '#ffffff', backgroundColor: selected ? '#ffffff' : '#1B8DFF' }}>{device.device_id}</p>
         <div style={{ textAlign: 'right' }}>
           {
             withinLast2Min ? (
               <p style={styles.pill}>{timeAgo.format(latest, {flavour: "small"})}</p>
             ) : (
-              <p align="right" style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>Latest: {timeAgo.format(latest, {flavour: "small"})}</p>
+              <p align="right" style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>{timeAgo.format(latest, {flavour: "small"})}</p>
             )
           }
-          <p align="right" style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9', marginTop: -8 }}>{name}</p>
+          <p align="right" style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9', marginTop: -8, fontWeight: 500 }}>{name}</p>
         </div>
       </div>
     )

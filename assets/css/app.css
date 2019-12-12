@@ -1,11 +1,23 @@
+
+ @import url("https://use.typekit.net/qfu3tzp.css");
+
 body {
-  font-family: "Soleil", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: soleil,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
 }
 
 p {
   margin: 8px;
 }
 
-div.podHover:hover {
+div.podHoverblue {
+	background-color: #EBF3FC;
+}
+
+div.podHover:hover, div.podHoverblue:hover {
   background-color: #E1ECF8;
 }
+
+p.hotspotentry:hover {
+	  background-color: #8D66E8 !important; 
+}
+

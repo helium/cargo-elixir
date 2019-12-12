@@ -12,11 +12,11 @@ const styles = {
     height: 150,
     overflow: "hidden",
     display: "flex",
-    width: "100vw",
+    width: "calc(100vw - 230px)",
     fontFamily: '"Soleil", "Helvetica Neue", Helvetica, Arial, sans-serif',
   },
   valueBox: {
-    width: 200,
+    minWidth: 230,
     background: "#1B8DFF",
     color: "white",
     display: "flex",

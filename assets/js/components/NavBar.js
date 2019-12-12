@@ -12,6 +12,7 @@ const styles = {
     backgroundColor: '#ffffff',
     width: 230,
     zIndex: 10,
+    height: '100vh',
   },
   title: {
     marginBottom: 0,
@@ -57,7 +58,7 @@ const styles = {
     borderBottom: '5px solid #1B8DFF',
     marginRight: 16,
     position: "absolute",
-    top: 4,
+    top: 9,
     right: 12,
   },
   arrowDown: {
@@ -68,7 +69,7 @@ const styles = {
     borderTop: '5px solid #1B8DFF',
     marginRight: 16,
     position: "absolute",
-    top: 4,
+    top: 9,
     right: 12,
   },
 }
