@@ -27,6 +27,7 @@ p.hotspotentry:hover {
 
 div.timeline {
 width: 100% !important;
+height: 110px !important;
 }
 
 div.valueBox {
@@ -34,5 +35,27 @@ div.valueBox {
 	max-width: 240px !important;
 }
 
+p.hotspotentry {
+	display: inline-block;
+	margin-left: 10px !important;
+	width: auto;
+	white-space: nowrap;
+	margin-bottom: 10px !important;
+}
+
+div.nomargintop {
+	margin-top: 0 !important;
+	padding: 0 !important;
+}
+
+p.paddingLeft {
+	padding-left: 10px !important;
+}
+
+div.hotspotwrapper {
+	display: flex;
+	flex-wrap: no-wrap;
+	overflow-x: scroll !important;
+}
 
 }

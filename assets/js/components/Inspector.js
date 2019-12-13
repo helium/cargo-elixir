@@ -161,13 +161,15 @@ class Inspector extends Component {
   renderHotspotsList() {
     const { hotspots, highlightHotspot } = this.props
     if (hotspots.data.length > 0) return (
-      <div style={{ maxHeight: 150, overflow: 'scroll', marginTop: 8, padding: 10 }}>
-        <p style={styles.header}>{hotspots.data.length} Hotspots Witnessed</p>
+      <div style={{ maxHeight: 150, overflow: 'scroll', marginTop: 8, padding: 10 }} className="nomargintop">
+        <p style={styles.header} className="paddingLeft">{hotspots.data.length} Hotspots Witnessed</p>
+        <div className="hotspotwrapper">
         {
           hotspots.data.map(h => (
             <p key={h.address} style={styles.hotspotText} className="hotspotentry" onClick={() => highlightHotspot(h)}>{h.name}</p>
           ))
         }
+        </div>
       </div>
     )
   }
