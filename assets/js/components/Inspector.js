@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import startCase from 'lodash/startCase'
 import Media from 'react-media';
 
+
 const styles = {
   container: {
     position: 'absolute',
@@ -12,6 +13,15 @@ const styles = {
     zIndex: 10,
     overflow: 'hidden',
   },
+  smallContainer: {
+    position: 'absolute',
+    top: 105,
+    left: 0,
+    backgroundColor: '#fff',
+    width: '100%',
+    zIndex: 10,
+    overflow: 'hidden'
+  },
   top: {
     padding: 10,
     paddingBottom:12,
@@ -21,6 +31,14 @@ const styles = {
     flexDirection: 'row',
     justifyContent: 'space-between',
     flexWrap: 'wrap',
+    padding: 10,
+    paddingBottom: 0,
+  },
+   rowsm: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'no-wrap',
     padding: 10,
     paddingBottom: 0,
   },
@@ -37,6 +55,21 @@ const styles = {
 
 
   },
+  podsm: {
+    width: 100,
+    padding: 10,
+    cursor: 'pointer',
+    borderRadius: 4,
+    minWidth: 100,
+    marginRight: 10,
+        paddingBottom:14,
+            backgroundColor: '#EAF3FC',
+            boxSizing: 'border-box',
+            marginBottom: 0,
+
+
+  },
+
   header: {
     fontSize: 10,
     margin: 0,
@@ -77,15 +110,7 @@ const styles = {
     borderTop: '5px solid white',
     marginRight: 16,
   },
-  smallContainer: {
-    position: 'absolute',
-    top: 132,
-    left: 0,
-    backgroundColor: '#EAF3FC',
-    width: '100%',
-    zIndex: 10,
-    overflow: 'hidden'
-  },
+  
   hotspotText: {
     fontSize: 13,
     fontWeight: 500,
@@ -160,38 +185,44 @@ class Inspector extends Component {
           <React.Fragment>
             {matches.small && (
               <div style={styles.smallContainer}>
+              <div style={styles.bar} onClick={this.toggle}>
+                  <p style={{ color: 'white', fontSize: 14 }}>Last Packet Stats</p>
+                  {
+                    show ? <div style={styles.arrowUp}></div> : <div style={styles.arrowDown}></div>
+                  }
+                </div>
                 {
                   show && (
                     <React.Fragment>
-                      <div style={{...styles.row, overflow: 'scroll'}}>
-                        <div style={{...styles.pod, backgroundColor: chartType === 'sequence' && '#CBDEF2' }} className="podHoverblue" onClick={() => setChartType("sequence")}>
-                          <p style={styles.header}>Sequence No.</p>
+                      <div style={{...styles.rowsm, overflowX: 'scroll'}}>
+                        <div style={{...styles.podsm, backgroundColor: chartType === 'sequence' && '#CBDEF2' }} className="podHoverblue" onClick={() => setChartType("sequence")}>
+                          <p style={styles.header}>Seq. No.</p>
                           <p style={styles.value}>{lastPacket.seq_id.split("-")[0]}</p>
                         </div>
-                        <div style={{ ...styles.pod, backgroundColor: chartType === 'speed' && '#CBDEF2' }} className="podHoverblue" onClick={() => setChartType("speed")}>
+                        <div style={{ ...styles.podsm, backgroundColor: chartType === 'speed' && '#CBDEF2' }} className="podHoverblue" onClick={() => setChartType("speed")}>
                           <p style={styles.header}>Avg Speed:</p>
                           <p style={styles.value}>{lastPacket.speed}mph</p>
                         </div>
 
-                        <div style={{...styles.pod, backgroundColor: chartType === 'elevation' && '#CBDEF2'}} className="podHoverblue" onClick={() => setChartType("elevation")}>
+                        <div style={{...styles.podsm, backgroundColor: chartType === 'elevation' && '#CBDEF2'}} className="podHoverblue" onClick={() => setChartType("elevation")}>
                           <p style={styles.header}>Elevation</p>
                           <p style={styles.value}>{lastPacket.elevation}m</p>
                         </div>
-                        <div style={{ ...styles.pod, borderLeft: '1px solid #A5CFFA', backgroundColor: chartType === 'battery' && '#CBDEF2' }} className="podHoverblue" onClick={() => setChartType("battery")}>
+                        <div style={{ ...styles.podsm, backgroundColor: chartType === 'battery' && '#CBDEF2' }} className="podHoverblue" onClick={() => setChartType("battery")}>
                           <p style={styles.header}>Voltage</p>
                           <p style={styles.value}>{lastPacket.battery.toFixed(0)}</p>
                         </div>
 
-                        <div style={{ ...styles.pod, backgroundColor: chartType === 'rssi' && '#CBDEF2'}} className="podHoverblue" onClick={() => setChartType("rssi")}>
+                        <div style={{ ...styles.podsm, backgroundColor: chartType === 'rssi' && '#CBDEF2'}} className="podHoverblue" onClick={() => setChartType("rssi")}>
                           <p style={styles.header}>RSSI</p>
                           <p style={styles.value}>{lastPacket.rssi}</p>
                         </div>
-                        <div style={{ ...styles.pod,  backgroundColor: chartType === 'snr' && '#CBDEF2' }} className="podHoverblue" onClick={() => setChartType("snr")}>
+                        <div style={{ ...styles.podsm,  backgroundColor: chartType === 'snr' && '#CBDEF2' }} className="podHoverblue" onClick={() => setChartType("snr")}>
                           <p style={styles.header}>SNR</p>
                           <p style={styles.value}>n/a</p>
                         </div>
                       </div>
-                      <div style={{ padding: 10 }}>
+                      <div>
                         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
                           <p style={styles.pill} onClick={toggleHotspots}>{showHotspots ? "Hide" : "Show"} Hotspot Paths</p>
                           <p style={styles.pill} onClick={clearHotspots}>Close Hotspot List</p>

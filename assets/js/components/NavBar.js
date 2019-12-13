@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Logo from "../../static/images/logocargo.svg";
+import LogoSm from "../../static/images/logocargo_30.svg";
 import NavBarRow from './NavBarRow'
 import SearchBar from './SearchBar'
 import Media from 'react-media';
@@ -47,7 +48,7 @@ const styles = {
     backgroundColor: '#ffffff',
     width: '100%',
     zIndex: 10,
-    height: 132,
+    height: 105,
     overflow: 'hidden',
   },
   arrowUp: {
@@ -101,13 +102,14 @@ class NavBar extends Component {
           <React.Fragment>
             {matches.small && (
               <div style={styles.smallContainer}>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', borderBottom: '1px solid #D3D3D3', position: 'relative'}}>
-                  <Logo style={{...styles.paddingBox, paddingTop: 16, paddingBottom: 16 }} />
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', borderBottom: '1px solid #D3D3D3', position: 'relative'}}>
+                  <LogoSm style={{...styles.paddingBox, paddingTop: 10, paddingBottom: 10 }} />
                   {
                     receivedNewDevice && (
                       <p style={styles.tipSmallContainer}>New devices found, please reload the page to refresh device list</p>
                     )
                   }
+
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'row', overflow: 'auto' }}>

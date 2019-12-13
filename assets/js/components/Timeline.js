@@ -80,7 +80,7 @@ class Timeline extends Component {
   render() {
     const { type, setChartType, chartData } = this.props
     return (
-      <div style={styles.timeline}>
+      <div style={styles.timeline} className="timeline">
         <TimelineValue
           value={this.state.timelineValue}
           type={type}
@@ -162,7 +162,7 @@ const TimelineValue = props => {
 
   if (type === "sequence") {
     return (
-      <div style={styles.valueBox}>
+      <div style={styles.valueBox} className="valueBox">
         <p style={styles.value}>
           {value.split("-")[0]}
         </p>

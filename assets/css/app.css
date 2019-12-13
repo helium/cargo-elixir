@@ -21,3 +21,18 @@ p.hotspotentry:hover {
 	  background-color: #8D66E8 !important; 
 }
 
+
+
+@media only screen and (max-width: 500px) {
+
+div.timeline {
+width: 100% !important;
+}
+
+div.valueBox {
+	min-width: 100px !important;
+	max-width: 240px !important;
+}
+
+
+}
