@@ -132,10 +132,7 @@ class NavBar extends Component {
                 <div>
                   <Logo style={{...styles.paddingBox, paddingTop: 16, paddingBottom: 16 }} />
                   <div style={{ position: 'relative' }}>
-                    <p style={{...styles.paddingBox, ...styles.title, cursor: 'pointer'}} onClick={this.toggle}>Devices</p>
-                    {
-                      show ? <div style={styles.arrowUp}></div> : <div style={styles.arrowDown}></div>
-                    }
+                    <p style={{...styles.paddingBox, ...styles.title}} >Devices</p>
                   </div>
 
                   <div style={{ padding: 16, borderBottom: '1px solid #D3D3D3' }}>
@@ -147,7 +144,7 @@ class NavBar extends Component {
                   receivedNewDevice && <p style={{...styles.paddingBox, ...styles.tip }}>New devices found, please reload the page to refresh device list</p>
                 }
 
-                <div style={{ overflow: 'scroll', maxHeight: 310 }}>
+                <div style={{ overflow: 'scroll', maxHeight: 'calc(100vh - 190px)' }}>
                   { show && devices.map((d, i) =>
                     <NavBarRow key={d.device_id} device={d} name={names[i]} selectDevice={selectDevice} selectedDevice={selectedDevice} />
                   )}
