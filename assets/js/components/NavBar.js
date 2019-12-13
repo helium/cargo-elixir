@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Logo from "../../static/images/logocargo.svg";
+import LogoSm from "../../static/images/logocargo_30.svg";
 import NavBarRow from './NavBarRow'
 import SearchBar from './SearchBar'
 import Media from 'react-media';
@@ -12,6 +13,7 @@ const styles = {
     backgroundColor: '#ffffff',
     width: 230,
     zIndex: 10,
+    height: '100vh',
   },
   title: {
     marginBottom: 0,
@@ -46,7 +48,7 @@ const styles = {
     backgroundColor: '#ffffff',
     width: '100%',
     zIndex: 10,
-    height: 132,
+    height: 105,
     overflow: 'hidden',
   },
   arrowUp: {
@@ -57,7 +59,7 @@ const styles = {
     borderBottom: '5px solid #1B8DFF',
     marginRight: 16,
     position: "absolute",
-    top: 4,
+    top: 9,
     right: 12,
   },
   arrowDown: {
@@ -68,7 +70,7 @@ const styles = {
     borderTop: '5px solid #1B8DFF',
     marginRight: 16,
     position: "absolute",
-    top: 4,
+    top: 9,
     right: 12,
   },
 }
@@ -100,13 +102,14 @@ class NavBar extends Component {
           <React.Fragment>
             {matches.small && (
               <div style={styles.smallContainer}>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', borderBottom: '1px solid #D3D3D3', position: 'relative'}}>
-                  <Logo style={{...styles.paddingBox, paddingTop: 16, paddingBottom: 16 }} />
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', borderBottom: '1px solid #D3D3D3', position: 'relative'}}>
+                  <LogoSm style={{...styles.paddingBox, paddingTop: 10, paddingBottom: 10 }} />
                   {
                     receivedNewDevice && (
                       <p style={styles.tipSmallContainer}>New devices found, please reload the page to refresh device list</p>
                     )
                   }
+
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'row', overflow: 'auto' }}>
@@ -129,10 +132,7 @@ class NavBar extends Component {
                 <div>
                   <Logo style={{...styles.paddingBox, paddingTop: 16, paddingBottom: 16 }} />
                   <div style={{ position: 'relative' }}>
-                    <p style={{...styles.paddingBox, ...styles.title, cursor: 'pointer'}} onClick={this.toggle}>Devices</p>
-                    {
-                      show ? <div style={styles.arrowUp}></div> : <div style={styles.arrowDown}></div>
-                    }
+                    <p style={{...styles.paddingBox, ...styles.title}} >Devices</p>
                   </div>
 
                   <div style={{ padding: 16, borderBottom: '1px solid #D3D3D3' }}>
@@ -144,7 +144,7 @@ class NavBar extends Component {
                   receivedNewDevice && <p style={{...styles.paddingBox, ...styles.tip }}>New devices found, please reload the page to refresh device list</p>
                 }
 
-                <div style={{ overflow: 'scroll', maxHeight: 310 }}>
+                <div style={{ overflow: 'scroll', maxHeight: 'calc(100vh - 190px)' }}>
                   { show && devices.map((d, i) =>
                     <NavBarRow key={d.device_id} device={d} name={names[i]} selectDevice={selectDevice} selectedDevice={selectedDevice} />
                   )}

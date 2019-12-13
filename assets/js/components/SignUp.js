@@ -12,24 +12,69 @@ const styles = {
     backgroundColor: 'rgba(0,0,0,0.5)',
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
   },
   card: {
     backgroundColor: 'white',
-    width: 300,
-    height: 290,
-    padding: 16,
-    paddingTop: 0,
-    marginTop: 60,
-    borderRadius: 2,
+    width: '100%',
+    maxWidth: 400,
+    padding: 40,
+    borderRadius: 10,
+    position: 'absolute',
+    left: '50%',
+    top: '50%',
+    transform: 'translate(-50% , -50%)',
+    textAlign: 'center',
+    boxSizing: 'border-box',
   },
   formRow: {
-    paddingLeft: 12,
-    paddingBottom: 6,
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center'
-  }
+    alignItems: 'center',
+    marginBottom: 10,
+        boxSizing: 'border-box',
+
+  },
+
+  forminput: {
+    height: '20px',
+    width: '100%',
+    fontSize: 15,
+    padding: 8,
+    border: 'none',
+    background: '#f1f1f1',
+    borderRadius: 3,
+   
+},
+
+button: {
+  padding: '6px 12px',
+  color: 'white',
+  background: '#38A2FF',
+  borderRadius: 999,
+  margin: 10,
+  fontSize: 16,
+  fontWeight: 500,
+  width: '45%',
+  border: 'none'
+},
+
+
+
+buttonsecondary: {
+  padding: '6px 12px',
+  color: '#38A2FF',
+  background: 'white',
+  borderRadius: 999,
+  margin: 10,
+  fontSize: 16,
+  fontWeight: 500,
+  width: '45%',
+  border: '1px solid #38A2FF',
+}
+
+
+
 }
 
 class SignUp extends React.Component {
@@ -91,26 +136,26 @@ class SignUp extends React.Component {
         <div style={styles.card}>
           <Logo style={{...styles.paddingBox, paddingTop: 16, paddingBottom: 16 }} />
           <p>Enter your details to discuss IoT asset tracking use cases with Helium.</p>
-          <form style={{ marginTop: 16 }} onSubmit={this.onSubmit}>
+          <form style={{ marginTop: 30 }} onSubmit={this.onSubmit}>
             <div style={styles.formRow}>
-              <input name="firstName" onChange={this.onChange} value={firstName} placeholder="First Name" required/>
+              <input name="firstName" style={{...styles.forminput, marginRight: 10}}   onChange={this.onChange} value={firstName} placeholder="First Name" required/>
+              <input name="lastName" style={styles.forminput}   onChange={this.onChange} value={lastName} placeholder="Last Name" required/>
+
+            </div>
+          
+            <div style={styles.formRow}>
+              <input style={styles.forminput} name="companyName" onChange={this.onChange} value={companyName} placeholder="Company Name" required/>
             </div>
             <div style={styles.formRow}>
-              <input name="lastName" onChange={this.onChange} value={lastName} placeholder="Last Name" required/>
+              <input name="email" style={styles.forminput} className="forminput" type="email" onChange={this.onChange} value={email} placeholder="Email" required/>
             </div>
             <div style={styles.formRow}>
-              <input name="companyName" onChange={this.onChange} value={companyName} placeholder="Company Name" required/>
+              <input type="checkbox" style={{marginLeft: 0, marginRight: 10}} name="developer" onChange={() => this.setState({ developer: !developer })} checked={developer} />
+              <label style={{ fontSize: 14 }}>I am a Developer</label>
             </div>
-            <div style={styles.formRow}>
-              <input name="email" type="email" onChange={this.onChange} value={email} placeholder="Email" required/>
-            </div>
-            <div style={styles.formRow}>
-              <input type="checkbox" name="developer" onChange={() => this.setState({ developer: !developer })} checked={developer} />
-              <label style={{ fontSize: 10 }}>I am a developer</label>
-            </div>
-            <div style={{...styles.formRow, paddingTop: 8 }}>
-              <input type="submit" value="Submit" style={{ marginRight: 20 }} />
-              <input type="submit" value="Cancel" onClick={this.onCancel} />
+            <div style={{...styles.formRow, paddingTop: 10 }}>
+              <input type="submit" style={styles.button} value="Submit" />
+              <input type="submit" style={styles.buttonsecondary} value="Cancel" onClick={this.onCancel} />
             </div>
           </form>
         </div>

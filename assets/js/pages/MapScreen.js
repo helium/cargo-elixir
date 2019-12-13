@@ -208,7 +208,7 @@ class MapScreen extends React.Component {
     this.setState({ highlightedHotspot: h }, () => {
       setTimeout(() => {
         this.setState({ highlightedHotspot: null })
-      }, 100)
+      }, 1000)
     })
   }
 

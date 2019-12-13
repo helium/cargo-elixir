@@ -6025,6 +6025,14 @@ react-svg-loader@^3.0.3:
     loader-utils "^1.2.3"
     react-svg-core "^3.0.3"
 
+react-typekit@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/react-typekit/-/react-typekit-1.1.4.tgz#1305675bd8d348eeafc53f013edf1ec164b01f73"
+  integrity sha512-8RyqqRsfzQnTmVWX++GTGexIKs6sGQbgDGvajV3kNRUW7gB+pJG2NRTU8lnHgjsIhIGprlYlIsWi09mY3zm2Ug==
+  dependencies:
+    lodash "^4.17.4"
+    prop-types "^15.5.10"
+
 react@^16.12.0:
   version "16.12.0"
   resolved "https://registry.yarnpkg.com/react/-/react-16.12.0.tgz#0c0a9c6a142429e3614834d5a778e18aa78a0b83"
