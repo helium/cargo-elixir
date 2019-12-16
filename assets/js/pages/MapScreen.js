@@ -70,7 +70,8 @@ class MapScreen extends React.Component {
       showHotspots: true,
       highlightHotspoted: null,
       receivedNewDevice: false,
-      transmittingDevices: {}
+      transmittingDevices: {},
+      loading: false,
     }
 
     this.selectDevice = this.selectDevice.bind(this)
@@ -142,31 +143,39 @@ class MapScreen extends React.Component {
   }
 
   selectDevice(d) {
-    fetch("api/devices/" + d.device_id + "?last_at=" + d.created_at)
-      .then(res => res.json())
-      .then(data => {
-        console.log("Received " + data.length + " Packets")
-        let packets = {
-          data: {},
-          geoJson: null,
-          seq: []
-        }
+    if (this.state.loading) return
+    
+    this.setState({ loading: true }, () => {
+      fetch("api/devices/" + d.device_id + "?last_at=" + d.created_at)
+        .then(res => res.json())
+        .then(data => {
+          console.log("Received " + data.length + " Packets")
+          let packets = {
+            data: {},
+            geoJson: null,
+            seq: []
+          }
 
-        data.forEach(d => {
-          packets = this.parsePackets(packets, d)
-        })
-        const packetsArray = packets.seq.map(s => packets.data[s])
-        packets.geoJson = geoJSON.parse(packetsArray, { Point: ["coordinates.lat", "coordinates.lon"]})
-        const lastPacket = packetsArray[packetsArray.length - 1]
+          data.forEach(d => {
+            packets = this.parsePackets(packets, d)
+          })
+          const packetsArray = packets.seq.map(s => packets.data[s])
+          packets.geoJson = geoJSON.parse(packetsArray, { Point: ["coordinates.lat", "coordinates.lon"]})
+          const lastPacket = packetsArray[packetsArray.length - 1]
 
-        this.setState({
-          selectedDevice: d,
-          packets,
-          lastPacket,
-          mapCenter: [lastPacket.coordinates.lon, lastPacket.coordinates.lat],
-          hotspots: { data: [] },
+          this.setState({
+            selectedDevice: d,
+            packets,
+            lastPacket,
+            mapCenter: [lastPacket.coordinates.lon, lastPacket.coordinates.lat],
+            hotspots: { data: [] },
+            loading: false
+          })
         })
-      })
+        .catch(err => {
+          this.setState({ loading: false })
+        })
+    })
   }
 
   findDevice(deviceId) {
@@ -368,6 +377,7 @@ class MapScreen extends React.Component {
 
         <NavBar
           devices={devices}
+          loading={this.state.loading}
           names={devices.map(d => {
             const hotspot = hotspotsData[d.hotspot]
             if (hotspot) return hotspot.short_city + ", " + hotspot.short_state

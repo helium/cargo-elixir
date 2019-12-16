@@ -34,8 +34,9 @@ const styles = {
   tipSmallContainer: {
     fontSize: 12,
     color: 'red',
-    width: 150,
-    marginTop: 16,
+    width: 200,
+    marginTop: 12,
+    height: 30,
   },
   paddingBox: {
     paddingLeft: 16,
@@ -90,7 +91,7 @@ class NavBar extends Component {
   }
 
   render() {
-    const { devices, names, selectDevice, selectedDevice, receivedNewDevice, findDevice } = this.props
+    const { devices, names, selectDevice, selectedDevice, receivedNewDevice, findDevice, loading } = this.props
     const { show } = this.state
 
     return (
@@ -102,14 +103,18 @@ class NavBar extends Component {
           <React.Fragment>
             {matches.small && (
               <div style={styles.smallContainer}>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', borderBottom: '1px solid #D3D3D3', position: 'relative'}}>
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', borderBottom: '1px solid #D3D3D3', position: 'relative'}}>
                   <LogoSm style={{...styles.paddingBox, paddingTop: 10, paddingBottom: 10 }} />
                   {
-                    receivedNewDevice && (
-                      <p style={styles.tipSmallContainer}>New devices found, please reload the page to refresh device list</p>
+                    loading && (
+                      <p style={styles.tipSmallContainer}>Loading selected device...</p>
                     )
                   }
-
+                  {
+                    !loading && receivedNewDevice && (
+                      <p style={{ ...styles.tipSmallContainer, marginTop: 8 }}>New devices found, please reload the page to refresh device list</p>
+                    )
+                  }
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'row', overflow: 'auto' }}>
@@ -139,9 +144,14 @@ class NavBar extends Component {
                     <SearchBar findDevice={findDevice}/>
                   </div>
                 </div>
+                {
+                  loading && (
+                    <p style={{...styles.paddingBox, ...styles.tip }}>Loading selected device...</p>
+                  )
+                }
 
                 {
-                  receivedNewDevice && <p style={{...styles.paddingBox, ...styles.tip }}>New devices found, please reload the page to refresh device list</p>
+                  !loading && receivedNewDevice && <p style={{...styles.paddingBox, ...styles.tip }}>New devices found, please reload the page to refresh device list</p>
                 }
 
                 <div style={{ overflow: 'scroll', maxHeight: 'calc(100vh - 190px)' }}>
