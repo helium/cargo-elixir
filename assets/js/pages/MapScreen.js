@@ -77,7 +77,6 @@ class MapScreen extends React.Component {
     this.findDevice = this.findDevice.bind(this)
     this.setChartType = this.setChartType.bind(this)
     this.setHotspots = this.setHotspots.bind(this)
-    this.clearHotspots = this.clearHotspots.bind(this)
     this.toggleHotspots = this.toggleHotspots.bind(this)
     this.highlightHotspot = this.highlightHotspot.bind(this)
     this.parsePackets = this.parsePackets.bind(this)
@@ -194,10 +193,6 @@ class MapScreen extends React.Component {
       })
       this.setState({ hotspots })
     })
-  }
-
-  clearHotspots() {
-    this.setState({ hotspots: { data: [] } })
   }
 
   toggleHotspots() {
@@ -390,7 +385,6 @@ class MapScreen extends React.Component {
               lastPacket={lastPacket}
               selectedDevice={selectedDevice}
               setChartType={this.setChartType}
-              clearHotspots={this.clearHotspots}
               toggleHotspots={this.toggleHotspots}
               chartType={chartType}
               hotspots={hotspots}

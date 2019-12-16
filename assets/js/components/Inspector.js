@@ -110,7 +110,7 @@ const styles = {
     borderTop: '5px solid white',
     marginRight: 16,
   },
-  
+
   hotspotText: {
     fontSize: 13,
     fontWeight: 500,
@@ -175,7 +175,7 @@ class Inspector extends Component {
   }
 
   render() {
-    const { lastPacket, selectedDevice, setChartType, chartType, hotspots, clearHotspots, toggleHotspots, showHotspots } = this.props
+    const { lastPacket, selectedDevice, setChartType, chartType, hotspots, toggleHotspots, showHotspots } = this.props
     const { show } = this.state
 
     return (
@@ -227,7 +227,6 @@ class Inspector extends Component {
                       <div>
                         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
                           <p style={styles.pill} onClick={toggleHotspots}>{showHotspots ? "Hide" : "Show"} Hotspot Paths</p>
-                          <p style={styles.pill} onClick={clearHotspots}>Close Hotspot List</p>
                         </div>
                         {this.renderHotspotsList()}
                       </div>
@@ -262,7 +261,7 @@ class Inspector extends Component {
                           <p style={styles.header}>Avg Speed</p>
                           <p style={styles.value}>{lastPacket.speed}mph</p>
                         </div>
-                     
+
                         <div style={{...styles.pod, backgroundColor: chartType === 'elevation' && '#CBDEF2'}} className="podHoverblue" onClick={() => setChartType("elevation")}>
                           <p style={styles.header}>Elevation</p>
                           <p style={styles.value}>{lastPacket.elevation}m</p>
@@ -271,7 +270,7 @@ class Inspector extends Component {
                           <p style={styles.header}>Voltage</p>
                           <p style={styles.value}>{lastPacket.battery.toFixed(0)}</p>
                         </div>
-                     
+
                         <div style={{ ...styles.pod, backgroundColor: chartType === 'rssi' && '#CBDEF2'}} className="podHoverblue" onClick={() => setChartType("rssi")}>
                           <p style={styles.header}>RSSI</p>
                           <p style={styles.value}>{lastPacket.rssi}</p>
@@ -284,7 +283,6 @@ class Inspector extends Component {
                       <div>
                         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                           <p style={styles.pill} onClick={toggleHotspots}>{showHotspots ? "Hide" : "Show"} Hotspot Paths</p>
-                          <p style={styles.pill} onClick={clearHotspots}>Close Hotspot List</p>
                         </div>
                         {this.renderHotspotsList()}
                       </div>
