@@ -122,26 +122,7 @@ const styles = {
     marginBottom: 6,
     padding: '6px 10px',
     boxSizing: 'border-box',
-
-
   },
-  pill: {
-    display: 'inline-block',
-    fontSize: 12,
-    backgroundColor: '#1B8DFF',
-    fontWeight: '500',
-    color: '#ffffff',
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingTop: 6,
-    paddingBottom: 6,
-    borderRadius: 4,
-    marginTop: 2,
-    width: '50%',
-    cursor: 'pointer',
-    margin: '10px 5px 10px 10px',
-    textAlign: 'center',
-  }
 }
 
 class Inspector extends Component {
@@ -149,19 +130,30 @@ class Inspector extends Component {
     super(props)
 
     this.state = {
-      show: true
+      show: true,
+      showHS: true,
     }
     this.toggle = this.toggle.bind(this)
+    this.toggleHS = this.toggleHS.bind(this)
   }
 
   toggle() {
     this.setState({ show: !this.state.show})
   }
 
+  toggleHS() {
+    this.setState({ showHS: !this.state.showHS })
+  }
+
   renderHotspotsList() {
-    const { hotspots, highlightHotspot } = this.props
-    if (hotspots.data.length > 0) return (
-      <div style={{ maxHeight: 150, overflow: 'scroll', marginTop: 8, padding: 10 }} className="nomargintop">
+    const { hotspots, highlightHotspot, toggleHotspots, showHotspots } = this.props
+    const { showHS } = this.state
+    if (hotspots.data.length > 0 && showHS) return (
+      <div style={{ maxHeight: 150, overflow: 'scroll', padding: 10 }} className="nomargintop">
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+          <input type="checkbox" onChange={toggleHotspots} checked={showHotspots} />
+          <p style={styles.header}>Show Hotspot Paths</p>
+        </div>
         <p style={styles.header} className="paddingLeft">{hotspots.data.length} Hotspots Witnessed</p>
         <div className="hotspotwrapper">
         {
@@ -174,8 +166,25 @@ class Inspector extends Component {
     )
   }
 
+  renderHotspotsToggleBar() {
+    const { showHS } = this.state
+    const { hotspots } = this.props
+    if (hotspots.data.length > 0) {
+      return (
+        <div style={{ ...styles.bar, backgroundColor: '#8D66E8' }} onClick={this.toggleHS}>
+          <p style={{ color: 'white', fontSize: 14 }}>Hotspots List</p>
+          {
+            showHS ? <div style={styles.arrowUp}></div> : <div style={styles.arrowDown}></div>
+          }
+        </div>
+      )
+    } else {
+      return <div />
+    }
+  }
+
   render() {
-    const { lastPacket, selectedDevice, setChartType, chartType, hotspots, toggleHotspots, showHotspots } = this.props
+    const { lastPacket, selectedDevice, setChartType, chartType, hotspots, toggleHotspots } = this.props
     const { show } = this.state
 
     return (
@@ -224,12 +233,8 @@ class Inspector extends Component {
                           <p style={styles.value}>n/a</p>
                         </div>
                       </div>
-                      <div>
-                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                          <p style={styles.pill} onClick={toggleHotspots}>{showHotspots ? "Hide" : "Show"} Hotspot Paths</p>
-                        </div>
-                        {this.renderHotspotsList()}
-                      </div>
+                      {this.renderHotspotsToggleBar()}
+                      {this.renderHotspotsList()}
                     </React.Fragment>
                   )
                 }
@@ -280,12 +285,8 @@ class Inspector extends Component {
                           <p style={styles.value}>{lastPacket.snr}</p>
                         </div>
                       </div>
-                      <div>
-                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                          <p style={styles.pill} onClick={toggleHotspots}>{showHotspots ? "Hide" : "Show"} Hotspot Paths</p>
-                        </div>
-                        {this.renderHotspotsList()}
-                      </div>
+                      {this.renderHotspotsToggleBar()}
+                      {this.renderHotspotsList()}
                     </React.Fragment>
                   )
                 }
