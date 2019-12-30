@@ -144,7 +144,7 @@ class MapScreen extends React.Component {
 
   selectDevice(d) {
     if (this.state.loading) return
-    
+
     this.setState({ loading: true }, () => {
       fetch("api/devices/" + d.device_id + "?last_at=" + d.created_at)
         .then(res => res.json())
@@ -229,6 +229,14 @@ class MapScreen extends React.Component {
     packet.speed = Number(packet.speed)
     packet.snr = Number(packet.snr)
     if (packet.lat == 0 || packet.lon == 0) return packets //filter out africa packets
+    if (packet.lat > 90 || packet.lat < -90) {
+      console.log("Packet dropped, latitude value out of range")
+      return packets
+    }
+    if (packet.lat > 180 || packet.lat < -180) {
+      console.log("Packet dropped, longitude value out of range")
+      return packets
+    }
     const seq_id = packet.seq_num + "-" + packet.fingerprint
 
     if (packets.data[seq_id]) {
