@@ -45,7 +45,8 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     border: "3px solid #8B62EA",
-    boxShadow: "0px 2px 4px 0px rgba(0,0,0,0.5)"
+    boxShadow: "0px 2px 4px 0px rgba(0,0,0,0.5)",
+    cursor: "pointer",
   }
 }
 
@@ -325,6 +326,7 @@ class MapScreen extends React.Component {
                     style={styles.gatewayMarker}
                     anchor="center"
                     coordinates={[h.lng, h.lat]}
+                    onClick={() => this.highlightHotspot(h)}
                   />
                 )
               }
@@ -408,6 +410,7 @@ class MapScreen extends React.Component {
               hotspots={hotspots}
               showHotspots={showHotspots}
               highlightHotspot={this.highlightHotspot}
+              highlightedHotspot={highlightedHotspot}
             />
           )
         }
