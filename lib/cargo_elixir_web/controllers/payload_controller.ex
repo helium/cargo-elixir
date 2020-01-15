@@ -26,4 +26,18 @@ defmodule CargoElixirWeb.PayloadController do
     payloads = Payloads.get_payloads(device_id, last_packet_time)
     conn |> json(payloads)
   end
+
+  def get_stats(conn, %{ "seconds" => seconds }) do
+    currently_transmitting = Payloads.get_currently_transmitting() |> List.first()
+    devices_transmitted = Payloads.get_device_stats() |> List.first()
+    hotspots_transmitted = Payloads.get_hotspot_stats() |> List.first()
+    payloads_transmitted = Payloads.get_payload_stats() |> List.first()
+    conn
+      |> json(%{
+        currentlyTransmitting: currently_transmitting,
+        devicesTransmitted: devices_transmitted,
+        hotspotsTransmitted: hotspots_transmitted,
+        payloadsTransmitted: payloads_transmitted,
+      })
+  end
 end

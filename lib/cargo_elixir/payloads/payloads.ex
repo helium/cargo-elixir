@@ -67,4 +67,44 @@ defmodule CargoElixir.Payloads do
       select: p
     Repo.all(query)
   end
+
+  def get_currently_transmitting() do
+    current_unix = DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_unix()
+    date_threshold = DateTime.from_unix!(current_unix - 120)
+
+    query = from p in Payload,
+      where: p.created_at > ^date_threshold,
+      select: count(p.device_id, :distinct)
+    Repo.all(query)
+  end
+
+  def get_device_stats() do
+    current_unix = DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_unix()
+    date_threshold = DateTime.from_unix!(current_unix - 86400)
+
+    query = from p in Payload,
+      where: p.created_at > ^date_threshold,
+      select: count(p.device_id, :distinct)
+    Repo.all(query)
+  end
+
+  def get_hotspot_stats() do
+    current_unix = DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_unix()
+    date_threshold = DateTime.from_unix!(current_unix - 86400)
+
+    query = from p in Payload,
+      where: p.created_at > ^date_threshold,
+      select: count(p.hotspot_id, :distinct)
+    Repo.all(query)
+  end
+
+  def get_payload_stats() do
+    current_unix = DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_unix()
+    date_threshold = DateTime.from_unix!(current_unix - 86400)
+
+    query = from p in Payload,
+      where: p.created_at > ^date_threshold,
+      select: count(p)
+    Repo.all(query)
+  end
 end

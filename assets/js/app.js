@@ -3,24 +3,14 @@ import ReactDOM from "react-dom"
 import '../css/app.css'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import MapScreen from "./pages/MapScreen"
-
-class Login extends React.Component {
-  render() {
-    return (
-      <div>
-        <h1>Login Page</h1>
-        <Link to="/">Home</Link>
-      </div>
-    )
-  }
-}
+import StatsPage from "./pages/StatsPage"
 
 class App extends React.Component {
   render() {
     return (
       <Router>
         <Route exact path="/" component={MapScreen}/>
-        {false && <Route path="/login" component={Login}/>}
+        <Route exact path="/stats" component={StatsPage}/>
       </Router>
     )
   }
