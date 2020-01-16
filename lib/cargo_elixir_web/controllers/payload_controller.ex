@@ -27,11 +27,11 @@ defmodule CargoElixirWeb.PayloadController do
     conn |> json(payloads)
   end
 
-  def get_stats(conn, %{ "seconds" => seconds }) do
+  def get_stats(conn, %{ "time" => time }) do
     currently_transmitting = Payloads.get_currently_transmitting() |> List.first()
-    devices_transmitted = Payloads.get_device_stats() |> List.first()
-    hotspots_transmitted = Payloads.get_hotspot_stats() |> List.first()
-    payloads_transmitted = Payloads.get_payload_stats() |> List.first()
+    devices_transmitted = Payloads.get_device_stats(time) |> List.first()
+    hotspots_transmitted = Payloads.get_hotspot_stats(time) |> List.first()
+    payloads_transmitted = Payloads.get_payload_stats(time) |> List.first()
     conn
       |> json(%{
         currentlyTransmitting: currently_transmitting,

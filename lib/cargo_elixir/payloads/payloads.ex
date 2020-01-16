@@ -78,33 +78,56 @@ defmodule CargoElixir.Payloads do
     Repo.all(query)
   end
 
-  def get_device_stats() do
+  def get_device_stats(time) do
     current_unix = DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_unix()
-    date_threshold = DateTime.from_unix!(current_unix - 86400)
-
-    query = from p in Payload,
-      where: p.created_at > ^date_threshold,
-      select: count(p.device_id, :distinct)
-    Repo.all(query)
+    query =
+      case time do
+        "24h" ->
+          "SELECT count(distinct device_id) FROM payloads WHERE created_at > NOW() - interval '24 hour'"
+        "7d" ->
+          "SELECT count(*) FROM (SELECT * FROM distinct_devices_last_7 UNION SELECT distinct device_id FROM payloads WHERE created_at > CURRENT_DATE) AS count;"
+        "30d" ->
+          "SELECT count(*) FROM (SELECT * FROM distinct_devices_last_30 UNION SELECT distinct device_id FROM payloads WHERE created_at > CURRENT_DATE) AS count;"
+        "all" ->
+          "SELECT count(*) FROM (SELECT * FROM distinct_devices_all_time UNION SELECT distinct device_id FROM payloads WHERE created_at > CURRENT_DATE) AS count;"
+      end
+    run_query(query)
   end
 
-  def get_hotspot_stats() do
+  def get_hotspot_stats(time) do
     current_unix = DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_unix()
-    date_threshold = DateTime.from_unix!(current_unix - 86400)
-
-    query = from p in Payload,
-      where: p.created_at > ^date_threshold,
-      select: count(p.hotspot_id, :distinct)
-    Repo.all(query)
+    query =
+      case time do
+        "24h" ->
+          "SELECT count(distinct hotspot_id) FROM payloads WHERE created_at > NOW() - interval '24 hour'"
+        "7d" ->
+          "SELECT count(*) FROM (SELECT * FROM distinct_hotspots_last_7 UNION SELECT distinct hotspot_id FROM payloads WHERE created_at > CURRENT_DATE) AS count;"
+        "30d" ->
+          "SELECT count(*) FROM (SELECT * FROM distinct_hotspots_last_30 UNION SELECT distinct hotspot_id FROM payloads WHERE created_at > CURRENT_DATE) AS count;"
+        "all" ->
+          "SELECT count(*) FROM (SELECT * FROM distinct_hotspots_all_time UNION SELECT distinct hotspot_id FROM payloads WHERE created_at > CURRENT_DATE) AS count;"
+      end
+    run_query(query)
   end
 
-  def get_payload_stats() do
+  def get_payload_stats(time) do
     current_unix = DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_unix()
-    date_threshold = DateTime.from_unix!(current_unix - 86400)
+    query =
+      case time do
+        "24h" ->
+          "SELECT count(*) FROM payloads WHERE created_at > NOW() - interval '24 hour'"
+        "7d" ->
+          "SELECT SUM(count) FROM (SELECT * FROM total_payloads_last_7 UNION SELECT count(*) FROM payloads WHERE created_at > CURRENT_DATE) AS sum;"
+        "30d" ->
+          "SELECT SUM(count) FROM (SELECT * FROM total_payloads_last_30 UNION SELECT count(*) FROM payloads WHERE created_at > CURRENT_DATE) AS sum;"
+        "all" ->
+          "SELECT SUM(count) FROM (SELECT * FROM total_payloads_all_time UNION SELECT count(*) FROM payloads WHERE created_at > CURRENT_DATE) AS sum;"
+      end
+    run_query(query)
+  end
 
-    query = from p in Payload,
-      where: p.created_at > ^date_threshold,
-      select: count(p)
-    Repo.all(query)
+  defp run_query(query) do
+    result = Ecto.Adapters.SQL.query!(Repo, query)
+    result.rows |> List.first()
   end
 end

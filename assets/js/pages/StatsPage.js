@@ -1,10 +1,10 @@
 import React from "react"
 
 const tabs = [
-  { title: "Last 24 hours", seconds: 86400 },
-  { title: "Last 7 days", seconds: 86400 * 7 },
-  { title: "Last 30 days", seconds: 86400 * 30 },
-  { title: "All time", seconds: 1000000000 },
+  { title: "Last 24 hours", time: '24h' },
+  { title: "Last 7 days", time: '7d' },
+  { title: "Last 30 days", time: '30d' },
+  { title: "All time", time: 'all' },
 ]
 
 class StatsPage extends React.Component {
@@ -17,14 +17,14 @@ class StatsPage extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`api/stats?seconds=${86400}`)
+    fetch(`api/stats?time=24h`)
       .then(res => res.json())
       .then(stats => this.setState({ stats }))
   }
 
   changeTab(tabIndex) {
     this.setState({ tabIndex, stats: null })
-    fetch(`api/stats?seconds=${tabs[tabIndex].seconds}`)
+    fetch(`api/stats?time=${tabs[tabIndex].time}`)
       .then(res => res.json())
       .then(stats => this.setState({ stats }))
   }
