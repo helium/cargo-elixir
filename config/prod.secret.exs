@@ -27,3 +27,5 @@ secret_key_base =
 config :cargo_elixir, CargoElixirWeb.Endpoint,
   http: [:inet6, port: String.to_integer(System.get_env("PORT") || "4000")],
   secret_key_base: secret_key_base
+
+config :cargo_elixir, console_stats_secret: System.get_env("CONSOLE_STATS_SECRET")

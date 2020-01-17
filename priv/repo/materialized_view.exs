@@ -20,6 +20,6 @@
 #   END LOOP;
 # END;
 # $$ LANGUAGE plpgsql;
-# select * from total_payloads_last_7 2858860
-# select * from total_payloads_last_30 13885637
-# select * from total_payloads_all_time 19890399
+# select * from total_payloads_last_7 2872445
+# select * from total_payloads_last_30 13623127
+# select * from total_payloads_all_time 20387278

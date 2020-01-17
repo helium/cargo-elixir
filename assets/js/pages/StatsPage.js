@@ -12,7 +12,8 @@ class StatsPage extends React.Component {
     super(props)
     this.state = {
       tabIndex: 0,
-      stats: null
+      stats: null,
+      consoleStats: { users: "", organizations: "", devices: "", teams: "" },
     }
   }
 
@@ -20,6 +21,10 @@ class StatsPage extends React.Component {
     fetch(`api/stats?time=24h`)
       .then(res => res.json())
       .then(stats => this.setState({ stats }))
+
+    fetch('api/console_stats')
+      .then(res => res.json())
+      .then(consoleStats => this.setState({consoleStats}))
   }
 
   changeTab(tabIndex) {
@@ -30,7 +35,7 @@ class StatsPage extends React.Component {
   }
 
   render() {
-    const { tabIndex, stats } = this.state
+    const { tabIndex, stats, consoleStats } = this.state
     return (
       <div>
         <h1>Cargo Statistics</h1>
@@ -43,6 +48,11 @@ class StatsPage extends React.Component {
             <button key={t.title} onClick={() => this.changeTab(i)}>{t.title}</button>
           ))
         }
+        <h1>Console Statistics</h1>
+        <p>Number of Users: {consoleStats.users}</p>
+        <p>Number of Organizations: {consoleStats.organizations}</p>
+        <p>Number of Teams: {consoleStats.teams}</p>
+        <p>Number of Devices: {consoleStats.devices}</p>
       </div>
     )
   }
