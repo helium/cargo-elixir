@@ -10,6 +10,8 @@ import geoJSON from "geojson";
 import hotspotsJSON from '../data/hotspots.json'
 import socket from "../socket"
 
+const CURRENT_OUI = 1
+
 const hotspotsData = {}
 hotspotsJSON.data.forEach(d => {
   hotspotsData[d.name.toLowerCase()] = d
@@ -104,6 +106,8 @@ class MapScreen extends React.Component {
       .receive("error", resp => { console.log("Unable to join", resp) })
 
     channel.on('new_payload', d => {
+      if (d.oui !== CURRENT_OUI) return
+
       if (this.state.selectedDevice && this.state.selectedDevice.device_id === d.device_id) {
         const packets = this.parsePackets(this.state.packets, d)
         const packetsArray = packets.seq.map(s => packets.data[s])
@@ -132,7 +136,7 @@ class MapScreen extends React.Component {
   }
 
   loadDevices() {
-    fetch("api/oui/1")
+    fetch("api/oui/" + CURRENT_OUI)
       .then(res => res.json())
       .then(devices => {
         this.setState({ devices })
@@ -180,7 +184,7 @@ class MapScreen extends React.Component {
   }
 
   findDevice(deviceId) {
-    fetch("api/oui/1" + "?device_id=" + deviceId)
+    fetch("api/oui/" + CURRENT_OUI + "?device_id=" + deviceId)
       .then(res => res.json())
       .then(device => {
         if (device.length == 0) {
