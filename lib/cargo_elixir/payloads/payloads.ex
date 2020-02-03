@@ -4,7 +4,7 @@ defmodule CargoElixir.Payloads do
 
   alias CargoElixir.Payloads.Payload
 
-  def create_payload(packet = %{ "device_id" => device_id, "gateway" => hotspot_id, "oui" => oui, "payload" => payload, "rssi" => rssi, "sequence" => seq_num, "timestamp" => reported, "fingerprint" => fingerprint}) do
+  def create_payload(packet = %{ "device_id" => device_id, "gateway" => hotspot_id, "oui" => oui, "payload" => payload, "rssi" => rssi, "sequence" => seq_num, "timestamp" => reported}) do
     binary = payload |> :base64.decode()
     binary_length = byte_size(binary)
 
@@ -29,7 +29,6 @@ defmodule CargoElixir.Payloads do
       |> Map.put(:battery, battery)
       |> Map.put(:seq_num, seq_num)
       |> Map.put(:reported, reported |> DateTime.from_unix!())
-      |> Map.put(:fingerprint, Integer.to_string(fingerprint))
       |> Map.put(:snr, Map.get(packet, "snr", 0))
     %Payload{}
     |> Payload.changeset(attrs)

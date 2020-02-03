@@ -238,7 +238,7 @@ class MapScreen extends React.Component {
       console.log("Packet dropped, longitude value out of range")
       return packets
     }
-    const seq_id = packet.seq_num + "-" + packet.fingerprint
+    const seq_id = packet.seq_num + "-" + packet.reported
 
     if (packets.data[seq_id]) {
       if (packets.data[seq_id].rssi < packet.rssi) packets.data[seq_id].rssi = packet.rssi

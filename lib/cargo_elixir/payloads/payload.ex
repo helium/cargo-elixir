@@ -25,8 +25,8 @@ defmodule CargoElixir.Payloads.Payload do
   def changeset(payload, attrs) do
     changeset =
       payload
-      |> cast(attrs, [:device_id, :hotspot_id, :oui, :lat, :lon, :speed, :rssi, :elevation, :battery, :seq_num, :reported, :fingerprint, :snr])
+      |> cast(attrs, [:device_id, :hotspot_id, :oui, :lat, :lon, :speed, :rssi, :elevation, :battery, :seq_num, :reported, :snr])
       |> put_change(:created_at, DateTime.utc_now |> DateTime.truncate(:second))
-      |> validate_required([:device_id, :hotspot_id, :oui, :lat, :lon, :speed, :rssi, :elevation, :battery, :seq_num, :reported, :created_at, :fingerprint, :snr])
+      |> validate_required([:device_id, :hotspot_id, :oui, :lat, :lon, :speed, :rssi, :elevation, :battery, :seq_num, :reported, :created_at, :snr])
   end
 end
