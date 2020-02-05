@@ -35,6 +35,27 @@ defmodule CargoElixir.Payloads do
     |> Repo.insert()
   end
 
+  def create_payload(packet = %{ "device_id" => device_id, "gateway" => hotspot_id, "oui" => oui, "lat" => lat, "lon" => lon, "speed" => speed, "elevation" => elevation,
+                     "battery" => battery, "rssi" => rssi, "sequence" => seq_num, "timestamp" => reported}) do
+
+    attrs = %{}
+      |> Map.put(:device_id, device_id)
+      |> Map.put(:hotspot_id, hotspot_id)
+      |> Map.put(:oui, oui)
+      |> Map.put(:lat, lat)
+      |> Map.put(:lon, lon)
+      |> Map.put(:speed, speed)
+      |> Map.put(:rssi, rssi)
+      |> Map.put(:elevation, elevation)
+      |> Map.put(:battery, battery)
+      |> Map.put(:seq_num, seq_num)
+      |> Map.put(:reported, reported |> DateTime.from_unix!())
+      |> Map.put(:snr, Map.get(packet, "snr", 0))
+    %Payload{}
+    |> Payload.changeset(attrs)
+    |> Repo.insert()
+  end
+
   def get_devices(oui) do
     current_unix = DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_unix()
     date_threshold = DateTime.from_unix!(current_unix - 259200)
