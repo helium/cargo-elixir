@@ -289,7 +289,7 @@ class Inspector extends Component {
                         </div>
                         <div style={{ ...styles.pod,  backgroundColor: chartType === 'snr' && '#CBDEF2' }} className="podHoverblue" onClick={() => setChartType("snr")}>
                           <p style={styles.header}>SNR</p>
-                          <p style={styles.value}>{lastPacket.snr.toFixed(2)}</p>
+                          <p style={styles.value}>{(Math.round(lastPacket.snr * 100) / 100).toFixed(2)}</p>
                         </div>
                       </div>
                       {this.renderHotspotsToggleBar()}
