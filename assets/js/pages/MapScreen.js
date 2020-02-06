@@ -202,8 +202,9 @@ class MapScreen extends React.Component {
     this.setState({ hotspots: { data: [] } }, () => {
       const hotspots = { data: [], center: geoToMarkerCoords(properties.coordinates) }
       properties.hotspots.forEach(h => {
-        if (hotspotsData[h]) hotspots.data.push(hotspotsData[h])
-        else console.log("Found undefined hotspot name not shown on map, updating hotspots.json might help")
+        const hotspotName = h.trim().split('-').join(' ')
+        if (hotspotsData[hotspotName]) hotspots.data.push(hotspotsData[hotspotName])
+        else console.log("Found undefined hotspot name not shown on map, updating hotspots.json might help", h)
       })
       this.setState({ hotspots })
     })
