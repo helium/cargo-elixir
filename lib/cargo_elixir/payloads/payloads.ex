@@ -6,30 +6,40 @@ defmodule CargoElixir.Payloads do
 
   def create_payload(packet = %{ "device_id" => device_id, "gateway" => hotspot_id, "oui" => oui, "payload" => payload, "rssi" => rssi, "sequence" => seq_num, "timestamp" => reported}) do
     binary = payload |> :base64.decode()
-    binary_length = byte_size(binary)
-
-    <<lat :: integer-signed-32>> = binary_part(binary, 0, 4)
-    <<lon :: integer-signed-32>> = binary_part(binary, 4, 4)
-    <<elevation :: integer-signed-16>> = binary_part(binary, 8, 2)
-    <<speed :: integer-signed-16>> = binary_part(binary, 10, 2)
-    battery = 0
-    if binary_length > 12 do
-      <<battery :: integer-unsigned-16>> = binary_part(binary, 12, 2)
-    end
 
     attrs = %{}
       |> Map.put(:device_id, device_id)
       |> Map.put(:hotspot_id, hotspot_id)
       |> Map.put(:oui, oui)
-      |> Map.put(:lat, lat / 10000000)
-      |> Map.put(:lon, lon / 10000000)
-      |> Map.put(:speed, speed)
       |> Map.put(:rssi, rssi)
-      |> Map.put(:elevation, elevation)
-      |> Map.put(:battery, battery)
       |> Map.put(:seq_num, seq_num)
       |> Map.put(:reported, reported |> DateTime.from_unix!())
       |> Map.put(:snr, Map.get(packet, "snr", 0))
+
+    attrs = case binary do
+       <<lat :: integer-signed-32, lon :: integer-signed-32, elevation :: integer-signed-16, speed :: integer-signed-16>> ->
+           attrs
+             |> Map.put(:lat, lat / 10000000)
+             |> Map.put(:lon, lon / 10000000)
+             |> Map.put(:elevation, elevation)
+             |> Map.put(:speed, speed)
+             |> Map.put(:battery, 0)
+       <<lat :: integer-signed-32, lon :: integer-signed-32, elevation :: integer-signed-16, speed :: integer-signed-16, battery :: integer-unsigned-16>> ->
+           attrs
+             |> Map.put(:lat, lat / 10000000)
+             |> Map.put(:lon, lon / 10000000)
+             |> Map.put(:elevation, elevation)
+             |> Map.put(:speed, speed)
+             |> Map.put(:battery, battery)
+       <<lat :: integer-signed-little-32, lon :: integer-signed-little-32, _heading :: integer-6, _last_fix_failed :: integer-1 , _trip :: integer-1, speed :: integer-8, battery :: integer-8>> ->
+           attrs
+             |> Map.put(:lat, lat * 0.0000001)
+             |> Map.put(:lon, lon * 0.0000001)
+             |> Map.put(:elevation, 0)
+             |> Map.put(:speed, speed)
+             |> Map.put(:battery, battery)
+    end
+
     %Payload{}
     |> Payload.changeset(attrs)
     |> Repo.insert()
