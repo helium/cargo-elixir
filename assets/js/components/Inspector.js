@@ -224,16 +224,16 @@ class Inspector extends Component {
 
                         <div style={{...styles.podsm, backgroundColor: chartType === 'elevation' && '#CBDEF2'}} className="podHoverblue" onClick={() => setChartType("elevation")}>
                           <p style={styles.header}>Elevation</p>
-                          <p style={styles.value}>{lastPacket.elevation}m</p>
+                          <p style={styles.value}>{lastPacket.elevation.toFixed(0)}m</p>
                         </div>
                         <div style={{ ...styles.podsm, backgroundColor: chartType === 'battery' && '#CBDEF2' }} className="podHoverblue" onClick={() => setChartType("battery")}>
                           <p style={styles.header}>Voltage</p>
-                          <p style={styles.value}>{lastPacket.battery.toFixed(0)}</p>
+                          <p style={styles.value}>{lastPacket.battery.toFixed(2)}v</p>
                         </div>
 
                         <div style={{ ...styles.podsm, backgroundColor: chartType === 'rssi' && '#CBDEF2'}} className="podHoverblue" onClick={() => setChartType("rssi")}>
                           <p style={styles.header}>RSSI</p>
-                          <p style={styles.value}>{lastPacket.rssi}</p>
+                          <p style={styles.value}>{lastPacket.rssi}dBm</p>
                         </div>
                         <div style={{ ...styles.podsm,  backgroundColor: chartType === 'snr' && '#CBDEF2' }} className="podHoverblue" onClick={() => setChartType("snr")}>
                           <p style={styles.header}>SNR</p>
@@ -276,16 +276,16 @@ class Inspector extends Component {
 
                         <div style={{...styles.pod, backgroundColor: chartType === 'elevation' && '#CBDEF2'}} className="podHoverblue" onClick={() => setChartType("elevation")}>
                           <p style={styles.header}>Elevation</p>
-                          <p style={styles.value}>{lastPacket.elevation}m</p>
+                          <p style={styles.value}>{lastPacket.elevation.toFixed(0)}m</p>
                         </div>
                         <div style={{ ...styles.pod,  backgroundColor: chartType === 'battery' && '#CBDEF2' }} className="podHoverblue" onClick={() => setChartType("battery")}>
                           <p style={styles.header}>Voltage</p>
-                          <p style={styles.value}>{lastPacket.battery.toFixed(0)}</p>
+                          <p style={styles.value}>{lastPacket.battery.toFixed(2)}v</p>
                         </div>
 
                         <div style={{ ...styles.pod, backgroundColor: chartType === 'rssi' && '#CBDEF2'}} className="podHoverblue" onClick={() => setChartType("rssi")}>
                           <p style={styles.header}>RSSI</p>
-                          <p style={styles.value}>{lastPacket.rssi}</p>
+                          <p style={styles.value}>{lastPacket.rssi}dBm</p>
                         </div>
                         <div style={{ ...styles.pod,  backgroundColor: chartType === 'snr' && '#CBDEF2' }} className="podHoverblue" onClick={() => setChartType("snr")}>
                           <p style={styles.header}>SNR</p>
