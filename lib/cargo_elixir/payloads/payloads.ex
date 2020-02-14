@@ -17,7 +17,13 @@ defmodule CargoElixir.Payloads do
       |> Map.put(:snr, Map.get(packet, "snr", 0))
 
     attrs = case binary do
-       <<0x01, 0x88, lat :: integer-signed-big-24, lon :: integer-signed-big-24, alt :: integer-signed-big-24, 0x08, 0x02, batt :: integer-signed-big-16, 0x03, 0x71, _accx :: integer-signed-big-16, _accy :: integer-signed-big-16, _accz :: integer-signed-big-16, 0x05, 0x86, _gyrox :: integer-signed-big-16, _gyroy :: integer-signed-big-16, _gyroz :: integer-signed-big-16, 0x09, 0x02, _magx :: integer-signed-big-16, 0x0a, 0x02, _magy :: integer-signed-big-16, 0x0b, 0x02, _magz :: integer-signed-big-16>> ->
+       <<0x01, 0x88, lat :: integer-signed-big-24, lon :: integer-signed-big-24, alt :: integer-signed-big-24, 
+       0x08, 0x02, batt :: integer-signed-big-16, 
+       0x03, 0x71, _accx :: integer-signed-big-16, _accy :: integer-signed-big-16, _accz :: integer-signed-big-16, 
+       0x05, 0x86, _gyrox :: integer-signed-big-16, _gyroy :: integer-signed-big-16, _gyroz :: integer-signed-big-16, 
+       0x09, 0x02, _magx :: integer-signed-big-16, 
+       0x0a, 0x02, _magy :: integer-signed-big-16, 
+       0x0b, 0x02, _magz :: integer-signed-big-16>> ->
             attrs
              |> Map.put(:lat, lat * 0.0001)
              |> Map.put(:lon, lon * 0.0001)
