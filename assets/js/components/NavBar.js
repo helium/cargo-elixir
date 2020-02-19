@@ -91,7 +91,7 @@ class NavBar extends Component {
   }
 
   render() {
-    const { devices, names, selectDevice, selectedDevice, receivedNewDevice, findDevice, loading } = this.props
+    const { devices, names, selectDevice, selectedDevice, findDevice, loading } = this.props
     const { show } = this.state
 
     return (
@@ -108,11 +108,6 @@ class NavBar extends Component {
                   {
                     loading && (
                       <p style={styles.tipSmallContainer}>Loading selected device...</p>
-                    )
-                  }
-                  {
-                    !loading && receivedNewDevice && (
-                      <p style={{ ...styles.tipSmallContainer, marginTop: 8 }}>New devices found, please reload the page to refresh device list</p>
                     )
                   }
                 </div>
@@ -148,10 +143,6 @@ class NavBar extends Component {
                   loading && (
                     <p style={{...styles.paddingBox, ...styles.tip }}>Loading selected device...</p>
                   )
-                }
-
-                {
-                  !loading && receivedNewDevice && <p style={{...styles.paddingBox, ...styles.tip }}>New devices found, please reload the page to refresh device list</p>
                 }
 
                 <div style={{ overflow: 'scroll', maxHeight: 'calc(100vh - 190px)' }}>
