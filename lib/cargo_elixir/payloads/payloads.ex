@@ -51,6 +51,13 @@ defmodule CargoElixir.Payloads do
              |> Map.put(:elevation, 0)
              |> Map.put(:speed, speed)
              |> Map.put(:battery, battery)
+        _ ->
+            attrs
+              |> Map.put(:lat, 0)
+              |> Map.put(:lon, 0)
+              |> Map.put(:elevation, 0)
+              |> Map.put(:speed, 0)
+              |> Map.put(:battery, 0)
     end
     attrs = if attrs.lat > 90 or attrs.lat < -90 do 
       attrs |> Map.put(:lat, 0)
