@@ -10,6 +10,7 @@ defmodule CargoElixirWeb.Router do
   end
 
   pipeline :api do
+    plug CORSPlug, origin: "*"
     plug :accepts, ["json"]
   end
 
@@ -18,6 +19,8 @@ defmodule CargoElixirWeb.Router do
 
     get "/oui/:oui", PayloadController, :get_devices
     get "/devices/:id", PayloadController, :get_payloads
+    options "/oui/:oui", PayloadController, :options
+    options "/devices/:id", PayloadController, :options
     get "/stats", PayloadController, :get_stats
     get "/console_stats", PageController, :get_console_stats
     post "/payloads", PayloadController, :create
