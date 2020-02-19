@@ -105,11 +105,6 @@ class NavBar extends Component {
               <div style={styles.smallContainer}>
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', borderBottom: '1px solid #D3D3D3', position: 'relative'}}>
                   <LogoSm style={{...styles.paddingBox, paddingTop: 10, paddingBottom: 10 }} />
-                  {
-                    loading && (
-                      <p style={styles.tipSmallContainer}>Loading selected device...</p>
-                    )
-                  }
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'row', overflow: 'auto' }}>
@@ -139,11 +134,6 @@ class NavBar extends Component {
                     <SearchBar findDevice={findDevice}/>
                   </div>
                 </div>
-                {
-                  loading && (
-                    <p style={{...styles.paddingBox, ...styles.tip }}>Loading selected device...</p>
-                  )
-                }
 
                 <div style={{ overflow: 'scroll', maxHeight: 'calc(100vh - 190px)' }}>
                   { show && devices.map((d, i) =>
