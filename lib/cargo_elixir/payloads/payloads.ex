@@ -17,58 +17,63 @@ defmodule CargoElixir.Payloads do
       |> Map.put(:snr, Map.get(packet, "snr", 0))
 
     attrs = case binary do
-       <<0x01, 0x88, lat :: integer-signed-big-24, lon :: integer-signed-big-24, alt :: integer-signed-big-24, 
-       0x08, 0x02, batt :: integer-signed-big-16, 
-       0x03, 0x71, _accx :: integer-signed-big-16, _accy :: integer-signed-big-16, _accz :: integer-signed-big-16, 
-       0x05, 0x86, _gyrox :: integer-signed-big-16, _gyroy :: integer-signed-big-16, _gyroz :: integer-signed-big-16, 
-       0x09, 0x02, _magx :: integer-signed-big-16, 
-       0x0a, 0x02, _magy :: integer-signed-big-16, 
-       0x0b, 0x02, _magz :: integer-signed-big-16>> ->
+      # RAK7200
+      <<0x01, 0x88, lat :: integer-signed-big-24, lon :: integer-signed-big-24, alt :: integer-signed-big-24, 
+      0x08, 0x02, batt :: integer-signed-big-16, 
+      0x03, 0x71, _accx :: integer-signed-big-16, _accy :: integer-signed-big-16, _accz :: integer-signed-big-16, 
+      0x05, 0x86, _gyrox :: integer-signed-big-16, _gyroy :: integer-signed-big-16, _gyroz :: integer-signed-big-16, 
+      0x09, 0x02, _magx :: integer-signed-big-16, 
+      0x0a, 0x02, _magy :: integer-signed-big-16, 
+      0x0b, 0x02, _magz :: integer-signed-big-16>> ->
           attrs
             |> Map.put(:lat, lat * 0.0001)
             |> Map.put(:lon, lon * 0.0001)
             |> Map.put(:elevation, alt * 0.001)
             |> Map.put(:speed, 0)
             |> Map.put(:battery, batt * 0.01)
-       <<lat :: integer-signed-32, lon :: integer-signed-32, elevation :: integer-signed-16, speed :: integer-signed-16>> ->
+      # Helium/Arduino without battery
+      <<lat :: integer-signed-32, lon :: integer-signed-32, elevation :: integer-signed-16, speed :: integer-signed-16>> ->
           attrs
             |> Map.put(:lat, lat / 10000000)
             |> Map.put(:lon, lon / 10000000)
             |> Map.put(:elevation, elevation)
             |> Map.put(:speed, speed)
             |> Map.put(:battery, 0)
-       <<lat :: integer-signed-32, lon :: integer-signed-32, elevation :: integer-signed-16, speed :: integer-signed-16, battery :: integer-unsigned-16>> ->
+      # Helium/Arduino with battery
+      <<lat :: integer-signed-32, lon :: integer-signed-32, elevation :: integer-signed-16, speed :: integer-signed-16, battery :: integer-unsigned-16>> ->
           attrs
             |> Map.put(:lat, lat / 10000000)
             |> Map.put(:lon, lon / 10000000)
             |> Map.put(:elevation, elevation)
             |> Map.put(:speed, speed)
             |> Map.put(:battery, battery)
-       <<lat :: integer-signed-little-32, lon :: integer-signed-little-32, _heading :: integer-6, _last_fix_failed :: integer-1 , _trip :: integer-1, speed :: integer-8, battery :: integer-8>> ->
+      # DigitalMatter Oyster/Yabby
+      <<lat :: integer-signed-little-32, lon :: integer-signed-little-32, _heading :: integer-6, _last_fix_failed :: integer-1 , _trip :: integer-1, speed :: integer-8, battery :: integer-8>> ->
           attrs
             |> Map.put(:lat, lat * 0.0000001)
             |> Map.put(:lon, lon * 0.0000001)
             |> Map.put(:elevation, 0)
             |> Map.put(:speed, speed)
-            |> Map.put(:battery, battery)
-        <<_button :: integer-1, _moving :: integer-1, _ :: integer-1, _gnssfix :: integer-1, _gnsserror :: integer-1, _ :: integer-3,
-        batt :: integer-unsigned-4, _ :: integer-4,
-        _temp :: integer-7, _ :: integer-1,
-        lat :: integer-signed-little-28, _ :: integer-4,
-        lon :: integer-signed-little-29, _ :: integer-3>> ->
+            |> Map.put(:battery, (battery * 25) / 1000)
+      # Browan Object Locator
+      <<_button :: integer-1, _moving :: integer-1, _ :: integer-1, _gnssfix :: integer-1, _gnsserror :: integer-1, _ :: integer-3,
+      batt :: integer-unsigned-4, _ :: integer-4,
+      _temp :: integer-7, _ :: integer-1,
+      lat :: integer-signed-little-28, _ :: integer-4,
+      lon :: integer-signed-little-29, _ :: integer-3>> ->
           attrs
             |> Map.put(:lat, lat * 0.0000001)
             |> Map.put(:lon, lon * 0.0000001)
             |> Map.put(:elevation, 0)
             |> Map.put(:speed, 0)
             |> Map.put(:battery, (batt + 25) / 10)
-        _ ->
-            attrs
-              |> Map.put(:lat, 0)
-              |> Map.put(:lon, 0)
-              |> Map.put(:elevation, 0)
-              |> Map.put(:speed, 0)
-              |> Map.put(:battery, 0)
+      _ ->
+          attrs
+            |> Map.put(:lat, 0)
+            |> Map.put(:lon, 0)
+            |> Map.put(:elevation, 0)
+            |> Map.put(:speed, 0)
+            |> Map.put(:battery, 0)
     end
     attrs = if attrs.lat > 90 or attrs.lat < -90 do 
       attrs |> Map.put(:lat, 0)
