@@ -67,14 +67,14 @@ defmodule CargoElixir.Payloads do
             |> Map.put(:elevation, 0)
             |> Map.put(:speed, 0)
             |> Map.put(:battery, (batt + 25) / 10)
-      # Keyco
+      # Keyco Tracker
       <<_company :: integer-16, _product :: integer-24, _version :: integer-8, _major :: integer-16, _minor :: integer-16, _deveui :: integer-32, _timestamp :: integer-32,
       lat :: float-32, lon :: float-32, elevation :: integer-16, speed :: integer-16, _hdop :: integer-24, _gpsnum :: integer-8, _ :: integer-32, battery :: integer-8, _ :: integer-80>> ->
           attrs
             |> Map.put(:lat, lat)
             |> Map.put(:lon, lon)
-            |> Map.put(:elevation, elevation)
-            |> Map.put(:speed, speed * 0.6214)
+            |> Map.put(:elevation, round(elevation * 0.1))
+            |> Map.put(:speed, round((speed * 0.1) * 0.6214))
             |> Map.put(:battery, (4/100) * battery)
       _ ->
           attrs
