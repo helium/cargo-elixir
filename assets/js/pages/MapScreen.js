@@ -396,8 +396,9 @@ class MapScreen extends React.Component {
           devices={devices}
           loading={this.state.loading}
           names={devices.map(d => {
-            const hotspot = hotspotsData[d.hotspot]
-            if (hotspot) return hotspot.short_city + ", " + hotspot.short_state
+            const hotspotName = d.hotspot.replace(/-/g, ' ')
+            const hotspot = hotspotsData[hotspotName]
+            if (hotspot) return hotspot.long_city + ", " + hotspot.short_state
             return "Unknown"
           })}
           selectDevice={this.selectDevice}
