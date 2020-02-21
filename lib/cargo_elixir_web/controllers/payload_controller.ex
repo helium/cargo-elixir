@@ -17,8 +17,8 @@ defmodule CargoElixirWeb.PayloadController do
     conn |> json(device)
   end
 
-  def get_devices(conn, %{"oui" => oui}) do
-    devices = Payloads.get_devices(oui)
+  def get_devices(conn, %{}) do
+    devices = Payloads.get_devices()
     conn |> json(devices)
   end
 

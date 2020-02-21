@@ -115,15 +115,15 @@ defmodule CargoElixir.Payloads do
     |> Repo.insert()
   end
 
-  def get_devices(oui) do
+  def get_devices() do
     current_unix = DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_unix()
     date_threshold = DateTime.from_unix!(current_unix - 259200)
 
     query = from p in Payload,
-      where: p.oui == ^oui and p.created_at > ^date_threshold,
-      group_by: [p.device_id, p.oui],
-      select: %{ device_id: p.device_id, created_at: max(p.created_at), hotspot: min(p.hotspot_id) },
-      order_by: [desc: max(p.created_at)]
+      where: p.created_at > ^date_threshold,
+      order_by: [desc: p.created_at],
+      distinct: p.device_id,
+      select: %{ device_id: p.device_id, created_at: p.created_at, hotspot: p.hotspot_id, lat: p.lat}      
     Repo.all(query)
   end
 

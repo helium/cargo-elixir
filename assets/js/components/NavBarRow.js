@@ -34,10 +34,22 @@ const styles = {
     paddingBottom: 3,
     lineHeight: 1
   },
-  pill: {
+  pillRed: {
     display: 'inline-block',
     fontSize: 10,
     backgroundColor: 'red',
+    fontWeight: 'bold',
+    color: '#ffffff',
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 4,
+    paddingBottom: 4,
+    borderRadius: 15
+  },
+  pillGrey: {
+    display: 'inline-block',
+    fontSize: 10,
+    backgroundColor: 'grey',
     fontWeight: 'bold',
     color: '#ffffff',
     paddingLeft: 10,
@@ -70,7 +82,11 @@ class NavBarRow extends Component {
         <div style={{ textAlign: 'right' }}>
           {
             withinLast2Min ? (
-              <p style={styles.pill}>{timeAgo.format(latest, {flavour: "small"})}</p>
+              device.lat > 0 ? (
+                <p style={styles.pillRed}>{timeAgo.format(latest, {flavour: "small"})}</p>
+              ) : (
+                <p style={styles.pillGrey}>No GPS Fix</p>
+              )
             ) : (
               <p align="right" style={{ ...styles.tag, color: selected ? '#ffffff' : '#A9A9A9' }}>{timeAgo.format(latest, {flavour: "small"})}</p>
             )
