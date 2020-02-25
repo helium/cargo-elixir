@@ -83,7 +83,7 @@ class NavBar extends Component {
     this.state = {
       show: true
     }
-    this.toggle = this.toggle.bind(this)
+    this.toggle = this.toggle.bind(this)    
   }
 
   toggle() {
@@ -91,7 +91,7 @@ class NavBar extends Component {
   }
 
   render() {
-    const { devices, names, selectDevice, selectedDevice, findDevice, loading } = this.props
+    const { devices, names, selectDevice, selectedDevice, findDevice, loading, onSearchChange } = this.props
     const { show } = this.state
 
     return (
@@ -110,7 +110,7 @@ class NavBar extends Component {
                 <div style={{ display: 'flex', flexDirection: 'row', overflow: 'auto' }}>
                   <div style={{ borderBottom: '1px solid #D3D3D3', alignItems: 'center', display: 'flex' }}>
                     <div style={{ width: 200, paddingLeft: 8, paddingRight: 8 }}>
-                      <SearchBar findDevice={findDevice}/>
+                      <SearchBar devices={devices} onSearchChange={onSearchChange}/>
                     </div>
                   </div>
 
@@ -131,7 +131,7 @@ class NavBar extends Component {
                   </div>
 
                   <div style={{ padding: 16, borderBottom: '1px solid #D3D3D3' }}>
-                    <SearchBar findDevice={findDevice}/>
+                    <SearchBar devices={devices} onSearchChange={onSearchChange}/>
                   </div>
                 </div>
 

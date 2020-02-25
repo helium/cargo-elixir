@@ -64,6 +64,7 @@ class MapScreen extends React.Component {
     this.state = {
       showSignUp: window.localStorage ? !window.localStorage.getItem('seenSignUp') : true,
       devices: [],
+      oldDevices: [],
       selectedDevice: null,
       packets: {},
       lastPacket: null,
@@ -84,6 +85,7 @@ class MapScreen extends React.Component {
     this.highlightHotspot = this.highlightHotspot.bind(this)
     this.parsePackets = this.parsePackets.bind(this)
     this.hideSignUp = this.hideSignUp.bind(this)
+    this.onSearchChange = this.onSearchChange.bind(this)
   }
 
   componentDidMount() {
@@ -144,8 +146,17 @@ class MapScreen extends React.Component {
         devices.sort(function(a,b){
           return new Date(b.created_at) - new Date(a.created_at);
         });
-        this.setState({ devices })
+        const oldDevices = devices;
+        this.setState({ devices, oldDevices })
       })
+  }
+
+  onSearchChange(e) {
+    const { devices, oldDevices } = this.state
+    var results = oldDevices.filter(obj => {
+      return obj.device_id.toString().includes(e.target.value)
+    })
+    this.setState({devices: results})
   }
 
   hideSignUp() {
@@ -407,6 +418,7 @@ class MapScreen extends React.Component {
           selectDevice={this.selectDevice}
           findDevice={this.findDevice}
           selectedDevice={selectedDevice}
+          onSearchChange={this.onSearchChange}
         />
 
         {
