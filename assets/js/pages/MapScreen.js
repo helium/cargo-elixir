@@ -9,6 +9,7 @@ import { packetsToChartData } from '../data/chart'
 import geoJSON from "geojson";
 import hotspotsJSON from '../data/hotspots.json'
 import socket from "../socket"
+import { get } from '../data/Rest'
 
 const CURRENT_OUI = 1
 
@@ -121,14 +122,14 @@ class MapScreen extends React.Component {
         })
       }
 
-      const devices = this.state.devices
-      const index = findIndex(this.state.devices, { device_id: d.device_id })
-      if (devices[index]) {
-        devices[index].created_at = d.created_at
-        devices.sort(function(a,b){
+      const allDevices = this.state.allDevices
+      const index = findIndex(this.state.allDevices, { device_id: d.device_id })
+      if (allDevices[index]) {
+        allDevices[index].created_at = d.created_at
+        allDevices.sort(function(a,b){
           return new Date(b.created_at) - new Date(a.created_at);
         });
-        this.setState({ devices })
+        this.setState({ allDevices })
 
         const { transmittingDevices } = this.state
         transmittingDevices[d.device_id] = [Number(d.lon), Number(d.lat)]
@@ -140,7 +141,7 @@ class MapScreen extends React.Component {
   }
 
   loadDevices() {
-    fetch("api/oui/" + CURRENT_OUI)
+    get("oui/" + CURRENT_OUI)
       .then(res => res.json())
       .then(devices => {
         devices.sort(function(a,b){
@@ -167,7 +168,7 @@ class MapScreen extends React.Component {
     if (this.state.loading) return
 
     this.setState({ loading: true }, () => {
-      fetch("api/devices/" + d.device_id + "?last_at=" + d.created_at)
+      get("devices/" + d.device_id + "?last_at=" + d.created_at)
         .then(res => res.json())
         .then(data => {
           console.log("Received " + data.length + " Packets")
@@ -200,7 +201,7 @@ class MapScreen extends React.Component {
   }
 
   findDevice(deviceId) {
-    fetch("api/oui/" + CURRENT_OUI + "?device_id=" + deviceId)
+    get("oui/" + CURRENT_OUI + "?device_id=" + deviceId)
       .then(res => res.json())
       .then(device => {
         if (device.length == 0) {

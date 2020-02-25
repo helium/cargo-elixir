@@ -8,7 +8,10 @@
 // from the params if you are not using authentication.
 import {Socket} from "phoenix"
 
-let socket = new Socket("/socket", {params: {token: window.userToken}})
+const SOCKET_URL = '/socket'
+// const SOCKET_URL = 'wss://cargo.helium.com/socket'
+
+let socket = new Socket(SOCKET_URL)
 
 // When you connect, you'll often need to authenticate the client.
 // For example, imagine you have an authentication plug, `MyAuth`,
