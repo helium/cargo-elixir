@@ -154,7 +154,6 @@ class MapScreen extends React.Component {
 
   onSearchChange(e) {
     const { devices, allDevices } = this.state
-    console.log(allDevices)
     var results = allDevices.filter(obj => {
       return obj.device_id.toString().includes(e.target.value)
     })
