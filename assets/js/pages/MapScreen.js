@@ -64,7 +64,7 @@ class MapScreen extends React.Component {
     this.state = {
       showSignUp: window.localStorage ? !window.localStorage.getItem('seenSignUp') : true,
       devices: [],
-      oldDevices: [],
+      allDevices: [],
       selectedDevice: null,
       packets: {},
       lastPacket: null,
@@ -146,14 +146,14 @@ class MapScreen extends React.Component {
         devices.sort(function(a,b){
           return new Date(b.created_at) - new Date(a.created_at);
         });
-        const oldDevices = devices;
-        this.setState({ devices, oldDevices })
+        const allDevices = devices;
+        this.setState({ devices, allDevices })
       })
   }
 
   onSearchChange(e) {
-    const { devices, oldDevices } = this.state
-    var results = oldDevices.filter(obj => {
+    const { devices, allDevices } = this.state
+    var results = allDevices.filter(obj => {
       return obj.device_id.toString().includes(e.target.value)
     })
     this.setState({devices: results})
