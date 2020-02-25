@@ -3,7 +3,8 @@ defmodule CargoElixirWeb.Endpoint do
 
   socket "/socket", CargoElixirWeb.UserSocket,
     websocket: [timeout: 45_000],
-    longpoll: false
+    longpoll: false,
+    check_origin: false
 
   # Serve at "/" the static files from "priv/static" directory.
   #
