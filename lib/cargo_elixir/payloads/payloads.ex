@@ -123,7 +123,7 @@ defmodule CargoElixir.Payloads do
       where: p.created_at > ^date_threshold,
       order_by: [desc: p.created_at],
       distinct: p.device_id,
-      select: %{ device_id: p.device_id, created_at: p.created_at, hotspot: p.hotspot_id, lat: p.lat}      
+      select: %{device_id: p.device_id, created_at: p.created_at, hotspot: p.hotspot_id, lat: p.lat, lon: p.lon}
     Repo.all(query)
   end
 
