@@ -147,6 +147,14 @@ defmodule CargoElixir.Payloads do
     Repo.all(query)
   end
 
+  def get_all_payloads(oui) do
+    time_limit = DateTime.utc_now() |> DateTime.add(-3600, :second)
+    query = from p in Payload,
+      where: (p.oui == ^oui and p.created_at > ^time_limit),
+      select: %{ device_id: p.device_id, lat: p.lat, lon: p.lon, created_at: p.created_at }
+    Repo.all(query)
+  end
+
   def get_currently_transmitting() do
     current_unix = DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_unix()
     date_threshold = DateTime.from_unix!(current_unix - 120)

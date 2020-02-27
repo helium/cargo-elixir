@@ -18,6 +18,7 @@ defmodule CargoElixirWeb.Router do
     pipe_through :api
 
     get "/oui/:oui", PayloadController, :get_devices
+    get "/oui/:oui/payloads", PayloadController, :get_payloads
     get "/devices/:id", PayloadController, :get_payloads
     options "/oui/:oui", PayloadController, :options
     options "/devices/:id", PayloadController, :options
