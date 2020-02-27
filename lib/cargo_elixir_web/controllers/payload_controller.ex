@@ -27,6 +27,12 @@ defmodule CargoElixirWeb.PayloadController do
     conn |> json(payloads)
   end
 
+  # return all payloads for an oui for the past hour
+  def get_payloads(conn, %{"oui" => oui }) do
+    payloads = Payloads.get_all_payloads(oui)
+    conn |> json(payloads)
+  end
+
   def get_stats(conn, %{ "time" => time }) do
     currently_transmitting = Payloads.get_currently_transmitting() |> List.first()
     devices_transmitted = Payloads.get_device_stats(time) |> List.first()
