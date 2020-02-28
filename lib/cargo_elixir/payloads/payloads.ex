@@ -9,7 +9,7 @@ defmodule CargoElixir.Payloads do
     binary = payload |> :base64.decode()
     # temporary hack to create a device_id out of a dev_eui until we can migrate fully
     {device_id, _} = Integer.parse(dev_eui, 16)
-    device_id =  trunc(device_id / 1000000000000000)
+    device_id = Integer.digits(device_id) |> Enum.take(-4) |> Integer.undigits()
     attrs = %{}
       |> Map.put(:device_id, device_id)
       |> Map.put(:hotspot_id, hotspot_id)
