@@ -3,10 +3,30 @@ defmodule CargoElixir.Payloads do
   alias CargoElixir.Repo
 
   alias CargoElixir.Payloads.Payload
+    # temporary support for the new routerv3 channel format
+    def create_payload(packet = %{ "app_eui" => _app_eui, "dev_eui" => dev_eui, "name" => _name, "gateway" => hotspot_id, "payload" => payload, 
+                     "rssi" => rssi, "sequence" => sequence, "timestamp" => reported, "snr" => snr, "spreading" => _spreading}) do
+    binary = payload |> :base64.decode()
+    # temporary hack to create a device_id out of a dev_eui until we can migrate fully
+    {device_id, _} = Integer.parse(dev_eui, 16)
+    device_id =  trunc(device_id / 1000000000000000)
+    attrs = %{}
+      |> Map.put(:device_id, device_id)
+      |> Map.put(:hotspot_id, hotspot_id)
+      |> Map.put(:oui, 1)
+      |> Map.put(:rssi, rssi)
+      |> Map.put(:seq_num, sequence)
+      |> Map.put(:reported, reported |> DateTime.from_unix!())
+      |> Map.put(:snr, snr)
+
+    attrs = decode_payload(binary, attrs)
+    %Payload{}
+    |> Payload.changeset(attrs)
+    |> Repo.insert()
+  end
 
   def create_payload(packet = %{ "device_id" => device_id, "gateway" => hotspot_id, "oui" => oui, "payload" => payload, "rssi" => rssi, "sequence" => seq_num, "timestamp" => reported}) do
     binary = payload |> :base64.decode()
-
     attrs = %{}
       |> Map.put(:device_id, device_id)
       |> Map.put(:hotspot_id, hotspot_id)
@@ -16,6 +36,33 @@ defmodule CargoElixir.Payloads do
       |> Map.put(:reported, reported |> DateTime.from_unix!())
       |> Map.put(:snr, Map.get(packet, "snr", 0))
 
+    attrs = decode_payload(binary, attrs)
+    %Payload{}
+    |> Payload.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_payload(packet = %{ "device_id" => device_id, "gateway" => hotspot_id, "oui" => oui, "lat" => lat, "lon" => lon, "speed" => speed, "elevation" => elevation,
+                     "battery" => battery, "rssi" => rssi, "sequence" => seq_num, "timestamp" => reported}) do
+    attrs = %{}
+      |> Map.put(:device_id, device_id)
+      |> Map.put(:hotspot_id, hotspot_id)
+      |> Map.put(:oui, oui)
+      |> Map.put(:lat, lat)
+      |> Map.put(:lon, lon)
+      |> Map.put(:speed, speed)
+      |> Map.put(:rssi, rssi)
+      |> Map.put(:elevation, elevation)
+      |> Map.put(:battery, battery)
+      |> Map.put(:seq_num, seq_num)
+      |> Map.put(:reported, reported |> DateTime.from_unix!())
+      |> Map.put(:snr, Map.get(packet, "snr", 0))
+    %Payload{}
+    |> Payload.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def decode_payload(binary, attrs) do
     attrs = case binary do
       # RAK7200
       <<0x01, 0x88, lat :: integer-signed-big-24, lon :: integer-signed-big-24, alt :: integer-signed-big-24, 
@@ -31,6 +78,19 @@ defmodule CargoElixir.Payloads do
             |> Map.put(:elevation, alt * 0.001)
             |> Map.put(:speed, 0)
             |> Map.put(:battery, batt * 0.01)
+      # Browan Object Locator
+      << _ :: integer-3, _gnsserror :: integer-1, _gnssfix :: integer-1, _ :: integer-1, _moving :: integer-1, _button :: integer-1, 
+      _ :: integer-4, batt :: integer-unsigned-4,
+      _ :: integer-1, _temp :: integer-7,
+      lat :: integer-signed-little-32,
+      temp_lon :: integer-signed-little-24, _accuracy :: integer-3, i :: integer-unsigned-5>> ->
+        <<lon :: integer-signed-little-29>> = <<temp_lon :: unsigned-little-24, i :: unsigned-5>>
+          attrs
+            |> Map.put(:lat, lat / 1000000)
+            |> Map.put(:lon, lon / 1000000)
+            |> Map.put(:elevation, 0)
+            |> Map.put(:speed, 0)
+            |> Map.put(:battery, (batt + 25) / 10)
       # Helium/Arduino without battery
       <<lat :: integer-signed-32, lon :: integer-signed-32, elevation :: integer-signed-16, speed :: integer-signed-16>> ->
           attrs
@@ -54,19 +114,7 @@ defmodule CargoElixir.Payloads do
             |> Map.put(:lon, lon * 0.0000001)
             |> Map.put(:elevation, 0)
             |> Map.put(:speed, speed)
-            |> Map.put(:battery, (battery * 25) / 1000)
-      # Browan Object Locator
-      <<_button :: integer-1, _moving :: integer-1, _ :: integer-1, _gnssfix :: integer-1, _gnsserror :: integer-1, _ :: integer-3,
-      batt :: integer-unsigned-4, _ :: integer-4,
-      _temp :: integer-7, _ :: integer-1,
-      lat :: integer-signed-little-28, _ :: integer-4,
-      lon :: integer-signed-little-29, _ :: integer-3>> ->
-          attrs
-            |> Map.put(:lat, lat * 0.0000001)
-            |> Map.put(:lon, lon * 0.0000001)
-            |> Map.put(:elevation, 0)
-            |> Map.put(:speed, 0)
-            |> Map.put(:battery, (batt + 25) / 10)
+            |> Map.put(:battery, (battery * 25) / 1000)      
       # Keyco Tracker
       <<_company :: integer-16, _product :: integer-24, _version :: integer-8, _major :: integer-16, _minor :: integer-16, _deveui :: integer-32, _timestamp :: integer-32,
       lat :: float-32, lon :: float-32, elevation :: integer-16, speed :: integer-16, _hdop :: integer-24, _gpsnum :: integer-8, _ :: integer-32, battery :: integer-8, _ :: integer-80>> ->
@@ -89,30 +137,7 @@ defmodule CargoElixir.Payloads do
     else
       attrs
     end
-    %Payload{}
-    |> Payload.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  def create_payload(packet = %{ "device_id" => device_id, "gateway" => hotspot_id, "oui" => oui, "lat" => lat, "lon" => lon, "speed" => speed, "elevation" => elevation,
-                     "battery" => battery, "rssi" => rssi, "sequence" => seq_num, "timestamp" => reported}) do
-
-    attrs = %{}
-      |> Map.put(:device_id, device_id)
-      |> Map.put(:hotspot_id, hotspot_id)
-      |> Map.put(:oui, oui)
-      |> Map.put(:lat, lat)
-      |> Map.put(:lon, lon)
-      |> Map.put(:speed, speed)
-      |> Map.put(:rssi, rssi)
-      |> Map.put(:elevation, elevation)
-      |> Map.put(:battery, battery)
-      |> Map.put(:seq_num, seq_num)
-      |> Map.put(:reported, reported |> DateTime.from_unix!())
-      |> Map.put(:snr, Map.get(packet, "snr", 0))
-    %Payload{}
-    |> Payload.changeset(attrs)
-    |> Repo.insert()
+    attrs
   end
 
   def get_devices() do
