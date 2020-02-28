@@ -79,7 +79,7 @@ defmodule CargoElixir.Payloads do
             |> Map.put(:speed, 0)
             |> Map.put(:battery, batt * 0.01)
       # Browan Object Locator
-      << _ :: integer-3, _gnsserror :: integer-1, _gnssfix :: integer-1, _ :: integer-1, _moving :: integer-1, _button :: integer-1, 
+      << 0 :: integer-1, 0 :: integer-1, 0 :: integer-1, _gnsserror :: integer-1, _gnssfix :: integer-1, _ :: integer-1, _moving :: integer-1, _button :: integer-1, 
       _ :: integer-4, batt :: integer-unsigned-4,
       _ :: integer-1, _temp :: integer-7,
       lat :: integer-signed-little-32,
