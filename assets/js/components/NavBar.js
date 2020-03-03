@@ -11,7 +11,7 @@ const styles = {
     top: 0,
     left: 0,
     backgroundColor: '#ffffff',
-    width: 230,
+    width: 375,
     zIndex: 10,
     height: '100vh',
   },

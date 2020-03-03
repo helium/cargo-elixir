@@ -259,8 +259,8 @@ class Inspector extends Component {
                   show && (
                     <React.Fragment>
                       <div style={styles.top}>
-                        <p style={styles.header}>Device ID:</p>
-                        <p style={styles.value}>{selectedDevice.device_id}</p>
+                        <p style={styles.header}>Name:</p>
+                        <p style={styles.value}>{selectedDevice.name}</p>
                         <p style={{...styles.header, marginTop: 8 }}>Hotspot:</p>
                         <p style={styles.value}>{startCase(lastPacket.hotspots[lastPacket.hotspots.length - 1])}</p>
                       </div>

@@ -13,12 +13,11 @@ const styles = {
     paddingLeft: 16,
     paddingRight: 16,
     cursor: 'pointer',
-    minWidth: 180,
+    minWidth: 300,
      '&:hover': {
         backgroundColor: '#0D47A1 !important',
     }
   },
-
   title: {
     fontSize: 16,
     fontWeight: 500,
@@ -27,6 +26,10 @@ const styles = {
     padding: '3px 10px 4px',
     borderRadius: 6,
     marginLeft: 0,
+    maxWidth: 180,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
   tag: {
     fontSize: 11,
@@ -78,7 +81,7 @@ class NavBarRow extends Component {
 
         className="podHover"
       >
-        <p key={device.device_id} style={{ ...styles.title, color: selected ? '#1B8DFF' : '#ffffff', backgroundColor: selected ? '#ffffff' : '#1B8DFF' }}>{device.device_id}</p>
+        <p key={device.device_id} style={{ ...styles.title, color: selected ? '#1B8DFF' : '#ffffff', backgroundColor: selected ? '#ffffff' : '#1B8DFF' }}>{device.name}</p>
         <div style={{ textAlign: 'right' }}>
           {
             withinLast2Min ? (

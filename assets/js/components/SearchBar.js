@@ -1,20 +1,14 @@
 import React, { Component } from 'react'
 
 const SearchBar = ({ onSearchChange }) => (
-  <form style={styles.form} onSubmit={e => e.preventDefault()}>
+  <form onSubmit={e => e.preventDefault()}>
     <div style={styles.container}>
-      <input type="text" placeholder="Filter by device Id" onChange={onSearchChange} style={styles.input} />
+      <input type="text" placeholder="Filter by name" onChange={onSearchChange} style={styles.input} />
     </div>
   </form>
 )
 
 const styles = {
-  form: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
   container: {
     display: 'flex',
     flexDirection: 'row',

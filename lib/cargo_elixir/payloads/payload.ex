@@ -4,9 +4,10 @@ defmodule CargoElixir.Payloads.Payload do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
-  @derive {Jason.Encoder, only: [:battery,:created_at,:device_id,:elevation,:hotspot_id,:id,:lat,:lon,:oui,:reported,:rssi,:seq_num,:speed,:snr,:fingerprint]}
+  @derive {Jason.Encoder, only: [:name,:battery,:created_at,:device_id,:elevation,:hotspot_id,:id,:lat,:lon,:oui,:reported,:rssi,:seq_num,:speed,:snr,:fingerprint]}
   schema "payloads" do
-    field :device_id, :integer
+    field :device_id, :string
+    field :name, :string
     field :hotspot_id, :string
     field :oui, :integer
     field :lat, :decimal
@@ -25,8 +26,8 @@ defmodule CargoElixir.Payloads.Payload do
   def changeset(payload, attrs) do
     changeset =
       payload
-      |> cast(attrs, [:device_id, :hotspot_id, :oui, :lat, :lon, :speed, :rssi, :elevation, :battery, :seq_num, :reported, :snr])
+      |> cast(attrs, [:device_id, :name, :hotspot_id, :oui, :lat, :lon, :speed, :rssi, :elevation, :battery, :seq_num, :reported, :snr])
       |> put_change(:created_at, DateTime.utc_now |> DateTime.truncate(:second))
-      |> validate_required([:device_id, :hotspot_id, :oui, :lat, :lon, :speed, :rssi, :elevation, :battery, :seq_num, :reported, :created_at, :snr])
+      |> validate_required([:name, :device_id, :hotspot_id, :oui, :lat, :lon, :speed, :rssi, :elevation, :battery, :seq_num, :reported, :created_at, :snr])
   end
 end

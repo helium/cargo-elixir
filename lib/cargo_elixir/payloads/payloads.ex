@@ -4,14 +4,12 @@ defmodule CargoElixir.Payloads do
 
   alias CargoElixir.Payloads.Payload
     # temporary support for the new routerv3 channel format
-    def create_payload(packet = %{ "app_eui" => _app_eui, "dev_eui" => dev_eui, "name" => _name, "gateway" => hotspot_id, "payload" => payload, 
+    def create_payload(packet = %{ "id" => device_id, "app_eui" => _app_eui, "dev_eui" => dev_eui, "name" => name, "gateway" => hotspot_id, "payload" => payload, 
                      "rssi" => rssi, "sequence" => sequence, "timestamp" => reported, "snr" => snr, "spreading" => _spreading}) do
     binary = payload |> :base64.decode()
-    # temporary hack to create a device_id out of a dev_eui until we can migrate fully
-    {device_id, _} = Integer.parse(dev_eui, 16)
-    device_id = Integer.digits(device_id) |> Enum.take(-4) |> Integer.undigits()
     attrs = %{}
       |> Map.put(:device_id, device_id)
+      |> Map.put(:name, name)
       |> Map.put(:hotspot_id, hotspot_id)
       |> Map.put(:oui, 1)
       |> Map.put(:rssi, rssi)
@@ -25,23 +23,7 @@ defmodule CargoElixir.Payloads do
     |> Repo.insert()
   end
 
-  def create_payload(packet = %{ "device_id" => device_id, "gateway" => hotspot_id, "oui" => oui, "payload" => payload, "rssi" => rssi, "sequence" => seq_num, "timestamp" => reported}) do
-    binary = payload |> :base64.decode()
-    attrs = %{}
-      |> Map.put(:device_id, device_id)
-      |> Map.put(:hotspot_id, hotspot_id)
-      |> Map.put(:oui, oui)
-      |> Map.put(:rssi, rssi)
-      |> Map.put(:seq_num, seq_num)
-      |> Map.put(:reported, reported |> DateTime.from_unix!())
-      |> Map.put(:snr, Map.get(packet, "snr", 0))
-
-    attrs = decode_payload(binary, attrs)
-    %Payload{}
-    |> Payload.changeset(attrs)
-    |> Repo.insert()
-  end
-
+  # fix this as device_id wont work
   def create_payload(packet = %{ "device_id" => device_id, "gateway" => hotspot_id, "oui" => oui, "lat" => lat, "lon" => lon, "speed" => speed, "elevation" => elevation,
                      "battery" => battery, "rssi" => rssi, "sequence" => seq_num, "timestamp" => reported}) do
     attrs = %{}
@@ -148,7 +130,7 @@ defmodule CargoElixir.Payloads do
       where: p.created_at > ^date_threshold,
       order_by: [desc: p.created_at],
       distinct: p.device_id,
-      select: %{device_id: p.device_id, created_at: p.created_at, hotspot: p.hotspot_id, lat: p.lat, lon: p.lon}
+      select: %{name: p.name, device_id: p.device_id, created_at: p.created_at, hotspot: p.hotspot_id, lat: p.lat, lon: p.lon}
     Repo.all(query)
   end
 

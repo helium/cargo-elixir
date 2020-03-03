@@ -132,7 +132,8 @@ class MapScreen extends React.Component {
         this.setState({ allDevices })
 
         const { transmittingDevices } = this.state
-        transmittingDevices[d.device_id] = [Number(d.lon), Number(d.lat)]
+        //transmittingDevices[d.device_id] = [Number(d.lon), Number(d.lat)]
+        transmittingDevices[d.device_id] = d
         this.setState({ transmittingDevices })
       } else {
         this.loadDevices();
@@ -155,7 +156,7 @@ class MapScreen extends React.Component {
   onSearchChange(e) {
     const { devices, allDevices } = this.state
     var results = allDevices.filter(obj => {
-      return obj.device_id.toString().includes(e.target.value)
+      return obj.name.toLowerCase().includes(e.target.value.toLowerCase())
     })
     this.setState({devices: results})
   }
@@ -321,9 +322,9 @@ class MapScreen extends React.Component {
                 <Marker
                   style={styles.transmittingMarker}
                   anchor="center"
-                  coordinates={transmittingDevices[id]}
+                  coordinates={[Number(transmittingDevices[id].lon), Number(transmittingDevices[id].lat)]}
+                  onClick={() => this.selectDevice(transmittingDevices[id])}
                 >
-                  <p style={{ color: 'white', fontSize: 10 }}>{id}</p>
                 </Marker>
               )
             })
