@@ -17,7 +17,7 @@ defmodule CargoElixir.Payloads do
       |> Map.put(:reported, reported |> DateTime.from_unix!())
       |> Map.put(:snr, snr)
 
-    attrs = decode_payload(binary, attrs)
+    attrs = decode_payload(binary, attrs, dev_eui)
     %Payload{}
     |> Payload.changeset(attrs)
     |> Repo.insert()
@@ -44,7 +44,7 @@ defmodule CargoElixir.Payloads do
     |> Repo.insert()
   end
 
-  def decode_payload(binary, attrs) do
+  def decode_payload(binary, attrs, dev_eui) do
     attrs = case binary do
       # RAK7200
       <<0x01, 0x88, lat :: integer-signed-big-24, lon :: integer-signed-big-24, alt :: integer-signed-big-24, 
@@ -72,7 +72,7 @@ defmodule CargoElixir.Payloads do
             |> Map.put(:lon, lon / 1000000)
             |> Map.put(:elevation, 0)
             |> Map.put(:speed, 0)
-            |> Map.put(:battery, (batt + 25) / 10)
+            |> Map.put(:battery, (batt + 25) / 10)          
       # Helium/Arduino without battery
       <<lat :: integer-signed-32, lon :: integer-signed-32, elevation :: integer-signed-16, speed :: integer-signed-16>> ->
           attrs
@@ -100,6 +100,8 @@ defmodule CargoElixir.Payloads do
       # Keyco Tracker
       <<_company :: integer-16, _product :: integer-24, _version :: integer-8, _major :: integer-16, _minor :: integer-16, _deveui :: integer-32, _timestamp :: integer-32,
       lat :: float-32, lon :: float-32, elevation :: integer-16, speed :: integer-16, _hdop :: integer-24, _gpsnum :: integer-8, _ :: integer-32, battery :: integer-8, _ :: integer-80>> ->
+          # send to Keyco app server
+          HTTPoison.post "https://keycoiot-eu.solu-m.com/keyco/iotrestapi/solum/helium", "{\"latitude\": #{lat}, \"longitude\": #{lon}, \"deveui\": \"#{dev_eui}\", \"encryption\": 1, \"payload\": \"#{:base64.encode(binary)}\"}", [{"Content-Type", "application/json"}]
           attrs
             |> Map.put(:lat, lat)
             |> Map.put(:lon, lon)
