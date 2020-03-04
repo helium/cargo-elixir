@@ -10,7 +10,7 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :cargo_elixir, CargoElixirWeb.Endpoint,
-  url: [scheme: "https", host: "cargo-elixir", port: 443],
+  url: [scheme: "https", host: "cargo.helium.com", port: 443],
   check_origin: false,
   # check_origin: [
   #   "https://cargo-elixir.herokuapp.com",
