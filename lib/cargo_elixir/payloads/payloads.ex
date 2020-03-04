@@ -160,7 +160,7 @@ defmodule CargoElixir.Payloads do
     time_limit = DateTime.utc_now() |> DateTime.add(-3600, :second)
     query = from p in Payload,
       where: (p.oui == ^oui and p.created_at > ^time_limit),
-      select: %{ device_id: p.device_id, lat: p.lat, lon: p.lon, created_at: p.created_at }
+      select: %{ device_id: p.device_id, name: p.name, lat: p.lat, lon: p.lon, created_at: p.created_at }
     Repo.all(query)
   end
 
