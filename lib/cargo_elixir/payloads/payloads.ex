@@ -3,8 +3,7 @@ defmodule CargoElixir.Payloads do
   alias CargoElixir.Repo
 
   alias CargoElixir.Payloads.Payload
-    # temporary support for the new routerv3 channel format
-    def create_payload(packet = %{ "id" => device_id, "app_eui" => _app_eui, "dev_eui" => dev_eui, "name" => name, "gateway" => hotspot_id, "payload" => payload, 
+    def create_payload(packet = %{ "id" => device_id, "app_eui" => _app_eui, "dev_eui" => dev_eui, "name" => name, "hotspot_name" => hotspot_id, "payload" => payload, 
                      "rssi" => rssi, "sequence" => sequence, "timestamp" => reported, "snr" => snr, "spreading" => _spreading}) do
     binary = payload |> :base64.decode()
     attrs = %{}
