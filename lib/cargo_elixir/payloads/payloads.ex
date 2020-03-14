@@ -59,6 +59,15 @@ defmodule CargoElixir.Payloads do
             |> Map.put(:elevation, alt * 0.001)
             |> Map.put(:speed, 0)
             |> Map.put(:battery, batt * 0.01)
+      # Dragino LGT-92
+      <<lat :: integer-signed-32, lon :: integer-signed-32, _ :: integer-signed-1, _alarm :: integer-signed-1, battery :: integer-signed-14, 
+        _md :: integer-signed-2, _ln :: integer-signed-1, 3 :: integer-signed-5>> ->
+          attrs
+            |> Map.put(:lat, lat / 1000000)
+            |> Map.put(:lon, lon / 1000000)
+            |> Map.put(:elevation, 0)
+            |> Map.put(:speed, 0)
+            |> Map.put(:battery, battery / 1000)
       # Browan Object Locator
       << 0 :: integer-1, 0 :: integer-1, 0 :: integer-1, _gnsserror :: integer-1, _gnssfix :: integer-1, _ :: integer-1, _moving :: integer-1, _button :: integer-1, 
       _ :: integer-4, batt :: integer-unsigned-4,
