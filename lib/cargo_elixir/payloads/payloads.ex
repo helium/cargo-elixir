@@ -3,7 +3,7 @@ defmodule CargoElixir.Payloads do
   alias CargoElixir.Repo
 
   alias CargoElixir.Payloads.Payload
-  def create_payload(packet = %{ "id" => device_id, "dev_eui" => dev_eui, "name" => name, "hotspots" => hotspots, "payload" => payload, "fcnt" => sequence, "timestamp" => reported }) do
+  def create_payload(packet = %{ "id" => device_id, "dev_eui" => dev_eui, "name" => name, "hotspots" => hotspots, "payload" => payload, "fcnt" => fcnt, "timestamp" => reported }) do
     first_hotspot = Jason.decode!(hotspots) |> List.first()
 
     attrs = %{}
@@ -40,7 +40,7 @@ defmodule CargoElixir.Payloads do
       |> Map.put(:seq_num, seq_num)
       |> Map.put(:reported, reported |> DateTime.from_unix!())
       |> Map.put(:snr, Map.get(packet, "snr", 0))
-      
+
     %Payload{}
       |> Payload.changeset(attrs)
       |> Repo.insert()
