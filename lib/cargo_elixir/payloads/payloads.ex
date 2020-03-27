@@ -4,7 +4,7 @@ defmodule CargoElixir.Payloads do
 
   alias CargoElixir.Payloads.Payload
   def create_payload(packet = %{ "id" => device_id, "dev_eui" => dev_eui, "name" => name, "hotspots" => hotspots, "payload" => payload, "fcnt" => fcnt, "timestamp" => reported }) do
-    first_hotspot = Jason.decode!(hotspots) |> List.first()
+    first_hotspot = List.first(hotspots)
 
     attrs = %{}
       |> Map.put(:device_id, device_id)
