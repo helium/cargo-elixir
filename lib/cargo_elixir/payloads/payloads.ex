@@ -3,20 +3,22 @@ defmodule CargoElixir.Payloads do
   alias CargoElixir.Repo
 
   alias CargoElixir.Payloads.Payload
-    def create_payload(packet = %{ "id" => device_id, "app_eui" => _app_eui, "dev_eui" => dev_eui, "name" => name, "hotspot_name" => hotspot_id, "payload" => payload, 
-                     "rssi" => rssi, "sequence" => sequence, "timestamp" => reported, "snr" => snr, "spreading" => _spreading}) do
-    binary = payload |> :base64.decode()
+  def create_payload(packet = %{ "id" => device_id, "dev_eui" => dev_eui, "name" => name, "hotspots" => hotspots, "payload" => payload, "fcnt" => fcnt, "timestamp" => reported }) do
+    first_hotspot = Jason.decode!(hotspots) |> List.first()
+
     attrs = %{}
       |> Map.put(:device_id, device_id)
       |> Map.put(:name, name)
-      |> Map.put(:hotspot_id, hotspot_id)
+      |> Map.put(:hotspot_id, Map.fetch!(first_hotspot, "name"))
       |> Map.put(:oui, 1)
-      |> Map.put(:rssi, rssi)
-      |> Map.put(:seq_num, sequence)
+      |> Map.put(:rssi, Map.fetch!(first_hotspot, "rssi"))
+      |> Map.put(:seq_num, fcnt)
       |> Map.put(:reported, reported |> DateTime.from_unix!())
-      |> Map.put(:snr, snr)
+      |> Map.put(:snr, Map.fetch!(first_hotspot, "snr"))
 
+    binary = payload |> :base64.decode()
     attrs = decode_payload(binary, attrs, dev_eui)
+
     %Payload{}
     |> Payload.changeset(attrs)
     |> Repo.insert()
@@ -24,7 +26,7 @@ defmodule CargoElixir.Payloads do
 
   # fix this as device_id wont work
   def create_payload(packet = %{ "device_id" => device_id, "gateway" => hotspot_id, "oui" => oui, "lat" => lat, "lon" => lon, "speed" => speed, "elevation" => elevation,
-                     "battery" => battery, "rssi" => rssi, "sequence" => seq_num, "timestamp" => reported}) do
+    "battery" => battery, "rssi" => rssi, "sequence" => seq_num, "timestamp" => reported}) do
     attrs = %{}
       |> Map.put(:device_id, device_id)
       |> Map.put(:hotspot_id, hotspot_id)
@@ -38,20 +40,21 @@ defmodule CargoElixir.Payloads do
       |> Map.put(:seq_num, seq_num)
       |> Map.put(:reported, reported |> DateTime.from_unix!())
       |> Map.put(:snr, Map.get(packet, "snr", 0))
+
     %Payload{}
-    |> Payload.changeset(attrs)
-    |> Repo.insert()
+      |> Payload.changeset(attrs)
+      |> Repo.insert()
   end
 
   def decode_payload(binary, attrs, dev_eui) do
     attrs = case binary do
       # RAK7200
-      <<0x01, 0x88, lat :: integer-signed-big-24, lon :: integer-signed-big-24, alt :: integer-signed-big-24, 
-      0x08, 0x02, batt :: integer-signed-big-16, 
-      0x03, 0x71, _accx :: integer-signed-big-16, _accy :: integer-signed-big-16, _accz :: integer-signed-big-16, 
-      0x05, 0x86, _gyrox :: integer-signed-big-16, _gyroy :: integer-signed-big-16, _gyroz :: integer-signed-big-16, 
-      0x09, 0x02, _magx :: integer-signed-big-16, 
-      0x0a, 0x02, _magy :: integer-signed-big-16, 
+      <<0x01, 0x88, lat :: integer-signed-big-24, lon :: integer-signed-big-24, alt :: integer-signed-big-24,
+      0x08, 0x02, batt :: integer-signed-big-16,
+      0x03, 0x71, _accx :: integer-signed-big-16, _accy :: integer-signed-big-16, _accz :: integer-signed-big-16,
+      0x05, 0x86, _gyrox :: integer-signed-big-16, _gyroy :: integer-signed-big-16, _gyroz :: integer-signed-big-16,
+      0x09, 0x02, _magx :: integer-signed-big-16,
+      0x0a, 0x02, _magy :: integer-signed-big-16,
       0x0b, 0x02, _magz :: integer-signed-big-16>> ->
           attrs
             |> Map.put(:lat, lat * 0.0001)
@@ -60,7 +63,7 @@ defmodule CargoElixir.Payloads do
             |> Map.put(:speed, 0)
             |> Map.put(:battery, batt * 0.01)
       # Dragino LGT-92
-      <<lat :: integer-signed-32, lon :: integer-signed-32, _ :: integer-signed-1, _alarm :: integer-signed-1, battery :: integer-signed-14, 
+      <<lat :: integer-signed-32, lon :: integer-signed-32, _ :: integer-signed-1, _alarm :: integer-signed-1, battery :: integer-signed-14,
         _md :: integer-signed-2, _ln :: integer-signed-1, 3 :: integer-signed-5>> ->
           attrs
             |> Map.put(:lat, lat / 1000000)
@@ -69,7 +72,7 @@ defmodule CargoElixir.Payloads do
             |> Map.put(:speed, 0)
             |> Map.put(:battery, battery / 1000)
       # Browan Object Locator
-      << 0 :: integer-1, 0 :: integer-1, 0 :: integer-1, _gnsserror :: integer-1, _gnssfix :: integer-1, _ :: integer-1, _moving :: integer-1, _button :: integer-1, 
+      << 0 :: integer-1, 0 :: integer-1, 0 :: integer-1, _gnsserror :: integer-1, _gnssfix :: integer-1, _ :: integer-1, _moving :: integer-1, _button :: integer-1,
       _ :: integer-4, batt :: integer-unsigned-4,
       _ :: integer-1, _temp :: integer-7,
       lat :: integer-signed-little-32,
@@ -80,7 +83,7 @@ defmodule CargoElixir.Payloads do
             |> Map.put(:lon, lon / 1000000)
             |> Map.put(:elevation, 0)
             |> Map.put(:speed, 0)
-            |> Map.put(:battery, (batt + 25) / 10)          
+            |> Map.put(:battery, (batt + 25) / 10)
       # Helium/Arduino without battery
       <<lat :: integer-signed-32, lon :: integer-signed-32, elevation :: integer-signed-16, speed :: integer-signed-16>> ->
           attrs
@@ -104,7 +107,7 @@ defmodule CargoElixir.Payloads do
             |> Map.put(:lon, lon * 0.0000001)
             |> Map.put(:elevation, 0)
             |> Map.put(:speed, speed)
-            |> Map.put(:battery, (battery * 25) / 1000)      
+            |> Map.put(:battery, (battery * 25) / 1000)
       # Keyco Tracker
       <<_company :: integer-16, _product :: integer-24, _version :: integer-8, _major :: integer-16, _minor :: integer-16, _deveui :: integer-32, _timestamp :: integer-32,
       lat :: float-32, lon :: float-32, elevation :: integer-16, speed :: integer-16, _hdop :: integer-24, _gpsnum :: integer-8, _ :: integer-32, battery :: integer-8, _ :: integer-80>> ->
@@ -124,7 +127,7 @@ defmodule CargoElixir.Payloads do
             |> Map.put(:speed, 0)
             |> Map.put(:battery, 0)
     end
-    attrs = if attrs.lat > 90 or attrs.lat < -90 do 
+    attrs = if attrs.lat > 90 or attrs.lat < -90 do
       attrs |> Map.put(:lat, 0)
     else
       attrs
