@@ -3,18 +3,18 @@ defmodule CargoElixir.Payloads do
   alias CargoElixir.Repo
 
   alias CargoElixir.Payloads.Payload
-    def create_payload(packet = %{ "id" => device_id, "app_eui" => _app_eui, "dev_eui" => dev_eui, "name" => name, "hotspot_name" => hotspot_id, "payload" => payload, 
-                     "rssi" => rssi, "sequence" => sequence, "timestamp" => reported, "snr" => snr, "spreading" => _spreading}) do
+    def create_payload(packet = %{ "id" => device_id, "app_eui" => _app_eui, "dev_eui" => dev_eui, "name" => name, "hotspots" => hotspots, "payload" => payload, 
+                     "sequence" => sequence, "timestamp" => reported, "port" => _port, "metadata" => _metadata}) do
     binary = payload |> :base64.decode()
     attrs = %{}
       |> Map.put(:device_id, device_id)
       |> Map.put(:name, name)
-      |> Map.put(:hotspot_id, hotspot_id)
+      |> Map.put(:hotspot_id, hotspots[0].name)
       |> Map.put(:oui, 1)
-      |> Map.put(:rssi, rssi)
+      |> Map.put(:rssi, hotspots[0].rssi)
       |> Map.put(:seq_num, sequence)
       |> Map.put(:reported, reported |> DateTime.from_unix!())
-      |> Map.put(:snr, snr)
+      |> Map.put(:snr, hotspots[0].snr)
 
     attrs = decode_payload(binary, attrs, dev_eui)
     %Payload{}
@@ -22,7 +22,7 @@ defmodule CargoElixir.Payloads do
     |> Repo.insert()
   end
 
-  # fix this as device_id wont work
+  # JSON payload
   def create_payload(packet = %{ "device_id" => device_id, "gateway" => hotspot_id, "oui" => oui, "lat" => lat, "lon" => lon, "speed" => speed, "elevation" => elevation,
                      "battery" => battery, "rssi" => rssi, "sequence" => seq_num, "timestamp" => reported}) do
     attrs = %{}
