@@ -3,7 +3,7 @@ defmodule CargoElixir.Payloads do
   alias CargoElixir.Repo
 
   alias CargoElixir.Payloads.Payload
-  def create_payload(packet = %{ "id" => device_id, "dev_eui" => dev_eui, "name" => name, "hotspots" => hotspots, "payload" => payload, "fcnt" => fcnt, "timestamp" => reported }) do
+  def create_payload(packet = %{ "id" => device_id, "dev_eui" => dev_eui, "name" => name, "hotspots" => hotspots, "payload" => payload, "fcnt" => fcnt, "reported_at" => reported }) do
     first_hotspot = List.first(hotspots)
 
     attrs = %{}
