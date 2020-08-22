@@ -10,13 +10,14 @@ import geoJSON from "geojson";
 import hotspotsJSON from '../data/hotspots.json'
 import socket from "../socket"
 import { get } from '../data/Rest'
+import Client from '@helium/http'
 
 const CURRENT_OUI = 1
 
-const hotspotsData = {}
+/*const hotspotsData = {}
 hotspotsJSON.data.forEach(d => {
   hotspotsData[d.name.toLowerCase()] = d
-})
+})*/
 
 const styles = {
   selectedMarker: {
@@ -76,6 +77,7 @@ class MapScreen extends React.Component {
       highlightHotspoted: null,
       transmittingDevices: {},
       loading: false,
+      hotspotsData: {},
     }
 
     this.selectDevice = this.selectDevice.bind(this)
@@ -99,6 +101,8 @@ class MapScreen extends React.Component {
         }
       })
     }
+    
+    this.loadHotspots()
 
     this.loadDevices()
 
@@ -139,6 +143,17 @@ class MapScreen extends React.Component {
         this.loadDevices();
       }
     })
+  }
+
+  async loadHotspots() {
+    const { hotspotsData } = this.state
+    this.client = new Client()
+    const list = await this.client.hotspots.list()
+    const spots = await list.take(10000)    
+    spots.forEach(d => {
+      hotspotsData[d.name.toLowerCase()] = d
+    })
+    this.setState({ hotspotsData })
   }
 
   loadDevices() {
@@ -217,12 +232,13 @@ class MapScreen extends React.Component {
   }
 
   setHotspots({ properties }) {
+    const { hotspotsData } = this.state
     this.setState({ hotspots: { data: [] } }, () => {
       const hotspots = { data: [], center: geoToMarkerCoords(properties.coordinates) }
       properties.hotspots.forEach(h => {
-        const hotspotName = h.trim().split('-').join(' ')
+        const hotspotName = h.trim().split(' ').join('-')
         if (hotspotsData[hotspotName]) hotspots.data.push(hotspotsData[hotspotName])
-        else console.log("Found undefined hotspot name not shown on map, updating hotspots.json might help", h)
+        else console.log("Found undefined hotspot name not shown on map", h)
       })
       this.setState({ hotspots })
     })
@@ -288,8 +304,8 @@ class MapScreen extends React.Component {
   }
 
   render() {
-    const { devices, mapCenter, selectedDevice, packets, lastPacket, hotspots, chartType, showHotspots, highlightedHotspot, transmittingDevices, showSignUp } = this.state
-
+    const { devices, mapCenter, selectedDevice, packets, lastPacket, hotspots, hotspotsData, chartType, showHotspots, highlightedHotspot, transmittingDevices, showSignUp } = this.state
+    
     return (
       <div style={{ flex: 1 }}>
         <Map
@@ -414,7 +430,7 @@ class MapScreen extends React.Component {
           names={devices.map(d => {
             const hotspotName = d.hotspot.replace(/-/g, ' ')
             const hotspot = hotspotsData[hotspotName]
-            if (hotspot) return hotspot.long_city + ", " + hotspot.short_state
+            if (hotspot) return hotspot.geocode.long_city + ", " + hotspot.geocode.short_state
             return "Unknown"
           })}
           selectDevice={this.selectDevice}
