@@ -7,17 +7,11 @@ import Timeline from '../components/Timeline'
 import SignUp from '../components/SignUp'
 import { packetsToChartData } from '../data/chart'
 import geoJSON from "geojson";
-import hotspotsJSON from '../data/hotspots.json'
 import socket from "../socket"
 import { get } from '../data/Rest'
 import Client from '@helium/http'
 
 const CURRENT_OUI = 1
-
-/*const hotspotsData = {}
-hotspotsJSON.data.forEach(d => {
-  hotspotsData[d.name.toLowerCase()] = d
-})*/
 
 const styles = {
   selectedMarker: {
