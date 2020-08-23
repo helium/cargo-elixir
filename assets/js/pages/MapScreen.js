@@ -10,6 +10,7 @@ import geoJSON from "geojson";
 import socket from "../socket"
 import { get } from '../data/Rest'
 import Client from '@helium/http'
+import Hotspot from "@helium/http/build/models/Hotspot";
 
 const CURRENT_OUI = 1
 
@@ -422,9 +423,9 @@ class MapScreen extends React.Component {
           devices={devices}
           loading={this.state.loading}
           names={devices.map(d => {
-            const hotspotName = d.hotspot.replace(/-/g, ' ')
+            const hotspotName = d.hotspot.replace(/-/g, '-')
             const hotspot = hotspotsData[hotspotName]
-            if (hotspot) return hotspot.geocode.long_city + ", " + hotspot.geocode.short_state
+            if (hotspot) return hotspot.geocode.longCity + ", " + hotspot.geocode.shortState
             return "Unknown"
           })}
           selectDevice={this.selectDevice}
