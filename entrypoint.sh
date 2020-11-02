@@ -12,9 +12,8 @@ do
   sleep 2
 done
 
-bin="/app/bin/cargo-elixir"
-# start the elixir application
-exec "$bin" "start"
+bin="_build/prod/rel/cargo_elixir/bin/cargo_elixir"
 
+exec $bin eval "CargoElixir.Release.migrate"
 # start the elixir application
-# exec _build/prod/rel/cargo_elixir/bin/cargo_elixir start
+exec $bin start

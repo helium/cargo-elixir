@@ -1,7 +1,7 @@
-FROM elixir:1.9-alpine as build
+FROM elixir:1.9-alpine
 
 # install build dependencies
-RUN apk add --update git build-base nodejs npm yarn python
+RUN apk add --update git build-base nodejs npm yarn python bash openssl postgresql-client
 
 RUN mkdir /app
 WORKDIR /app
@@ -13,7 +13,8 @@ RUN mix do local.hex --force, local.rebar --force
 ENV MIX_ENV=prod
 
 # install mix dependencies
-COPY mix.exs mix.lock ./
+COPY mix.lock mix.lock
+COPY mix.exs  mix.exs
 COPY config config
 RUN mix deps.get --only $MIX_ENV
 RUN mix deps.compile
@@ -34,24 +35,9 @@ RUN mix compile
 # COPY rel rel
 RUN mix release
 
-# prepare release image
-FROM alpine:3.9 AS app
-
-# install runtime dependencies
-RUN apk add --update bash openssl postgresql-client
-
 EXPOSE 4000
-ENV MIX_ENV=prod
-
-# prepare app directory
-RUN mkdir /app
-WORKDIR /app
-
-# copy release to app container
-COPY _build _build
 COPY entrypoint.sh .
 RUN chown -R nobody: /app
 USER nobody
 
-ENV HOME=/app
 CMD ["bash", "/app/entrypoint.sh"]
