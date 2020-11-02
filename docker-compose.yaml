@@ -4,6 +4,10 @@ services:
     build: .
     image: helium/cargo:latest
     container_name: helium_cargo
+    environment:
+      - SECRET_KEY_BASE=1
+      - DATABASE_DB=cargo_elixir
+      - DATABASE_HOST=postgres
     ports:
       - "4000:4000"
     depends_on:
@@ -12,6 +16,6 @@ services:
     image: postgres
     container_name: helium_postgres
     environment:
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: postgres
+        - POSTGRES_DB=cargo_elixir
+        - POSTGRES_PASSWORD=postgres
     restart: always

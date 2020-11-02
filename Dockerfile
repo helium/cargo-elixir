@@ -29,10 +29,6 @@ COPY priv priv
 COPY lib lib
 RUN mix compile
 
-# build release
-# at this point we should copy the rel directory but
-# we are not using it so we can omit it
-# COPY rel rel
 RUN mix release
 
 EXPOSE 4000

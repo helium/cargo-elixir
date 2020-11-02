@@ -13,7 +13,5 @@ do
 done
 
 bin="_build/prod/rel/cargo_elixir/bin/cargo_elixir"
-
-exec $bin eval "CargoElixir.Release.migrate"
-# start the elixir application
-exec $bin start
+eval "$bin eval \"CargoElixir.Release.migrate\""
+exec "$bin" "start"
