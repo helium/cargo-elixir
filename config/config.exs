@@ -12,7 +12,7 @@ config :cargo_elixir,
 
 # Configures the endpoint
 config :cargo_elixir, CargoElixirWeb.Endpoint,
-  url: [host: "localhost"],
+  url: [host: "localhost"], # UPDATE TO YOUR CUSTOM HOST IF NOT RUNNING LOCALLY
   secret_key_base: "pnPHQ4sSmnHnN1DGsMoFaMALbUxIazKvmaKzYlCm5JUl2JmapF1hSnFlwKlFjZYQ",
   render_errors: [view: CargoElixirWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: CargoElixir.PubSub, adapter: Phoenix.PubSub.PG2]
