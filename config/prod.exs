@@ -59,4 +59,12 @@ config :logger, level: :info
 
 # Finally import the config/prod.secret.exs which loads secrets
 # and configuration from environment variables.
+
+##COMMENT OUT THIS LINE TO USE WITH DOCKER COMPOSE
 import_config "prod.secret.exs"
+
+##UNCOMMENT BELOW TO USE WITH DOCKER COMPOSE
+# config :cargo_elixir, CargoElixirWeb.Endpoint,
+#   url: [host: "example.com", port: 80],
+#   cache_static_manifest: "priv/static/cache_manifest.json",
+#   server: true
