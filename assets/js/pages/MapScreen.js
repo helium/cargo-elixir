@@ -52,7 +52,7 @@ const styles = {
 const Map = ReactMapboxGl({
   accessToken:
     'pk.eyJ1IjoicGV0ZXJtYWluIiwiYSI6ImNqMHA5dm8xbTAwMGQycXMwa3NucGptenQifQ.iVCDWzb16acgOKWz65AckA'
-})
+}) // SIGN UP FOR MAPBOX AND REPLACE ABOVE WITH YOUR OWN API KEY
 
 class MapScreen extends React.Component {
   constructor(props) {
@@ -96,7 +96,7 @@ class MapScreen extends React.Component {
         }
       })
     }
-    
+
     this.loadHotspots()
 
     this.loadDevices()
@@ -144,7 +144,7 @@ class MapScreen extends React.Component {
     const { hotspotsData } = this.state
     this.client = new Client()
     const list = await this.client.hotspots.list()
-    const spots = await list.take(10000)    
+    const spots = await list.take(10000)
     spots.forEach(d => {
       hotspotsData[d.name.toLowerCase()] = d
     })
@@ -300,7 +300,7 @@ class MapScreen extends React.Component {
 
   render() {
     const { devices, mapCenter, selectedDevice, packets, lastPacket, hotspots, hotspotsData, chartType, showHotspots, highlightedHotspot, transmittingDevices, showSignUp } = this.state
-    
+
     return (
       <div style={{ flex: 1 }}>
         <Map
