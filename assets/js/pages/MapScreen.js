@@ -51,8 +51,9 @@ const styles = {
 
 const Map = ReactMapboxGl({
   accessToken:
-    'pk.eyJ1IjoicGV0ZXJtYWluIiwiYSI6ImNqMHA5dm8xbTAwMGQycXMwa3NucGptenQifQ.iVCDWzb16acgOKWz65AckA'
-}) // SIGN UP FOR MAPBOX AND REPLACE ABOVE WITH YOUR OWN API KEY
+    'pk.eyJ1IjoicGV0ZXJtYWluIiwiYSI6ImNraGNrOTVwZTA3aXMyenQzajZmMzI3M2wifQ.lFhWROu0aMDqsdUUiDORww'
+})
+// SIGN UP FOR MAPBOX AND REPLACE ABOVE WITH YOUR OWN API KEY
 
 class MapScreen extends React.Component {
   constructor(props) {
