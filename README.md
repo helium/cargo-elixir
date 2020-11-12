@@ -1,5 +1,11 @@
 # CargoElixir
 
+<img width="1675" alt="Screen Shot 2020-11-12 at 12 58 20 PM" src="https://user-images.githubusercontent.com/13011150/98996286-70983280-24e7-11eb-94cb-041416225e40.png">
+
+Cargo is a visualization tool for asset trackers. As part of our strategy we are making this application available as open source.
+
+Helium Console has a pre-built Console integration that makes it easy to quickly view a tracker’s physical location. 
+
 ## Development Environment
 
 To start your Phoenix server:
