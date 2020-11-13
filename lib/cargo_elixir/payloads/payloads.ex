@@ -14,10 +14,24 @@ defmodule CargoElixir.Payloads do
   end
 
   def parse_decoded(attrs, decoded) do
-    attrs = attrs
-      |> Map.put(:lat, Enum.at(find_key(decoded, "latitude", []), 0))
-      |> Map.put(:lon, Enum.at(find_key(decoded, "longitude", []), 0))
-      |> Map.put(:elevation, Enum.at(find_key(decoded, "altitude", []), 0))
+
+    attrs = if Enum.empty?(find_key(decoded, "latitude", [])) do
+      throw RuntimeError
+    else
+      Map.put(attrs, :lat, Enum.at(find_key(decoded, "latitude", []), 0))
+    end
+
+    attrs = if Enum.empty?(find_key(decoded, "longitude", [])) do
+      throw RuntimeError
+    else
+      Map.put(attrs, :lon, Enum.at(find_key(decoded, "longitude", []), 0))
+    end
+
+    attrs = if Enum.empty?(find_key(decoded, "altitude", [])) do
+      throw RuntimeError
+    else
+      Map.put(attrs, :elevation, Enum.at(find_key(decoded, "altitude", []), 0))
+    end
 
     attrs = if Enum.empty?(find_key(decoded, "battery", [])) do
       Map.put(attrs, :battery, 0)
@@ -54,7 +68,11 @@ defmodule CargoElixir.Payloads do
     binary = payload |> :base64.decode()
 
     attrs = if Map.has_key?(packet, "decoded") do
-      parse_decoded(attrs, Map.get(packet, "decoded"))
+      try do
+        parse_decoded(attrs, Map.get(packet, "decoded"))
+      catch
+        RuntimeError -> decode_payload(binary, attrs, dev_eui)
+      end
     else
       decode_payload(binary, attrs, dev_eui)
     end
