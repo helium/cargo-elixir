@@ -14,36 +14,45 @@ defmodule CargoElixir.Payloads do
   end
 
   def parse_decoded(attrs, decoded) do
-    attrs = if Enum.empty?(find_key(decoded, "latitude", [])) do
+
+    # required fields
+    lat = find_key(decoded, "latitude", [])
+    attrs = if Enum.empty?(lat) do
       throw RuntimeError
     else
-      Map.put(attrs, :lat, Enum.at(find_key(decoded, "latitude", []), 0))
+      Map.put(attrs, :lat, Enum.at(lat, 0))
     end
 
-    attrs = if Enum.empty?(find_key(decoded, "longitude", [])) do
+    lon = find_key(decoded, "longitude", [])
+    attrs = if Enum.empty?(lon) do
       throw RuntimeError
     else
-      Map.put(attrs, :lon, Enum.at(find_key(decoded, "longitude", []), 0))
+      Map.put(attrs, :lon, Enum.at(lon, 0))
     end
 
-    attrs = if Enum.empty?(find_key(decoded, "altitude", [])) do
+    elevation = find_key(decoded, "altitude", [])
+    attrs = if Enum.empty?(elevation) do
       throw RuntimeError
     else
-      Map.put(attrs, :elevation, Enum.at(find_key(decoded, "altitude", []), 0))
+      Map.put(attrs, :elevation, Enum.at(elevation, 0))
     end
 
-    attrs = if Enum.empty?(find_key(decoded, "battery", [])) do
+    # optional fields
+    battery = find_key(decoded, "battery", [])
+    attrs = if Enum.empty?(battery) do
       Map.put(attrs, :battery, 0)
     else
-      Map.put(attrs, :battery, Enum.at(find_key(decoded, "battery", []), 0))
+      Map.put(attrs, :battery, Enum.at(battery, 0))
     end
 
-    attrs = if Enum.empty?(find_key(decoded, "speed", [])) do
+    speed = find_key(decoded, "speed", [])
+    attrs = if Enum.empty?(speed) do
       Map.put(attrs, :speed, 0)
     else
-      Map.put(attrs, :speed, Enum.at(find_key(decoded, "speed", []), 0))
+      Map.put(attrs, :speed, Enum.at(speed, 0))
     end
 
+    # lat validation
     if attrs.lat > 90 or attrs.lat < -90 do
       attrs |> Map.put(:lat, 0)
     else
