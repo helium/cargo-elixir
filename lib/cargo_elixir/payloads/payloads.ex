@@ -25,10 +25,16 @@ defmodule CargoElixir.Payloads do
       Map.put(attrs, :battery, Enum.at(find_key(decoded, "battery", []), 0))
     end
 
-    if Enum.empty?(find_key(decoded, "speed", [])) do
+    attrs = if Enum.empty?(find_key(decoded, "speed", [])) do
       Map.put(attrs, :speed, 0)
     else
       Map.put(attrs, :speed, Enum.at(find_key(decoded, "speed", []), 0))
+    end
+
+    if attrs.lat > 90 or attrs.lat < -90 do
+      attrs |> Map.put(:lat, 0)
+    else
+      attrs
     end
   end
 
