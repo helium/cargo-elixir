@@ -14,7 +14,6 @@ defmodule CargoElixir.Payloads do
   end
 
   def parse_decoded(attrs, decoded) do
-
     attrs = if Enum.empty?(find_key(decoded, "latitude", [])) do
       throw RuntimeError
     else
