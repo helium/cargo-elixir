@@ -3,6 +3,35 @@ defmodule CargoElixir.Payloads do
   alias CargoElixir.Repo
 
   alias CargoElixir.Payloads.Payload
+  def find_key(decoded, key, acc) do
+      Enum.reduce(decoded, acc, fn{k, v}, acc ->
+          cond do
+            String.equivalent?(k, key) -> [v | acc]
+            is_map(v) -> find_key(v, key, acc)
+            true -> acc
+          end
+      end)
+  end
+
+  def parse_decoded(attrs, decoded) do
+    attrs = attrs
+      |> Map.put(:lat, Enum.at(find_key(decoded, "latitude", []), 0))
+      |> Map.put(:lon, Enum.at(find_key(decoded, "longitude", []), 0))
+      |> Map.put(:elevation, Enum.at(find_key(decoded, "altitude", []), 0))
+
+    attrs = if Enum.empty?(find_key(decoded, "battery", [])) do
+      Map.put(attrs, :battery, 0)
+    else
+      Map.put(attrs, :battery, Enum.at(find_key(decoded, "battery", []), 0))
+    end
+
+    if Enum.empty?(find_key(decoded, "speed", [])) do
+      Map.put(attrs, :speed, 0)
+    else
+      Map.put(attrs, :speed, Enum.at(find_key(decoded, "speed", []), 0))
+    end
+  end
+
   def create_payload(packet = %{ "id" => device_id, "dev_eui" => dev_eui, "name" => name, "hotspots" => hotspots, "payload" => payload, "fcnt" => fcnt, "reported_at" => reported }) do
     first_hotspot = List.first(hotspots)
 
@@ -17,7 +46,12 @@ defmodule CargoElixir.Payloads do
       |> Map.put(:snr, Map.fetch!(first_hotspot, "snr"))
 
     binary = payload |> :base64.decode()
-    attrs = decode_payload(binary, attrs, dev_eui)
+
+    attrs = if Map.has_key?(packet, "decoded") do
+      parse_decoded(attrs, Map.get(packet, "decoded"))
+    else
+      decode_payload(binary, attrs, dev_eui)
+    end
 
     %Payload{}
     |> Payload.changeset(attrs)
