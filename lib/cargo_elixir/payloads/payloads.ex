@@ -3,6 +3,63 @@ defmodule CargoElixir.Payloads do
   alias CargoElixir.Repo
 
   alias CargoElixir.Payloads.Payload
+  def find_key(decoded, key, acc) do
+      Enum.reduce(decoded, acc, fn{k, v}, acc ->
+          cond do
+            String.equivalent?(k, key) -> [v | acc]
+            is_map(v) -> find_key(v, key, acc)
+            true -> acc
+          end
+      end)
+  end
+
+  def parse_decoded(attrs, decoded) do
+
+    # required fields
+    lat = find_key(decoded, "latitude", [])
+    attrs = if Enum.empty?(lat) do
+      throw RuntimeError
+    else
+      Map.put(attrs, :lat, Enum.at(lat, 0))
+    end
+
+    lon = find_key(decoded, "longitude", [])
+    attrs = if Enum.empty?(lon) do
+      throw RuntimeError
+    else
+      Map.put(attrs, :lon, Enum.at(lon, 0))
+    end
+
+    elevation = find_key(decoded, "altitude", [])
+    attrs = if Enum.empty?(elevation) do
+      throw RuntimeError
+    else
+      Map.put(attrs, :elevation, Enum.at(elevation, 0))
+    end
+
+    # optional fields
+    battery = find_key(decoded, "battery", [])
+    attrs = if Enum.empty?(battery) do
+      Map.put(attrs, :battery, 0)
+    else
+      Map.put(attrs, :battery, Enum.at(battery, 0))
+    end
+
+    speed = find_key(decoded, "speed", [])
+    attrs = if Enum.empty?(speed) do
+      Map.put(attrs, :speed, 0)
+    else
+      Map.put(attrs, :speed, Enum.at(speed, 0))
+    end
+
+    # lat validation
+    if attrs.lat > 90 or attrs.lat < -90 do
+      attrs |> Map.put(:lat, 0)
+    else
+      attrs
+    end
+  end
+
   def create_payload(packet = %{ "id" => device_id, "dev_eui" => dev_eui, "name" => name, "hotspots" => hotspots, "payload" => payload, "fcnt" => fcnt, "reported_at" => reported }) do
     first_hotspot = List.first(hotspots)
 
@@ -17,7 +74,16 @@ defmodule CargoElixir.Payloads do
       |> Map.put(:snr, Map.fetch!(first_hotspot, "snr"))
 
     binary = payload |> :base64.decode()
-    attrs = decode_payload(binary, attrs, dev_eui)
+
+    attrs = if Map.has_key?(packet, "decoded") do
+      try do
+        parse_decoded(attrs, Map.get(packet, "decoded"))
+      catch
+        RuntimeError -> decode_payload(binary, attrs, dev_eui)
+      end
+    else
+      decode_payload(binary, attrs, dev_eui)
+    end
 
     %Payload{}
     |> Payload.changeset(attrs)
