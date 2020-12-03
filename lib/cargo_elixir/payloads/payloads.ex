@@ -20,21 +20,33 @@ defmodule CargoElixir.Payloads do
     attrs = if Enum.empty?(lat) do
       throw RuntimeError
     else
-      Map.put(attrs, :lat, Enum.at(lat, 0))
+      if is_float(Enum.at(lat, 0)) or is_integer(Enum.at(lat, 0)) do
+        Map.put(attrs, :lat, Enum.at(lat, 0))
+      else
+        Map.put(attrs, :lat, Kernel.elem(Float.parse(Enum.at(lat, 0)), 0))
+      end
     end
 
     lon = find_key(decoded, "longitude", [])
     attrs = if Enum.empty?(lon) do
       throw RuntimeError
     else
-      Map.put(attrs, :lon, Enum.at(lon, 0))
+     if is_float(Enum.at(lon, 0)) or is_integer(Enum.at(lon, 0)) do
+        Map.put(attrs, :lon, Enum.at(lon, 0))
+      else
+        Map.put(attrs, :lon, Kernel.elem(Float.parse(Enum.at(lon, 0)), 0))
+      end
     end
 
     elevation = find_key(decoded, "altitude", [])
     attrs = if Enum.empty?(elevation) do
       throw RuntimeError
     else
-      Map.put(attrs, :elevation, Enum.at(elevation, 0))
+      if is_float(Enum.at(elevation, 0)) or is_integer(Enum.at(elevation, 0)) do
+        Map.put(attrs, :elevation, Enum.at(elevation, 0))
+      else
+        Map.put(attrs, :elevation, Kernel.elem(Float.parse(Enum.at(elevation, 0)), 0))
+      end
     end
 
     # optional fields
@@ -42,14 +54,22 @@ defmodule CargoElixir.Payloads do
     attrs = if Enum.empty?(battery) do
       Map.put(attrs, :battery, 0)
     else
-      Map.put(attrs, :battery, Enum.at(battery, 0))
+      if is_float(Enum.at(battery, 0)) or is_integer(Enum.at(battery, 0)) do
+        Map.put(attrs, :battery, Enum.at(battery, 0))
+      else
+        Map.put(attrs, :battery, Kernel.elem(Float.parse(Enum.at(battery, 0)), 0))
+      end
     end
 
     speed = find_key(decoded, "speed", [])
     attrs = if Enum.empty?(speed) do
       Map.put(attrs, :speed, 0)
     else
-      Map.put(attrs, :speed, Enum.at(speed, 0))
+      if is_float(Enum.at(speed, 0)) or is_integer(Enum.at(speed, 0)) do
+        Map.put(attrs, :speed, Enum.at(speed, 0))
+      else
+        Map.put(attrs, :speed, Kernel.elem(Float.parse(Enum.at(speed, 0)), 0))
+      end
     end
 
     # lat validation
