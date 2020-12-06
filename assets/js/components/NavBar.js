@@ -4,6 +4,7 @@ import LogoSm from "../../static/images/logocargo_30.svg";
 import NavBarRow from './NavBarRow'
 import SearchBar from './SearchBar'
 import Media from 'react-media';
+import Switch from "react-switch";
 
 const styles = {
   container: {
@@ -81,13 +82,20 @@ class NavBar extends Component {
     super(props)
 
     this.state = {
-      show: true
+      show: true,
+      toggleChecked: false
     }
     this.toggle = this.toggle.bind(this)    
+    this.toggleMappers = this.toggleMappers.bind(this)
   }
 
   toggle() {
     this.setState({ show: !this.state.show})
+  }
+
+  toggleMappers(toggleChecked) {
+    this.setState({ toggleChecked });
+    this.props.toggleMappers()
   }
 
   render() {
@@ -110,6 +118,8 @@ class NavBar extends Component {
                 <div style={{ display: 'flex', flexDirection: 'row', overflow: 'auto' }}>
                   <div style={{ borderBottom: '1px solid #D3D3D3', alignItems: 'center', display: 'flex' }}>
                     <div style={{ width: 200, paddingLeft: 8, paddingRight: 8 }}>
+                       Mappers 
+                      <Switch height={18} widgth={20} onColor="#39a2fb" onChange={this.toggleMappers} checked={this.state.toggleChecked}/>
                       <SearchBar devices={devices} onSearchChange={onSearchChange}/>
                     </div>
                   </div>
@@ -127,6 +137,8 @@ class NavBar extends Component {
                 <div>
                   <Logo style={{...styles.paddingBox, paddingTop: 16, paddingBottom: 16 }} />
                   <div style={{ position: 'relative' }}>
+                    Mappers 
+                    <Switch height={18} widgth={20} onColor="#39a2fb" onChange={this.toggleMappers} checked={this.state.toggleChecked}/>
                     <p style={{...styles.paddingBox, ...styles.title}} >Devices</p>
                   </div>
 
