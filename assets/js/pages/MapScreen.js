@@ -349,7 +349,7 @@ class MapScreen extends React.Component {
                     -80,
                     '#26fbca'
                   ],
-                  'fill-opacity': 0.6
+                  'fill-opacity': 0.3
                 }}
               />
             )
