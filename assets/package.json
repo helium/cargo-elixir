@@ -20,6 +20,7 @@
     "react-media": "^1.10.0",
     "react-router-dom": "^5.1.2",
     "react-svg-loader": "^3.0.3",
+    "react-switch": "^5.0.1",
     "react-typekit": "^1.1.4",
     "@helium/http": "1.0.0"
   },

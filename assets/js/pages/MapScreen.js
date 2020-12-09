@@ -1,5 +1,5 @@
 import React from "react"
-import ReactMapboxGl, { Layer, Marker, Feature } from 'react-mapbox-gl';
+import ReactMapboxGl, { Layer, Marker, Feature, GeoJSONLayer } from 'react-mapbox-gl';
 import findIndex from 'lodash/findIndex'
 import NavBar from '../components/NavBar'
 import Inspector from '../components/Inspector'
@@ -68,6 +68,8 @@ class MapScreen extends React.Component {
       lastPacket: null,
       mapCenter: [-122.41919, 37.77115],
       hotspots: { data: [] },
+      hexdata: null,
+      showMappers: false,
       chartType: null,
       showHotspots: true,
       highlightHotspoted: null,
@@ -85,6 +87,7 @@ class MapScreen extends React.Component {
     this.parsePackets = this.parsePackets.bind(this)
     this.hideSignUp = this.hideSignUp.bind(this)
     this.onSearchChange = this.onSearchChange.bind(this)
+    this.toggleMappers = this.toggleMappers.bind(this)
   }
 
   componentDidMount() {
@@ -101,6 +104,8 @@ class MapScreen extends React.Component {
     this.loadHotspots()
 
     this.loadDevices()
+
+    this.loadMappers()
 
     let channel = socket.channel("payload:new", {})
     channel.join()
@@ -152,6 +157,14 @@ class MapScreen extends React.Component {
     this.setState({ hotspotsData })
   }
 
+  loadMappers() {
+    fetch('https://coverage-dumps.s3-us-west-2.amazonaws.com/daily-csv-dumps/coverage_uplinks_h3_9.geojson')
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ hexdata: data })
+      });
+  }
+
   loadDevices() {
     get("oui/" + CURRENT_OUI)
       .then(res => res.json())
@@ -174,6 +187,10 @@ class MapScreen extends React.Component {
 
   hideSignUp() {
     this.setState({ showSignUp: false })
+  }
+
+  toggleMappers() {
+    this.setState({ showMappers: !this.state.showMappers })
   }
 
   selectDevice(d) {
@@ -300,7 +317,7 @@ class MapScreen extends React.Component {
   }
 
   render() {
-    const { devices, mapCenter, selectedDevice, packets, lastPacket, hotspots, hotspotsData, chartType, showHotspots, highlightedHotspot, transmittingDevices, showSignUp } = this.state
+    const { devices, mapCenter, selectedDevice, packets, lastPacket, hotspots, hexdata, showMappers, hotspotsData, chartType, showHotspots, highlightedHotspot, transmittingDevices, showSignUp } = this.state
 
     return (
       <div style={{ flex: 1 }}>
@@ -314,6 +331,30 @@ class MapScreen extends React.Component {
           }}
           movingMethod="jumpTo"
         >
+
+          {
+            showMappers && (
+              <GeoJSONLayer
+                data={hexdata}
+                fillLayout={{}}
+                fillPaint={{
+                  'fill-color': [
+                    'interpolate',
+                    ['linear'],
+                    ['get', 'rssi'],
+                    -120,
+                    '#2a79f7',
+                    -100,
+                    '#26fbe9',
+                    -80,
+                    '#26fbca'
+                  ],
+                  'fill-opacity': 0.3
+                }}
+              />
+            )
+          }
+
           {
             selectedDevice && (
               <Layer key={selectedDevice.device_id} type="circle" paint={{"circle-color": "#4790E5"}}>
@@ -433,6 +474,7 @@ class MapScreen extends React.Component {
           findDevice={this.findDevice}
           selectedDevice={selectedDevice}
           onSearchChange={this.onSearchChange}
+          toggleMappers={this.toggleMappers}
         />
 
         {

@@ -4,6 +4,7 @@ import LogoSm from "../../static/images/logocargo_30.svg";
 import NavBarRow from './NavBarRow'
 import SearchBar from './SearchBar'
 import Media from 'react-media';
+import Switch from "react-switch";
 
 const styles = {
   container: {
@@ -81,13 +82,20 @@ class NavBar extends Component {
     super(props)
 
     this.state = {
-      show: true
+      show: true,
+      toggleChecked: false
     }
     this.toggle = this.toggle.bind(this)    
+    this.toggleMappers = this.toggleMappers.bind(this)
   }
 
   toggle() {
     this.setState({ show: !this.state.show})
+  }
+
+  toggleMappers(toggleChecked) {
+    this.setState({ toggleChecked });
+    this.props.toggleMappers()
   }
 
   render() {
@@ -105,6 +113,12 @@ class NavBar extends Component {
               <div style={styles.smallContainer}>
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', borderBottom: '1px solid #D3D3D3', position: 'relative'}}>
                   <LogoSm style={{...styles.paddingBox, paddingTop: 10, paddingBottom: 10 }} />
+                  <div style={{ display: 'flex', alignItems: 'center', paddingRight: 16 }}>
+                    <label style={{ display: 'flex', alignItems: 'center' }}>
+                      <span style={{ paddingRight: 4, fontSize: 14, lineHeight: '1em' }}>Community Map</span>
+                      <Switch height={18} width={38} onColor="#39a2fb" onChange={this.toggleMappers} checked={this.state.toggleChecked} uncheckedIcon={false} />
+                    </label>
+                  </div>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'row', overflow: 'auto' }}>
@@ -125,7 +139,13 @@ class NavBar extends Component {
             {matches.large && (
               <div style={styles.container}>
                 <div>
-                  <Logo style={{...styles.paddingBox, paddingTop: 16, paddingBottom: 16 }} />
+                  <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Logo style={{...styles.paddingBox, paddingTop: 16, paddingBottom: 16 }} />
+                    <label style={{ display: 'flex', alignItems: 'center', paddingRight: 16 }}>
+                      <span style={{ paddingRight: 4, fontSize: 14 }}>Community Map</span>
+                      <Switch height={20} width={38} onColor="#39a2fb" onChange={this.toggleMappers} checked={this.state.toggleChecked} uncheckedIcon={false} />
+                    </label>
+                  </div>
                   <div style={{ position: 'relative' }}>
                     <p style={{...styles.paddingBox, ...styles.title}} >Devices</p>
                   </div>
