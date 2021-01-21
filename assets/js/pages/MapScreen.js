@@ -150,7 +150,7 @@ class MapScreen extends React.Component {
     const { hotspotsData } = this.state
     this.client = new Client()
     const list = await this.client.hotspots.list()
-    const spots = await list.take(10000)
+    const spots = await list.take(1000000)
     spots.forEach(d => {
       hotspotsData[d.name.toLowerCase()] = d
     })
