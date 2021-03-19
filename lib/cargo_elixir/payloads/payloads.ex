@@ -90,7 +90,7 @@ defmodule CargoElixir.Payloads do
       |> Map.put(:oui, 1)
       |> Map.put(:rssi, Map.fetch!(first_hotspot, "rssi"))
       |> Map.put(:seq_num, fcnt)
-      |> Map.put(:reported, reported |> DateTime.from_unix!())
+      |> Map.put(:reported, round(reported / 1000) |> DateTime.from_unix!())
       |> Map.put(:snr, Map.fetch!(first_hotspot, "snr"))
 
     binary = payload |> :base64.decode()
@@ -124,7 +124,7 @@ defmodule CargoElixir.Payloads do
       |> Map.put(:elevation, elevation)
       |> Map.put(:battery, battery)
       |> Map.put(:seq_num, seq_num)
-      |> Map.put(:reported, reported |> DateTime.from_unix!())
+      |> Map.put(:reported, round(reported / 1000) |> DateTime.from_unix!())
       |> Map.put(:snr, Map.get(packet, "snr", 0))
 
     %Payload{}
