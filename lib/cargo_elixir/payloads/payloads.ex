@@ -110,11 +110,11 @@ defmodule CargoElixir.Payloads do
     |> Repo.insert()
   end
 
-  # fix this as device_id wont work
   def create_payload(packet = %{ "device_id" => device_id, "gateway" => hotspot_id, "oui" => oui, "lat" => lat, "lon" => lon, "speed" => speed, "elevation" => elevation,
-    "battery" => battery, "rssi" => rssi, "sequence" => seq_num, "timestamp" => reported}) do
+    "battery" => battery, "rssi" => rssi, "snr" => snr, "sequence" => seq_num, "timestamp" => reported}) do
     attrs = %{}
       |> Map.put(:device_id, device_id)
+      |> Map.put(:name, device_id)
       |> Map.put(:hotspot_id, hotspot_id)
       |> Map.put(:oui, oui)
       |> Map.put(:lat, lat)
@@ -125,7 +125,7 @@ defmodule CargoElixir.Payloads do
       |> Map.put(:battery, battery)
       |> Map.put(:seq_num, seq_num)
       |> Map.put(:reported, round(reported / 1000) |> DateTime.from_unix!())
-      |> Map.put(:snr, Map.get(packet, "snr", 0))
+      |> Map.put(:snr, snr)
 
     %Payload{}
       |> Payload.changeset(attrs)
