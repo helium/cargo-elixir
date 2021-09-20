@@ -331,10 +331,7 @@ class MapScreen extends React.Component {
           {
             showMappers && (
               <Layer sourceLayer="public.h3_res9" sourceId="source_id" id="public.h3_res9" type="fill" paint={{
-                'fill-color': [
-                  'case',
-                  ['boolean',
-                    ['feature-state', 'selected'], true],
+                'fill-color':
                   ['interpolate',
                     ['linear'],
                     ['get', 'best_rssi'],
@@ -345,16 +342,8 @@ class MapScreen extends React.Component {
                     -80,
                     'rgba(38,251,202,0.8)']
                   ,
-                  '#b67ffe'
-                ],
                 'fill-opacity': 0.9,
-                'fill-outline-color': [
-                  'case',
-                  ['boolean',
-                    ['feature-state', 'selected'], true],
-                  'rgba(38,251,202,0.45)',
-                  '#ffffff'
-                ]
+                'fill-outline-color': 'rgba(38,251,202,0.45)'
               }} />
             )
           }
