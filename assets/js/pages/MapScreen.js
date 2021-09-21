@@ -1,5 +1,5 @@
 import React from "react"
-import ReactMapboxGl, { Layer, Marker, Feature, GeoJSONLayer } from 'react-mapbox-gl';
+import ReactMapboxGl, { Layer, Marker, Feature, Source } from 'react-mapbox-gl';
 import findIndex from 'lodash/findIndex'
 import NavBar from '../components/NavBar'
 import Inspector from '../components/Inspector'
@@ -55,6 +55,11 @@ const Map = ReactMapboxGl({
 })
 // SIGN UP FOR MAPBOX AND REPLACE ABOVE WITH YOUR OWN API KEY
 
+const VECTOR_SOURCE_OPTIONS = {
+  "type": "vector",
+  "url": "https://mappers-tileserver.helium.wtf/public.h3_res9.json"
+};
+
 class MapScreen extends React.Component {
   constructor(props) {
     super(props)
@@ -105,8 +110,6 @@ class MapScreen extends React.Component {
 
     this.loadDevices()
 
-    this.loadMappers()
-
     let channel = socket.channel("payload:new", {})
     channel.join()
       .receive("ok", resp => { console.log("Joined successfully", resp) })
@@ -155,14 +158,6 @@ class MapScreen extends React.Component {
       hotspotsData[d.name.toLowerCase()] = d
     })
     this.setState({ hotspotsData })
-  }
-
-  loadMappers() {
-    fetch('https://coverage-dumps.s3-us-west-2.amazonaws.com/daily-csv-dumps/coverage_uplinks_h3_9.geojson')
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ hexdata: data })
-      });
   }
 
   loadDevices() {
@@ -331,27 +326,25 @@ class MapScreen extends React.Component {
           }}
           movingMethod="jumpTo"
         >
+          <Source id="source_id" tileJsonSource={VECTOR_SOURCE_OPTIONS} />
 
           {
             showMappers && (
-              <GeoJSONLayer
-                data={hexdata}
-                fillLayout={{}}
-                fillPaint={{
-                  'fill-color': [
-                    'interpolate',
+              <Layer sourceLayer="public.h3_res9" sourceId="source_id" id="public.h3_res9" type="fill" paint={{
+                'fill-color':
+                  ['interpolate',
                     ['linear'],
-                    ['get', 'rssi'],
+                    ['get', 'best_rssi'],
                     -120,
-                    '#2a79f7',
+                    'rgba(38,251,202,0.1)',
                     -100,
-                    '#26fbe9',
+                    'rgba(38,251,202,0.45)',
                     -80,
-                    '#26fbca'
-                  ],
-                  'fill-opacity': 0.3
-                }}
-              />
+                    'rgba(38,251,202,0.8)']
+                  ,
+                'fill-opacity': 0.9,
+                'fill-outline-color': 'rgba(38,251,202,0.45)'
+              }} />
             )
           }
 
