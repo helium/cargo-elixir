@@ -6,7 +6,7 @@
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
-    "chart.js": "^2.9.3",
+    "chart.js": "^2.9.4",
     "geojson": "^0.5.0",
     "javascript-time-ago": "^2.0.4",
     "lodash": "^4.17.15",
