@@ -1,8 +1,6 @@
-import Client from "@helium/http";
 import geoJSON from "geojson";
 import findIndex from "lodash/findIndex";
 import React from "react";
-import ReactMapboxGl, { Feature, Layer, Marker, Source } from "react-mapbox-gl";
 import Inspector from "../components/Inspector";
 import NavBar from "../components/NavBar";
 import SignUp from "../components/SignUp";
@@ -10,6 +8,12 @@ import Timeline from "../components/Timeline";
 import { get } from "../data/Rest";
 import { packetsToChartData } from "../data/chart";
 import socket from "../socket";
+
+import maplibregl from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
+import { Protocol } from "pmtiles";
+import Map, { Feature, Layer, Marker, Source } from "react-map-gl";
+import { mapLayersDark } from "./mapStyle";
 
 const CURRENT_OUI = 1;
 
@@ -47,12 +51,6 @@ const styles = {
     cursor: "pointer",
   },
 };
-
-const Map = ReactMapboxGl({
-  accessToken:
-    "pk.eyJ1IjoicGV0ZXJtYWluIiwiYSI6ImNraGNrOTVwZTA3aXMyenQzajZmMzI3M2wifQ.lFhWROu0aMDqsdUUiDORww",
-});
-// SIGN UP FOR MAPBOX AND REPLACE ABOVE WITH YOUR OWN API KEY
 
 const VECTOR_SOURCE_OPTIONS = {
   type: "vector",
@@ -96,7 +94,14 @@ class MapScreen extends React.Component {
     this.toggleMappers = this.toggleMappers.bind(this);
   }
 
+  componentWillUnmount() {
+    maplibregl.removeProtocol("pmtiles");
+  }
+
   componentDidMount() {
+    let protocol = new Protocol();
+    maplibregl.addProtocol("pmtiles", protocol.tile);
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(({ coords }) => {
         const { mapCenter } = this.state;
@@ -162,15 +167,16 @@ class MapScreen extends React.Component {
     });
   }
 
+  // endpoint is down so not triggering fetch
   async loadHotspots() {
-    const { hotspotsData } = this.state;
-    this.client = new Client();
-    const list = await this.client.hotspots.list();
-    const spots = await list.take(1000000);
-    spots.forEach((d) => {
-      hotspotsData[d.name.toLowerCase()] = d;
-    });
-    this.setState({ hotspotsData });
+    // const { hotspotsData } = this.state;
+    // this.client = new Client();
+    // const list = await this.client.hotspots.list();
+    // const spots = await list.take(1000000);
+    // spots.forEach((d) => {
+    //   hotspotsData[d.name.toLowerCase()] = d;
+    // });
+    // this.setState({ hotspotsData });
   }
 
   loadDevices() {
@@ -360,21 +366,34 @@ class MapScreen extends React.Component {
     return (
       <div style={{ flex: 1 }}>
         <Map
-          style="mapbox://styles/petermain/cjyzlw0av4grj1ck97d8r0yrk"
-          container="map"
-          center={mapCenter}
-          containerStyle={{
+          style={{
             height: "100vh",
             width: "100vw",
           }}
-          movingMethod="jumpTo"
+          mapStyle={{
+            version: 8,
+            sources: {
+              protomaps: {
+                type: "vector",
+                tiles: [
+                  `https://pmtiles.heliumfoundation.wtf/world/{z}/{x}/{y}.mvt`,
+                ],
+              },
+            },
+            glyphs:
+              "https://cdn.protomaps.com/fonts/pbf/{fontstack}/{range}.pbf",
+            layers: mapLayersDark,
+          }}
+          localFontFamily="NotoSans-Regular"
+          mapLib={maplibregl}
+          attributionControl={false}
         >
-          <Source id="source_id" tileJsonSource={VECTOR_SOURCE_OPTIONS} />
+          <Source id="source_id" {...VECTOR_SOURCE_OPTIONS} />
 
           {showMappers && (
             <Layer
-              sourceLayer="public.h3_res9"
-              sourceId="source_id"
+              source-layer="public.h3_res9"
+              source="source_id"
               id="public.h3_res9"
               type="fill"
               paint={{
