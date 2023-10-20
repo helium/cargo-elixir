@@ -29,6 +29,15 @@ const styles = {
     border: "4px solid #fff",
     zIndex: 2,
   },
+  packetCircle: {
+    width: 8,
+    height: 8,
+    borderRadius: "50%",
+    backgroundColor: "#4790E5",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   transmittingMarker: {
     width: 14,
     height: 14,
@@ -429,23 +438,17 @@ class MapScreen extends React.Component {
             />
           )}
 
-          {/* {selectedDevice && (
-            <Layer
-              key={selectedDevice.device_id}
-              type="circle"
-              source="protomaps"
-              source-layer="roads"
-              paint={{ "circle-color": "#4790E5" }}
-            >
-              {packets.geoJson.features.map((p, i) => (
-                <Feature
-                  onMouseEnter={() => this.setHotspots(p)}
-                  key={p.properties.key + i}
-                  coordinates={geoToMarkerCoords(p.properties.coordinates)}
-                />
-              ))}
-            </Layer>
-          )} */}
+          {selectedDevice &&
+            packets.geoJson.features.map((packet, i) => (
+              <Marker
+                key={packet.properties.id}
+                anchor="center"
+                longitude={packet.properties.coordinates.lon}
+                latitude={packet.properties.coordinates.lat}
+              >
+                <div style={styles.packetCircle} />
+              </Marker>
+            ))}
 
           {Object.keys(transmittingDevices).length > 0 &&
             Object.keys(transmittingDevices).map((id) => {
