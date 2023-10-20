@@ -12,7 +12,7 @@ import socket from "../socket";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Protocol } from "pmtiles";
-import Map, { Feature, Layer, Marker, Source } from "react-map-gl";
+import Map, { Layer, Marker, Source } from "react-map-gl";
 import { mapLayersDark } from "./mapStyle";
 
 const CURRENT_OUI = 1;
@@ -73,6 +73,7 @@ class MapScreen extends React.Component {
   constructor(props) {
     super(props);
 
+    this.mapRef = React.createRef();
     this.state = {
       showSignUp: window.localStorage
         ? !window.localStorage.getItem("seenSignUp")
@@ -87,7 +88,11 @@ class MapScreen extends React.Component {
       hexdata: null,
       showMappers: false,
       chartType: null,
-      showHotspots: true,
+      /* 
+      setting to false as hotspots fetch is currently down
+      when re-enabled we'll need to update the relevant Layers + Features
+      */
+      showHotspots: false,
       highlightHotspoted: null,
       transmittingDevices: {},
       loading: false,
@@ -246,9 +251,12 @@ class MapScreen extends React.Component {
             selectedDevice: d,
             packets,
             lastPacket,
-            mapCenter: [lastPacket.coordinates.lon, lastPacket.coordinates.lat],
             hotspots: { data: [] },
             loading: false,
+          });
+          const map = this.mapRef.current.getMap();
+          map.flyTo({
+            center: [lastPacket.coordinates.lon, lastPacket.coordinates.lat],
           });
         })
         .catch((err) => {
@@ -393,6 +401,7 @@ class MapScreen extends React.Component {
           localFontFamily="NotoSans-Regular"
           mapLib={maplibregl}
           attributionControl={false}
+          ref={this.mapRef}
         >
           <Source id="source_id" {...VECTOR_SOURCE_OPTIONS} />
 
@@ -420,10 +429,12 @@ class MapScreen extends React.Component {
             />
           )}
 
-          {selectedDevice && (
+          {/* {selectedDevice && (
             <Layer
               key={selectedDevice.device_id}
               type="circle"
+              source="protomaps"
+              source-layer="roads"
               paint={{ "circle-color": "#4790E5" }}
             >
               {packets.geoJson.features.map((p, i) => (
@@ -434,7 +445,7 @@ class MapScreen extends React.Component {
                 />
               ))}
             </Layer>
-          )}
+          )} */}
 
           {Object.keys(transmittingDevices).length > 0 &&
             Object.keys(transmittingDevices).map((id) => {
@@ -461,7 +472,7 @@ class MapScreen extends React.Component {
             </Marker>
           )}
 
-          {showHotspots &&
+          {/* {showHotspots &&
             hotspots.data.map((h, i) => {
               if (
                 h.lng &&
@@ -510,9 +521,9 @@ class MapScreen extends React.Component {
                   </Layer>
                 );
               }
-            })}
+            })} */}
 
-          {highlightedHotspot && showHotspots && (
+          {/* {highlightedHotspot && showHotspots && (
             <Layer
               key="highlight-line"
               type="line"
@@ -535,7 +546,7 @@ class MapScreen extends React.Component {
               anchor="center"
               coordinates={[highlightedHotspot.lng, highlightedHotspot.lat]}
             />
-          )}
+          )} */}
         </Map>
 
         <NavBar
