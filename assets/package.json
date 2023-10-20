@@ -20,7 +20,6 @@
     "react-chartjs-2": "^2.8.0",
     "react-dom": "^16.12.0",
     "react-map-gl": "^7.1.6",
-    "react-mapbox-gl": "^4.7.3",
     "react-media": "^1.10.0",
     "react-router-dom": "^5.1.2",
     "react-svg-loader": "^3.0.3",
