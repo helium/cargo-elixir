@@ -27,6 +27,7 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     border: "4px solid #fff",
+    zIndex: 2,
   },
   transmittingMarker: {
     width: 14,
@@ -49,6 +50,17 @@ const styles = {
     border: "3px solid #8B62EA",
     boxShadow: "0px 2px 4px 0px rgba(0,0,0,0.5)",
     cursor: "pointer",
+  },
+  mapStyle: {
+    version: 8,
+    sources: {
+      protomaps: {
+        type: "vector",
+        tiles: [`https://pmtiles.heliumfoundation.wtf/world/{z}/{x}/{y}.mvt`],
+      },
+    },
+    glyphs: "https://cdn.protomaps.com/fonts/pbf/{fontstack}/{range}.pbf",
+    layers: mapLayersDark,
   },
 };
 
@@ -370,20 +382,14 @@ class MapScreen extends React.Component {
             height: "100vh",
             width: "100vw",
           }}
-          mapStyle={{
-            version: 8,
-            sources: {
-              protomaps: {
-                type: "vector",
-                tiles: [
-                  `https://pmtiles.heliumfoundation.wtf/world/{z}/{x}/{y}.mvt`,
-                ],
-              },
-            },
-            glyphs:
-              "https://cdn.protomaps.com/fonts/pbf/{fontstack}/{range}.pbf",
-            layers: mapLayersDark,
+          initialViewState={{
+            longitude: mapCenter[0],
+            latitude: mapCenter[1],
+            zoom: 11,
           }}
+          minZoom={2}
+          maxZoom={14}
+          mapStyle={styles.mapStyle}
           localFontFamily="NotoSans-Regular"
           mapLib={maplibregl}
           attributionControl={false}
@@ -434,23 +440,25 @@ class MapScreen extends React.Component {
             Object.keys(transmittingDevices).map((id) => {
               return (
                 <Marker
-                  style={styles.transmittingMarker}
+                  longitude={Number(transmittingDevices[id].lon)}
+                  latitude={Number(transmittingDevices[id].lat)}
+                  key={id}
                   anchor="center"
-                  coordinates={[
-                    Number(transmittingDevices[id].lon),
-                    Number(transmittingDevices[id].lat),
-                  ]}
                   onClick={() => this.selectDevice(transmittingDevices[id])}
-                ></Marker>
+                >
+                  <div style={styles.transmittingMarker} />
+                </Marker>
               );
             })}
 
           {lastPacket && (
             <Marker
-              style={styles.selectedMarker}
               anchor="center"
-              coordinates={geoToMarkerCoords(lastPacket.coordinates)}
-            />
+              longitude={lastPacket.coordinates.lon}
+              latitude={lastPacket.coordinates.lat}
+            >
+              <div style={styles.selectedMarker} />
+            </Marker>
           )}
 
           {showHotspots &&
@@ -468,11 +476,13 @@ class MapScreen extends React.Component {
                 return (
                   <Marker
                     key={h.address + i}
-                    style={styles.gatewayMarker}
                     anchor="center"
-                    coordinates={[h.lng, h.lat]}
+                    longitude={h.lng}
+                    latitude={lh.lat}
                     onClick={() => this.highlightHotspot(h)}
-                  />
+                  >
+                    <div style={styles.gatewayMarker} />
+                  </Marker>
                 );
               }
             })}
