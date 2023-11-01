@@ -1,8 +1,6 @@
-import Client from "@helium/http";
 import geoJSON from "geojson";
 import findIndex from "lodash/findIndex";
 import React from "react";
-import ReactMapboxGl, { Feature, Layer, Marker, Source } from "react-mapbox-gl";
 import Inspector from "../components/Inspector";
 import NavBar from "../components/NavBar";
 import SignUp from "../components/SignUp";
@@ -10,6 +8,12 @@ import Timeline from "../components/Timeline";
 import { get } from "../data/Rest";
 import { packetsToChartData } from "../data/chart";
 import socket from "../socket";
+
+import maplibregl from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
+import { Protocol } from "pmtiles";
+import Map, { Layer, Marker, Source } from "react-map-gl";
+import { mapLayersDark } from "./mapStyle";
 
 const CURRENT_OUI = 1;
 
@@ -23,6 +27,16 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     border: "4px solid #fff",
+    zIndex: 2,
+  },
+  packetCircle: {
+    width: 8,
+    height: 8,
+    borderRadius: "50%",
+    backgroundColor: "#4790E5",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   transmittingMarker: {
     width: 14,
@@ -46,13 +60,18 @@ const styles = {
     boxShadow: "0px 2px 4px 0px rgba(0,0,0,0.5)",
     cursor: "pointer",
   },
+  mapStyle: {
+    version: 8,
+    sources: {
+      protomaps: {
+        type: "vector",
+        tiles: [`https://pmtiles.heliumfoundation.wtf/world/{z}/{x}/{y}.mvt`],
+      },
+    },
+    glyphs: "https://cdn.protomaps.com/fonts/pbf/{fontstack}/{range}.pbf",
+    layers: mapLayersDark,
+  },
 };
-
-const Map = ReactMapboxGl({
-  accessToken:
-    "pk.eyJ1IjoicGV0ZXJtYWluIiwiYSI6ImNraGNrOTVwZTA3aXMyenQzajZmMzI3M2wifQ.lFhWROu0aMDqsdUUiDORww",
-});
-// SIGN UP FOR MAPBOX AND REPLACE ABOVE WITH YOUR OWN API KEY
 
 const VECTOR_SOURCE_OPTIONS = {
   type: "vector",
@@ -63,6 +82,7 @@ class MapScreen extends React.Component {
   constructor(props) {
     super(props);
 
+    this.mapRef = React.createRef();
     this.state = {
       showSignUp: window.localStorage
         ? !window.localStorage.getItem("seenSignUp")
@@ -77,7 +97,11 @@ class MapScreen extends React.Component {
       hexdata: null,
       showMappers: false,
       chartType: null,
-      showHotspots: true,
+      /* 
+      setting to false as hotspots fetch is currently down
+      when re-enabled we'll need to update the relevant Layers + Features
+      */
+      showHotspots: false,
       highlightHotspoted: null,
       transmittingDevices: {},
       loading: false,
@@ -96,7 +120,14 @@ class MapScreen extends React.Component {
     this.toggleMappers = this.toggleMappers.bind(this);
   }
 
+  componentWillUnmount() {
+    maplibregl.removeProtocol("pmtiles");
+  }
+
   componentDidMount() {
+    let protocol = new Protocol();
+    maplibregl.addProtocol("pmtiles", protocol.tile);
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(({ coords }) => {
         const { mapCenter } = this.state;
@@ -162,15 +193,16 @@ class MapScreen extends React.Component {
     });
   }
 
+  // endpoint is down so not triggering fetch
   async loadHotspots() {
-    const { hotspotsData } = this.state;
-    this.client = new Client();
-    const list = await this.client.hotspots.list();
-    const spots = await list.take(1000000);
-    spots.forEach((d) => {
-      hotspotsData[d.name.toLowerCase()] = d;
-    });
-    this.setState({ hotspotsData });
+    // const { hotspotsData } = this.state;
+    // this.client = new Client();
+    // const list = await this.client.hotspots.list();
+    // const spots = await list.take(1000000);
+    // spots.forEach((d) => {
+    //   hotspotsData[d.name.toLowerCase()] = d;
+    // });
+    // this.setState({ hotspotsData });
   }
 
   loadDevices() {
@@ -228,9 +260,12 @@ class MapScreen extends React.Component {
             selectedDevice: d,
             packets,
             lastPacket,
-            mapCenter: [lastPacket.coordinates.lon, lastPacket.coordinates.lat],
             hotspots: { data: [] },
             loading: false,
+          });
+          const map = this.mapRef.current.getMap();
+          map.flyTo({
+            center: [lastPacket.coordinates.lon, lastPacket.coordinates.lat],
           });
         })
         .catch((err) => {
@@ -360,21 +395,29 @@ class MapScreen extends React.Component {
     return (
       <div style={{ flex: 1 }}>
         <Map
-          style="mapbox://styles/petermain/cjyzlw0av4grj1ck97d8r0yrk"
-          container="map"
-          center={mapCenter}
-          containerStyle={{
+          style={{
             height: "100vh",
             width: "100vw",
           }}
-          movingMethod="jumpTo"
+          initialViewState={{
+            longitude: mapCenter[0],
+            latitude: mapCenter[1],
+            zoom: 11,
+          }}
+          minZoom={2}
+          maxZoom={14}
+          mapStyle={styles.mapStyle}
+          localFontFamily="NotoSans-Regular"
+          mapLib={maplibregl}
+          attributionControl={false}
+          ref={this.mapRef}
         >
-          <Source id="source_id" tileJsonSource={VECTOR_SOURCE_OPTIONS} />
+          <Source id="source_id" {...VECTOR_SOURCE_OPTIONS} />
 
           {showMappers && (
             <Layer
-              sourceLayer="public.h3_res9"
-              sourceId="source_id"
+              source-layer="public.h3_res9"
+              source="source_id"
               id="public.h3_res9"
               type="fill"
               paint={{
@@ -395,46 +438,44 @@ class MapScreen extends React.Component {
             />
           )}
 
-          {selectedDevice && (
-            <Layer
-              key={selectedDevice.device_id}
-              type="circle"
-              paint={{ "circle-color": "#4790E5" }}
-            >
-              {packets.geoJson.features.map((p, i) => (
-                <Feature
-                  onMouseEnter={() => this.setHotspots(p)}
-                  key={p.properties.key + i}
-                  coordinates={geoToMarkerCoords(p.properties.coordinates)}
-                />
-              ))}
-            </Layer>
-          )}
+          {selectedDevice &&
+            packets.geoJson.features.map((packet, i) => (
+              <Marker
+                key={packet.properties.id}
+                anchor="center"
+                longitude={packet.properties.coordinates.lon}
+                latitude={packet.properties.coordinates.lat}
+              >
+                <div style={styles.packetCircle} />
+              </Marker>
+            ))}
 
           {Object.keys(transmittingDevices).length > 0 &&
             Object.keys(transmittingDevices).map((id) => {
               return (
                 <Marker
-                  style={styles.transmittingMarker}
+                  longitude={Number(transmittingDevices[id].lon)}
+                  latitude={Number(transmittingDevices[id].lat)}
+                  key={id}
                   anchor="center"
-                  coordinates={[
-                    Number(transmittingDevices[id].lon),
-                    Number(transmittingDevices[id].lat),
-                  ]}
                   onClick={() => this.selectDevice(transmittingDevices[id])}
-                ></Marker>
+                >
+                  <div style={styles.transmittingMarker} />
+                </Marker>
               );
             })}
 
           {lastPacket && (
             <Marker
-              style={styles.selectedMarker}
               anchor="center"
-              coordinates={geoToMarkerCoords(lastPacket.coordinates)}
-            />
+              longitude={lastPacket.coordinates.lon}
+              latitude={lastPacket.coordinates.lat}
+            >
+              <div style={styles.selectedMarker} />
+            </Marker>
           )}
 
-          {showHotspots &&
+          {/* {showHotspots &&
             hotspots.data.map((h, i) => {
               if (
                 h.lng &&
@@ -449,11 +490,13 @@ class MapScreen extends React.Component {
                 return (
                   <Marker
                     key={h.address + i}
-                    style={styles.gatewayMarker}
                     anchor="center"
-                    coordinates={[h.lng, h.lat]}
+                    longitude={h.lng}
+                    latitude={lh.lat}
                     onClick={() => this.highlightHotspot(h)}
-                  />
+                  >
+                    <div style={styles.gatewayMarker} />
+                  </Marker>
                 );
               }
             })}
@@ -481,9 +524,9 @@ class MapScreen extends React.Component {
                   </Layer>
                 );
               }
-            })}
+            })} */}
 
-          {highlightedHotspot && showHotspots && (
+          {/* {highlightedHotspot && showHotspots && (
             <Layer
               key="highlight-line"
               type="line"
@@ -506,7 +549,7 @@ class MapScreen extends React.Component {
               anchor="center"
               coordinates={[highlightedHotspot.lng, highlightedHotspot.lat]}
             />
-          )}
+          )} */}
         </Map>
 
         <NavBar
