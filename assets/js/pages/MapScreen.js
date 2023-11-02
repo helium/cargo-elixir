@@ -405,7 +405,7 @@ class MapScreen extends React.Component {
             zoom: 11,
           }}
           minZoom={2}
-          maxZoom={14}
+          maxZoom={15.9}
           mapStyle={styles.mapStyle}
           localFontFamily="NotoSans-Regular"
           mapLib={maplibregl}
