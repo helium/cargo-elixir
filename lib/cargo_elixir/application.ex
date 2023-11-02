@@ -11,9 +11,11 @@ defmodule CargoElixir.Application do
       # Start the Ecto repository
       CargoElixir.Repo,
       # Start the endpoint when the application starts
-      CargoElixirWeb.Endpoint
+      CargoElixirWeb.Endpoint,
       # Starts a worker by calling: CargoElixir.Worker.start_link(arg)
       # {CargoElixir.Worker, arg},
+      # Start the PubSub system
+      {Phoenix.PubSub, name: CargoElixir.PubSub}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
