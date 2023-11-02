@@ -15,7 +15,7 @@ config :cargo_elixir, CargoElixirWeb.Endpoint,
   url: [host: "localhost"], # UPDATE TO YOUR CUSTOM HOST IF NOT RUNNING LOCALLY
   secret_key_base: "pnPHQ4sSmnHnN1DGsMoFaMALbUxIazKvmaKzYlCm5JUl2JmapF1hSnFlwKlFjZYQ",
   render_errors: [view: CargoElixirWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: CargoElixir.PubSub, adapter: Phoenix.PubSub.PG2]
+  pubsub_server: CargoElixir.PubSub
 
 # Configures Elixir's Logger
 config :logger, :console,
