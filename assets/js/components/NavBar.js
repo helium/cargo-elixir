@@ -85,7 +85,7 @@ class NavBar extends Component {
       show: true,
       toggleChecked: false
     }
-    this.toggle = this.toggle.bind(this)    
+    this.toggle = this.toggle.bind(this)
     this.toggleMappers = this.toggleMappers.bind(this)
   }
 
@@ -101,6 +101,19 @@ class NavBar extends Component {
   render() {
     const { devices, names, selectDevice, selectedDevice, findDevice, loading, onSearchChange } = this.props
     const { show } = this.state
+
+    // filter devices to return only 1 of each basd on `device.name` attribute
+    const uniqueDevices = devices.filter((device => {
+      const seenNames = new Set();
+      return device => {
+        if (seenNames.has(device.name)) {
+          return false; // Skip if the name is already seen
+        } else {
+          seenNames.add(device.name); // Mark the name as seen
+          return true; // Include this device
+        }
+      };
+    })());
 
     return (
       <Media queries={{
@@ -124,11 +137,11 @@ class NavBar extends Component {
                 <div style={{ display: 'flex', flexDirection: 'row', overflow: 'auto' }}>
                   <div style={{ borderBottom: '1px solid #D3D3D3', alignItems: 'center', display: 'flex' }}>
                     <div style={{ width: 200, paddingLeft: 8, paddingRight: 8 }}>
-                      <SearchBar devices={devices} onSearchChange={onSearchChange}/>
+                      <SearchBar devices={uniqueDevices} onSearchChange={onSearchChange}/>
                     </div>
                   </div>
 
-                  {devices.map((d, i) =>
+                  {uniqueDevices.map((d, i) =>
                     <div style={{ borderLeft: '1px solid #D3D3D3' }}>
                       <NavBarRow key={d.device_id} device={d} name={names[i]} selectDevice={selectDevice} selectedDevice={selectedDevice} />
                     </div>
@@ -151,12 +164,12 @@ class NavBar extends Component {
                   </div>
 
                   <div style={{ padding: 16, borderBottom: '1px solid #D3D3D3' }}>
-                    <SearchBar devices={devices} onSearchChange={onSearchChange}/>
+                    <SearchBar devices={uniqueDevices} onSearchChange={onSearchChange}/>
                   </div>
                 </div>
 
                 <div style={{ overflow: 'scroll', maxHeight: 'calc(100vh - 190px)' }}>
-                  { show && devices.map((d, i) =>
+                  { show && uniqueDevices.map((d, i) =>
                     <NavBarRow key={d.device_id} device={d} name={names[i]} selectDevice={selectDevice} selectedDevice={selectedDevice} />
                   )}
                 </div>
