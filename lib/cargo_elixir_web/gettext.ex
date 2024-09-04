@@ -20,5 +20,5 @@ defmodule CargoElixirWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :cargo_elixir
+  use Gettext.Backend, otp_app: :cargo_exlir
 end
