@@ -3,7 +3,7 @@
 # hardcode secrets, although such is generally not
 # recommended and you have to remember to add this
 # file to your .gitignore.
-use Mix.Config
+import Config
 
 database_url =
   System.get_env("DATABASE_URL") ||
@@ -34,6 +34,6 @@ config :cargo_elixir, CargoElixirWeb.Endpoint,
   force_ssl: [rewrite_on: [:x_forwarded_proto]],
   cache_static_manifest: "priv/static/cache_manifest.json",
   secret_key_base: secret_key_base
-  
+
 
 config :cargo_elixir, console_stats_secret: System.get_env("CONSOLE_STATS_SECRET")
